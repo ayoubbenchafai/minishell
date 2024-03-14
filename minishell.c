@@ -15,11 +15,12 @@
 
 void display(t_node *node)
 {
+    int i = 1;
     if(!node)
         return ;
     while(node)
     {
-        printf("value : %s, type : %s\n", node->value, node->type);
+        printf("node %d => value : %s, type : %s\n", i++,node->value, node->type);
         node = node->next;
     }
 }
@@ -68,53 +69,73 @@ int fill_list(t_node *node, char *s)
     return (0);
 }
 
+t_node *fill_list_commands(t_node *node, char *array, int start, int end)
+{
+    t_node *new;
+    char *tmp;
 
+    tmp = ft_substr(array, start, end);
+    new = ft_lstnew1(tmp, "word");
+    if (!new)
+        return (free(array), free(array), free(tmp), NULL);
+    ft_lstadd_back1(&node, new);
+    return (node);
+    // return (0);
+}
 
 // int check_command(char *s, char **array ) split by '|'
 int check_command(char *s, t_node *node)
 {
-    char **array; 
-    t_node *new;
-    char *tmp;
-    char *tmp2;
-    if (!ft_check(s, '|'))
-        return (1);
+    char **array;
+
+    // if (!ft_check(s, '|'))
+    //     return (1);
     array = ft_split(s, '|');
     if (!array)
-        return (1);
+        return (free(s), 1);
     int i = 0;
-    int j;
+    int j = 0;
     int k = 0;
-    while(array[i])
+    int e;
+    int size = nbr_strings(s, '|');
+    while(i < size)
     {
         // < Makefile grep cc |  ls -la
         // 0123456789
-        if(array[i][0] == '<')
-        {
-            j = 1;
+        printf("string  : %s\n", array[i]);
+        while(array[i][j] == ' ')
+                j++;
+        if(array[i][j] == '<')
+        {   
+            e = j++;
             while(array[i][j] == ' ')
                 j++;
             k = j;
             while(array[i][k] != ' ')
                 k++;
-            tmp = ft_substr(array[i], 0, k);
-            new = ft_lstnew1(tmp, "word");
-            if (!new)
-                return (free(s), free_array(array), free(tmp), 1);
-            ft_lstadd_back1(&node, new);
-            printf("\ntmp : %s\n", tmp);
+            node = fill_list_commands(node, array[i], e, k - e);
             while(array[i][k] == ' ')
                 k++;
-            tmp2 = ft_substr(array[i], k, ft_strlen(array[i]));
-            new = ft_lstnew1(tmp2, "word");
-            if (!new)
-                return (free(s), free_array(array), free(tmp2), 1);
-            ft_lstadd_back1(&node, new);
-            printf("tmp2 : %s\n", tmp2);
-            // printf("%c", array[i][k]);
-            // printf("\ntest k : %d\n", k - start);
+            node = fill_list_commands(node, array[i], k, ft_strlen(array[i]));
         }
+        else
+        {
+            // grep cc <Makefile |  wc -lwc
+            // 0123456789
+            printf("j : %d\n", j);
+            e = j;
+            while(array[i][j] != '<')
+                j++;
+            node = fill_list_commands(node, array[i], e, j - e);
+            while(array[i][j] == ' ')
+                j++;
+            node = fill_list_commands(node, array[i], j, ft_strlen(array[i]));
+        }
+        j = 0;
+        e = 0;
+        k = 0;
         i++;
+        
     }
     printf("---------node :-------\n");
     display(node);
@@ -123,17 +144,7 @@ int check_command(char *s, t_node *node)
     return (0);
 }
 
-// void fill_list_commands(t_node *node, char *array, int start, int end)
-// {
-//     char *tmp;
 
-//     tmp = ft_substr(array[i], start, end);
-//     new = ft_lstnew1(tmp, "word");
-//     if (!new)
-//         return (free(s), free_array(array), free(tmp), 1);
-//     ft_lstadd_back1(&node, new);
-
-// }
 
 int main()
 {
@@ -146,8 +157,8 @@ int main()
         s  = readline("minishell$ ");
         if(!s)
             return (1);
-        // if(!ft_strncmp(s,"exit", 4))
-        //     return (free(s), 0);
+        if(!ft_strncmp(s,"exit", 4))
+            return (free(s), 0);
         if(check_command(s, node))
             return (free(s), 1);
         if(fill_list(node, s))

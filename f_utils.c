@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:37:52 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/14 03:49:11 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/14 21:13:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,3 +88,60 @@ void	ft_lstadd_back1(t_node **lst, t_node *new)
 		ptr -> next = new;
 	}
 }
+
+// int check_command(char *s, t_node *node)
+// {
+//     char **array; 
+//     // t_node *new;
+//     // char *tmp;
+//     // char *tmp2;
+//     if (!ft_check(s, '|'))
+//         return (1);
+//     array = ft_split(s, '|');
+//     if (!array)
+//         return (1);
+//     int i = 0;
+//     int j;
+//     int k = 0;
+//     while(array[i])
+//     {
+//         // < Makefile grep cc |  ls -la
+//         // 0123456789
+//         if(array[i][0] == '<')
+//         {
+//             j = 1;
+//             while(array[i][j] == ' ')
+//                 j++;
+//             k = j;
+//             while(array[i][k] != ' ')
+//                 k++;
+//             // tmp = ft_substr(array[i], 0, k);
+//             // new = ft_lstnew1(tmp, "word");
+//             // if (!new)
+//             //     return (free(s), free_array(array), free(tmp), 1);
+//             // ft_lstadd_back1(&node, new);
+//             // printf("\ntmp : %s\n", tmp);
+//             node = fill_list_commands(node, array[i], 0, k);
+
+//             while(array[i][k] == ' ')
+//                 k++;
+            
+//             // tmp2 = ft_substr(array[i], k, ft_strlen(array[i]));
+//             // new = ft_lstnew1(tmp2, "word");
+//             // if (!new)
+//             //     return (free(s), free_array(array), free(tmp2), 1);
+//             // ft_lstadd_back1(&node, new);
+//             // printf("tmp2 : %s\n", tmp2);
+//             node = fill_list_commands(node, array[i], k, ft_strlen(array[i]));
+
+
+//         }
+//         i++;
+//     }
+//     printf("---------node :-------\n");
+//     display(node);
+//     printf("-----------------------\n");
+//     free_array(array);
+//     return (0);
+// }
+
