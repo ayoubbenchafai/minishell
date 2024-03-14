@@ -1,0 +1,7 @@
+============case 1============
+ 1- <Makefile grep cc | wc -lwc 
+ 2- < Makefile grep cc | wc -lwc
+
+============case 2============
+ 3- grep cc <Makefile |  wc -lwc
+ 4- grep cc < Makefile |  wc -lwc
