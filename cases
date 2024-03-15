@@ -10,5 +10,8 @@
 
 
 
- errro in this case ;  
+erorr in this case ;  
           grep cc      <  Makefile
+
+error : if there is a space between dquote or quote
+    "l""s" " " "-l""a" or "l""s" " " "-l""a" 

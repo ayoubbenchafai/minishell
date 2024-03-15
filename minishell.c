@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <string.h>
 
 void display(t_node *node)
 {
@@ -24,6 +23,17 @@ void display(t_node *node)
         node = node->next;
     }
 }
+void display_cmd(t_command *cmd)
+{
+    int i = 1;
+    if(!cmd)
+        return ;
+    while(cmd)
+    {
+        printf("cmd %d => cmd : %s, intput : %d, output : %d\n", i++, cmd->cmd, cmd->input, cmd->output);
+        cmd = cmd->next;
+    }
+}
 
 char *set_type(char *s)
 {
@@ -33,17 +43,17 @@ char *set_type(char *s)
     if(!ft_strncmp(s, "<<", 2))
         tmp =  "herdoc";
     else if(!ft_strncmp(s, ">>", 2))
-        tmp = "output_redirection_append";
-    else if(s[0] == '>')
-        tmp = "output_redirection";
-    else if(s[0] == '<')
-        tmp = "input_redirection";
-    else if(s[0] == '|' && s[1] == '\0')
+        tmp = "red_out_append";
+    else if(!ft_strncmp(s, ">", 1))
+        tmp = "red_out_trunc";
+    else if(!ft_strncmp(s, "<", 1))
+        tmp = "red_in";
+    else if(!ft_strncmp(s, "|", 1))
         tmp = "pipe";
-    else if(s[0] == '$' && s[1])
+    else if(!ft_strncmp(s, "$", 1))
         tmp =  "expand";
-    else
-        tmp = "word";
+    // else
+    //     tmp = "word";
     return (tmp);
 }
 
@@ -83,73 +93,65 @@ t_node *fill_list_commands(t_node *node, char *array, int start, int end)
     // return (0);
 }
 
-// int check_command(char *s, char **array ) split by '|'
-int check_command(char *s, t_node *node)
+t_node *get_node(t_node *nodes)
 {
-    char **array;
+    ft_lstadd_back1(&nodes, ft_lstnew1("l", "word"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("s", "squote"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("-l", "squote"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("a", "dquote"));
 
-    // if (!ft_check(s, '|'))
-    //     return (1);
-    array = ft_split(s, '|');
-    if (!array)
-        return (free(s), 1);
-    int i = 0;
-    int j = 0;
-    int k = 0;
-    int e;
-    int size = nbr_strings(s, '|');
-    while(i < size)
+    ft_lstadd_back1(&nodes, ft_lstnew1("|", "pipe"));
+
+    ft_lstadd_back1(&nodes, ft_lstnew1("grep", "dquote"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("s", "squote"));
+
+    return nodes;
+}
+int check_redirections(char *s)
+{
+    char *ptr = "|><$";
+
+    while(*s)
     {
-        // < Makefile grep cc |  ls -la
-        // 0123456789
-        printf("string  : %s\n", array[i]);
-        while(array[i][j] == ' ')
-                j++;
-        if(array[i][j] == '<')
-        {   
-            e = j++;
-            while(array[i][j] == ' ')
-                j++;
-            k = j;
-            while(array[i][k] != ' ')
-                k++;
-            node = fill_list_commands(node, array[i], e, k - e);
-            while(array[i][k] == ' ')
-                k++;
-            node = fill_list_commands(node, array[i], k, ft_strlen(array[i]));
-        }
-        else
-        {
-            // grep cc <Makefile |  wc -lwc
-            // 0123456789
-            printf("j : %d\n", j);
-            e = j;
-            while(array[i][j] != '<')
-                j++;
-            node = fill_list_commands(node, array[i], e, j - e);
-            while(array[i][j] == ' ')
-                j++;
-            node = fill_list_commands(node, array[i], j, ft_strlen(array[i]));
-        }
-        j = 0;
-        e = 0;
-        k = 0;
-        i++;
-        
+        if(ft_check(ptr, *s))
+            return (1);
+        s++;
     }
-    printf("---------node :-------\n");
-    display(node);
-    printf("-----------------------\n");
-    free_array(array);
     return (0);
 }
+void fill_list_of_commands(t_node *node)
+{
+    // t_node *ptr;
+    // ls -la | grep aben-cha
+    t_command *cmds = NULL;
+    char *s;
+    while(node)
+    {
+        printf("node->type : %s\n", node->type);
 
-
+        if(check_redirections(node->value))
+            break;        
+        if(!ft_strncmp(node->type, "word", 4) || !ft_strncmp(node->type, "squote", 6)
+          || !ft_strncmp(node->type, "dquote", 6) || !ft_strncmp(node->type, "space", 5))
+        {
+            // if(!ft_strncmp(node->type, "|", 1))
+            //     break; 
+            s = ft_strjoin(s, node->value);
+            
+        }
+        node = node ->next;        
+    }
+    printf("result : %s\n", s);
+    ft_lstadd_back_cmd(&cmds, ft_lstnew_cmd(s, 0, 1));
+    display_cmd(cmds);
+}
 
 int main()
 {
     char *s;
     t_node *node;
+    t_node *tmp;
     
     node = NULL;
     while(1)
@@ -157,12 +159,17 @@ int main()
         s  = readline("minishell$ ");
         if(!s)
             return (1);
+        if(s)
+            add_history(s);
         if(!ft_strncmp(s,"exit", 4))
             return (free(s), 0);
-        if(check_command(s, node))
+        tmp = get_node(node);
+        if(!tmp)
             return (free(s), 1);
-        if(fill_list(node, s))
-            return (1);
+        fill_list_of_commands(tmp);
+        // pause();
+        display(tmp);
+        // node = get_node(nodes);
         free(s);
     }
     return (0);
