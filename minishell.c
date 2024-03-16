@@ -23,61 +23,7 @@ void display(t_node *node)
         node = node->next;
     }
 }
-void display_cmd(t_command *cmd)
-{
-    int i = 1;
-    if(!cmd)
-        return ;
-    while(cmd)
-    {
-        printf("cmd %d => cmd : %s, intput : %d, output : %d\n", i++, cmd->cmd, cmd->input, cmd->output);
-        cmd = cmd->next;
-    }
-}
 
-char *set_type(char *s)
-{
-    char *tmp;
-    
-    tmp = NULL;
-    if(!ft_strncmp(s, "<<", 2))
-        tmp =  "herdoc";
-    else if(!ft_strncmp(s, ">>", 2))
-        tmp = "red_out_append";
-    else if(!ft_strncmp(s, ">", 1))
-        tmp = "red_out_trunc";
-    else if(!ft_strncmp(s, "<", 1))
-        tmp = "red_in";
-    else if(!ft_strncmp(s, "|", 1))
-        tmp = "pipe";
-    else if(!ft_strncmp(s, "$", 1))
-        tmp =  "expand";
-    // else
-    //     tmp = "word";
-    return (tmp);
-}
-
-int fill_list(t_node *node, char *s)
-{
-    int i;
-    t_node *new;
-    char **array;
-    
-    i = 0;
-    array = ft_split(s, ' ');
-    if(!array)
-        return (free(s), 1);
-    while(array[i])
-    {
-        new = ft_lstnew1(array[i], set_type(array[i]));
-        if(!new)
-            return (free(s),free_array(array), 1);
-        ft_lstadd_back1(&node, new);
-        i++;
-    }
-    display(node);
-    return (0);
-}
 
 t_node *fill_list_commands(t_node *node, char *array, int start, int end)
 {
@@ -100,17 +46,59 @@ t_node *get_node(t_node *nodes)
     ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
     ft_lstadd_back1(&nodes, ft_lstnew1("-l", "squote"));
     ft_lstadd_back1(&nodes, ft_lstnew1("a", "dquote"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
 
     ft_lstadd_back1(&nodes, ft_lstnew1("|", "pipe"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
 
     ft_lstadd_back1(&nodes, ft_lstnew1("grep", "dquote"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+
     ft_lstadd_back1(&nodes, ft_lstnew1("s", "squote"));
+
+
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+    
+    // probleme in this 
+    ft_lstadd_back1(&nodes, ft_lstnew1("|", "pipe"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("echo", "word"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("-n", "squote"));
+
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("$PATH", "expand"));
+    ft_lstadd_back1(&nodes, ft_lstnew1(" ", "space"));
+
+    ft_lstadd_back1(&nodes, ft_lstnew1(">>", "append"));
+    ft_lstadd_back1(&nodes, ft_lstnew1("file", "word"));
+
 
     return nodes;
 }
+
+char *set_line(t_node *node)
+{
+    char *s;
+
+    s = NULL;
+    while(node)
+    {
+        s = ft_strjoin(s, node->value);
+        node = node -> next;
+    }
+    return (s);
+}
+int get_char(char c)
+{
+    if(c == '<' || c == '>')
+        return (1);
+    return (0);
+}
+
 int check_redirections(char *s)
 {
-    char *ptr = "|><$";
+    // char *ptr = "|><$";
+    char *ptr = "><";
 
     while(*s)
     {
@@ -120,31 +108,37 @@ int check_redirections(char *s)
     }
     return (0);
 }
-void fill_list_of_commands(t_node *node)
+
+void set_newlist(t_node *node)
 {
-    // t_node *ptr;
-    // ls -la | grep aben-cha
-    t_command *cmds = NULL;
-    char *s;
+   t_node *head = NULL;
+    t_node *new;
+    char *s = NULL;
     while(node)
     {
-        printf("node->type : %s\n", node->type);
-
-        if(check_redirections(node->value))
-            break;        
-        if(!ft_strncmp(node->type, "word", 4) || !ft_strncmp(node->type, "squote", 6)
-          || !ft_strncmp(node->type, "dquote", 6) || !ft_strncmp(node->type, "space", 5))
+        if(ft_strncmp(node->value, "|", 1))
+        // if(!ft_strncmp(node->type, "word", 4) || !ft_strncmp(node->type, "squote", 6)
+        //   || !ft_strncmp(node->type, "dquote", 6) || !ft_strncmp(node->type, "space", 5) ||
+        //    !ft_strncmp(node->type, "expand", 6))
         {
-            // if(!ft_strncmp(node->type, "|", 1))
-            //     break; 
             s = ft_strjoin(s, node->value);
-            
+            printf("s : %s\n", s);
+        }
+        else if (!ft_strncmp(node->value, "|", 1))
+        {
+                printf("---> s : %s\n", s);
+                
+                new = ft_lstnew1(s, "test"); 
+                ft_lstadd_back1(&head, new);
+                s = NULL;
         }
         node = node ->next;        
     }
-    printf("result : %s\n", s);
-    ft_lstadd_back_cmd(&cmds, ft_lstnew_cmd(s, 0, 1));
-    display_cmd(cmds);
+    ft_lstadd_back1(&head, ft_lstnew1(s, "cmd"));
+    
+    printf("-------------commands------------\n");
+    display(head);
+    printf("-------------fin commands-------------\n");
 }
 
 int main()
@@ -154,9 +148,10 @@ int main()
     t_node *tmp;
     
     node = NULL;
+    char *string;
     while(1)
     {
-        s  = readline("minishell$ ");
+        s  = readline("minishell $ ");
         if(!s)
             return (1);
         if(s)
@@ -166,10 +161,10 @@ int main()
         tmp = get_node(node);
         if(!tmp)
             return (free(s), 1);
-        fill_list_of_commands(tmp);
-        // pause();
-        display(tmp);
-        // node = get_node(nodes);
+        string = set_line(tmp);
+        printf("%s\n", string);
+        set_newlist(tmp);
+        // display(tmp);
         free(s);
     }
     return (0);

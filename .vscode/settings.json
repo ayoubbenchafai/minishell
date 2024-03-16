@@ -1,5 +1,3 @@
 {
-    "files.associations": {
-        "__node_handle": "c"
-    }
+    "C_Cpp.errorSquiggles": "disabled"
 }

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:37:52 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/15 04:17:23 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/16 01:27:29 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,104 +91,97 @@ void	ft_lstadd_back1(t_node **lst, t_node *new)
 
 
 
-t_command	*ft_lstnew_cmd(char *cmd, int input, int output)
-{
-	t_command	*ptr;
-
-	ptr = (t_command *)malloc(sizeof(t_command));
-	if (!ptr)
-		return (NULL);
-	ptr->cmd = cmd;
-	ptr->input = input;
-	ptr->output = output;
-	ptr -> next = NULL;
-	return (ptr);
-}
-
-t_command	*ft_lstlast_cmd(t_command *lst)
-{
-	t_command	*ptr;
-
-	if (!lst)
-		return (NULL);
-	ptr = lst;
-	while (ptr->next != NULL)
-		ptr = ptr->next;
-	return (ptr);
-}
-
-void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
-{
-	t_command	*ptr;
-
-	if (!lst || !new)
-		return ;
-	ptr = *lst;
-	if (!ptr)
-	{
-		*lst = new;
-		return ;
-	}
-	else
-	{
-		ptr = ft_lstlast_cmd(*lst);
-		ptr -> next = new;
-	}
-}
-
-// int check_command(char *s, t_node *node)
+// t_command	*ft_lstnew_cmd(char **cmd, int input, int output)
 // {
-//     char **array; 
-//     // t_node *new;
-//     // char *tmp;
-//     // char *tmp2;
-//     if (!ft_check(s, '|'))
-//         return (1);
-//     array = ft_split(s, '|');
-//     if (!array)
-//         return (1);
-//     int i = 0;
-//     int j;
-//     int k = 0;
-//     while(array[i])
-//     {
-//         // < Makefile grep cc |  ls -la
-//         // 0123456789
-//         if(array[i][0] == '<')
-//         {
-//             j = 1;
-//             while(array[i][j] == ' ')
-//                 j++;
-//             k = j;
-//             while(array[i][k] != ' ')
-//                 k++;
-//             // tmp = ft_substr(array[i], 0, k);
-//             // new = ft_lstnew1(tmp, "word");
-//             // if (!new)
-//             //     return (free(s), free_array(array), free(tmp), 1);
-//             // ft_lstadd_back1(&node, new);
-//             // printf("\ntmp : %s\n", tmp);
-//             node = fill_list_commands(node, array[i], 0, k);
+// 	t_command	*ptr;
 
-//             while(array[i][k] == ' ')
-//                 k++;
-            
-//             // tmp2 = ft_substr(array[i], k, ft_strlen(array[i]));
-//             // new = ft_lstnew1(tmp2, "word");
-//             // if (!new)
-//             //     return (free(s), free_array(array), free(tmp2), 1);
-//             // ft_lstadd_back1(&node, new);
-//             // printf("tmp2 : %s\n", tmp2);
-//             node = fill_list_commands(node, array[i], k, ft_strlen(array[i]));
-
-
-//         }
-//         i++;
-//     }
-//     printf("---------node :-------\n");
-//     display(node);
-//     printf("-----------------------\n");
-//     free_array(array);
-//     return (0);
+// 	ptr = (t_command *)malloc(sizeof(t_command));
+// 	if (!ptr)
+// 		return (NULL);
+// 	ptr->cmd = cmd;
+// 	ptr->input = input;
+// 	ptr->output = output;
+// 	ptr -> next = NULL;
+// 	return (ptr);
 // }
 
+// t_command	*ft_lstlast_cmd(t_command *lst)
+// {
+// 	t_command	*ptr;
+
+// 	if (!lst)
+// 		return (NULL);
+// 	ptr = lst;
+// 	while (ptr->next != NULL)
+// 		ptr = ptr->next;
+// 	return (ptr);
+// }
+
+// void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
+// {
+// 	t_command	*ptr;
+
+// 	if (!lst || !new)
+// 		return ;
+// 	ptr = *lst;
+// 	if (!ptr)
+// 	{
+// 		*lst = new;
+// 		return ;
+// 	}
+// 	else
+// 	{
+// 		ptr = ft_lstlast_cmd(*lst);
+// 		ptr -> next = new;
+// 	}
+// }
+
+
+
+// void set_newlist(t_node *node)
+// {
+//    t_node *head = NULL;
+//     t_node *new;
+//     char *s = NULL;
+//     while(node)
+//     {
+//         if(ft_strncmp(node->value, "|", 1))
+//         // if(!ft_strncmp(node->type, "word", 4) || !ft_strncmp(node->type, "squote", 6)
+//         //   || !ft_strncmp(node->type, "dquote", 6) || !ft_strncmp(node->type, "space", 5) ||
+//         //    !ft_strncmp(node->type, "expand", 6))
+//         {
+//             s = ft_strjoin(s, node->value);
+//             printf("s : %s\n", s);
+//         }
+//         else if (!ft_strncmp(node->value, "|", 1))
+//         {
+//                 printf("---> s : %s\n", s);
+                
+//                 new = ft_lstnew1(s, "test"); 
+//                 ft_lstadd_back1(&head, new);
+//                 s = NULL;
+//         }
+//         node = node ->next;        
+//     }
+//     if (check_redirections(s))
+//     {
+//         int i = 0;
+//         int k = 0;
+//         while(s[i] == ' ')
+//             i++;
+//         k = i;
+//         // while(check_redirections(&s[i]))
+//         //     k++;
+//         // char *tmp = ft_substr(s, i, k -1);
+//         // new = ft_lstnew1(tmp, "test"); 
+//         // ft_lstadd_back1(&head, new);
+//         char *tmp1 = ft_substr(s, k, ft_strlen(s));
+//         new = ft_lstnew1(tmp1, "test"); 
+//         ft_lstadd_back1(&head, new);
+//     }
+//     else
+//         ft_lstadd_back1(&head, ft_lstnew1(s, "cmd"));
+//     printf("-------------commands------------\n");
+//     display(head);
+//     printf("-------------fin commands-------------\n");
+// }

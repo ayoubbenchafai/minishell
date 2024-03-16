@@ -5,13 +5,11 @@ CFLAGS = -Wall -Wextra -Werror
 SRC = minishell.c f_utils.c 
 OBJ = $(SRC:.c=.o)
 
-LIBFT = libft/libft.a
-
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
-	$(MAKE) -C libft
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -lreadline -o $(NAME)
+	(cd libft && make) 
+	$(CC) $(CFLAGS) $(OBJ) libft/libft.a -lreadline -o $(NAME)
 
 %.o: %.c minishell.h
 	$(CC) $(CFLAGS) -c $< -o $@
