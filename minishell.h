@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 23:55:11 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/16 00:47:07 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/16 03:05:30 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	ft_lstadd_back1(t_node **lst, t_node *new);
 void	free_array(char **array);
 int     ft_check(char *s, char c);
 
-// t_command	*ft_lstnew_cmd(char **cmd, int input, int output);
-// t_command	*ft_lstlast_cmd(t_command *lst);
-// void	ft_lstadd_back_cmd(t_command **lst, t_command *new);
+t_command	*ft_lstnew_cmd(char **cmd, int input, int output);
+t_command	*ft_lstlast_cmd(t_command *lst);
+void	    ft_lstadd_back_cmd(t_command **lst, t_command *new);
 
 #endif

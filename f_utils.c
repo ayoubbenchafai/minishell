@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 02:37:52 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/16 01:27:29 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/16 03:05:13 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,50 +91,50 @@ void	ft_lstadd_back1(t_node **lst, t_node *new)
 
 
 
-// t_command	*ft_lstnew_cmd(char **cmd, int input, int output)
-// {
-// 	t_command	*ptr;
+t_command	*ft_lstnew_cmd(char **cmd, int input, int output)
+{
+	t_command	*ptr;
 
-// 	ptr = (t_command *)malloc(sizeof(t_command));
-// 	if (!ptr)
-// 		return (NULL);
-// 	ptr->cmd = cmd;
-// 	ptr->input = input;
-// 	ptr->output = output;
-// 	ptr -> next = NULL;
-// 	return (ptr);
-// }
+	ptr = (t_command *)malloc(sizeof(t_command));
+	if (!ptr)
+		return (NULL);
+	ptr->cmd = cmd;
+	ptr->input = input;
+	ptr->output = output;
+	ptr -> next = NULL;
+	return (ptr);
+}
 
-// t_command	*ft_lstlast_cmd(t_command *lst)
-// {
-// 	t_command	*ptr;
+t_command	*ft_lstlast_cmd(t_command *lst)
+{
+	t_command	*ptr;
 
-// 	if (!lst)
-// 		return (NULL);
-// 	ptr = lst;
-// 	while (ptr->next != NULL)
-// 		ptr = ptr->next;
-// 	return (ptr);
-// }
+	if (!lst)
+		return (NULL);
+	ptr = lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	return (ptr);
+}
 
-// void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
-// {
-// 	t_command	*ptr;
+void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
+{
+	t_command	*ptr;
 
-// 	if (!lst || !new)
-// 		return ;
-// 	ptr = *lst;
-// 	if (!ptr)
-// 	{
-// 		*lst = new;
-// 		return ;
-// 	}
-// 	else
-// 	{
-// 		ptr = ft_lstlast_cmd(*lst);
-// 		ptr -> next = new;
-// 	}
-// }
+	if (!lst || !new)
+		return ;
+	ptr = *lst;
+	if (!ptr)
+	{
+		*lst = new;
+		return ;
+	}
+	else
+	{
+		ptr = ft_lstlast_cmd(*lst);
+		ptr -> next = new;
+	}
+}
 
 
 
@@ -181,6 +181,35 @@ void	ft_lstadd_back1(t_node **lst, t_node *new)
 //     }
 //     else
 //         ft_lstadd_back1(&head, ft_lstnew1(s, "cmd"));
+//     printf("-------------commands------------\n");
+//     display(head);
+//     printf("-------------fin commands-------------\n");
+// }
+
+
+// void set_newlist(t_node *node)
+// {
+//    t_node *head = NULL;
+//     t_node *new;
+//     t_command *cmds = NULL;
+//     char *s = NULL;
+//     while(node)
+//     {
+//         if(ft_strncmp(node->value, "|", 1))
+//             s = ft_strjoin(s, node->value);
+//             // printf("s : %s\n", s);
+//         else if (!ft_strncmp(node->value, "|", 1))
+//         {
+//                 printf("---> s : %s\n", s);
+                
+//                 new = ft_lstnew1(s, "cmd"); 
+//                 ft_lstadd_back1(&head, new);
+//                 s = NULL;
+//         }
+//         node = node ->next;        
+//     }
+//     ft_lstadd_back1(&head, ft_lstnew1(s, "cmd"));
+    
 //     printf("-------------commands------------\n");
 //     display(head);
 //     printf("-------------fin commands-------------\n");
