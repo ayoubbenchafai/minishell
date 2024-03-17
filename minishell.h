@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 23:55:11 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/16 03:05:30 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/17 03:05:51 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "libft/libft.h"
 #include <readline/readline.h>
 #include <readline/history.h>

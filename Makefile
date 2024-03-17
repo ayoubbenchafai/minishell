@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address
 
 SRC = minishell.c f_utils.c 
 OBJ = $(SRC:.c=.o)
@@ -9,7 +9,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ) $(LIBFT)
 	(cd libft && make) 
-	$(CC) $(CFLAGS) $(OBJ) libft/libft.a -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) libft/libft.a -g -lreadline -o $(NAME)
 
 %.o: %.c minishell.h
 	$(CC) $(CFLAGS) -c $< -o $@
