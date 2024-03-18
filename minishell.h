@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 23:55:11 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/03/17 03:05:51 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/03/17 22:09:59 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ typedef struct s_command
     int     output;
     struct s_command   *next;
 }           t_command;
+
+char	*ft_join_free(char *s, const char *buf);
+char	**ft_pathname(char *p, char **cmdargs);
 
 void	ft_lstadd_front1(t_node **lst, t_node *new);
 t_node	*ft_lstnew1(void *value, char *type);
