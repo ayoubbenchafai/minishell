@@ -1,27 +1,21 @@
-NAME = minishell
 CC = cc
-CFLAGS =  -fsanitize=address
-
-SRC = minishell.c f_utils.c 
+CFLAGS =
+SRC = minishell.c ft_malloc.c f.c pwd.c cd.c env.c ayoub.c
 OBJ = $(SRC:.c=.o)
+NAME = minishell
+all : $(NAME)
+%.o : %.c
+	$(CC) -c $< -g -o $@ $(CFLAGS)
+$(NAME) : $(OBJ)
+	(cd libft && make)
+	$(CC) $(SRC) libft/libft.a -lreadline -g -o minishell
 
-all: $(NAME)
-
-$(NAME): $(OBJ) $(LIBFT)
-	(cd libft && make) 
-	$(CC) $(CFLAGS) $(OBJ) libft/libft.a -g -lreadline -o $(NAME)
-
-%.o: %.c minishell.h
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clean:
+clean : 
+	(cd libft && make clean)
 	rm -f $(OBJ)
-	$(MAKE) -C libft clean
 
-fclean: clean
+fclean : clean
+	(cd libft && make fclean)
 	rm -f $(NAME)
-	$(MAKE) -C libft fclean
 
-re: fclean all
-
-.PHONY: clean fclean re all
+re : fclean all
