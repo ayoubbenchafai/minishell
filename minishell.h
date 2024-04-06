@@ -5,6 +5,7 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <signal.h>
 #include "libft/libft.h"
 #include <unistd.h>
 #include <fcntl.h>
@@ -22,6 +23,8 @@ typedef struct s_command
     struct s_command   *next;
 }           t_command;
 
+
+int get_exit_status;
 //-----------------------------------------------------
 
 t_command *set_newlist(t_node **node);
@@ -29,27 +32,38 @@ void handle_space(t_node **node, char ***array, char **s);
 void handle_pipe(t_node **node, t_command **cmd, char ***array, int *fd_in, int *fd_out);
 void handle_append_or_red_out(t_node **node, int *fd_out, int flag);
 void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag);
-void execute_commands(t_command *cmd, t_node **env, t_node **addresses);
+void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses);
+
 void display_cmd(t_command *cmd);
 t_command *ft_lstnew_cmd(char **cmd, int input, int output);
 void ft_lstadd_back_cmd(t_command **lst, t_command *new);
 t_command	*ft_lstlast_cmd(t_command *lst);
 char	*ft_join_free(char *s, const char *buf);
-char	**ft_pathname(char *p, char **cmdargs);
+char	**ft_pathname(char *p, char **cmdargs, char **env);
 int ft_herdoc(char *s);
-void make_process(t_command *command);
+// int make_process(t_command *command, char **env);
+int make_process(t_command *command, char **env, char *path);
 char **ft_array(char **array, char *s);
+void run_signals();
+void ctr_d();
+void ctr_c(int sig);
+void bach_slash(int sig);
+int pipe_parse_error(t_node *node);
+char **get_env(char **env);
+// void exec_export(char *var, char ***env);
+void exec_export(char *var, char ***env, char ***export_env);
+void exec_unset(char *s, char ***env);
 //-----------------------------------------------------
-void exec_echo(char **cmd, t_node *env);
+void exec_echo(char **cmd, char **env);
+char	*get_environment(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path);
-int exec_env(t_node *env);
-int is_builtin(t_command *commands, t_node **env, t_node **addresses);
-int expand(char *var, t_node *env);
-char **array_append(char **array, char *s, t_node **addresses);
+// int is_builtin(t_command *commands, char ***env, t_node **addresses);
+int is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses);
+int expand(char *var, char **env);
 int exec_pwd();
 int exec_cd(char *path);
-int exec_env(t_node *env);
+int exec_env(char **env);
 void    put_env(t_node **env, char *var, t_node **addresses);
 void    unset_env(t_node **env, char *var);
 int get_equal(char *s);

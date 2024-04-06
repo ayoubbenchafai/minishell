@@ -5,7 +5,7 @@ int exec_cd(char *path)
     int     response;
     char    *cwd;
     char    *new_path;
-    if(path == NULL)
+    if(path == NULL || !ft_strncmp(path, "~", 1))
     {
         response = chdir(getenv("HOME"));
         return response;

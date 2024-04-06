@@ -1,48 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ayoub.c                                            :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/06 03:12:55 by aben-cha         ###   ########.fr       */
+/*   Created: 2024/04/01 02:58:52 by aben-cha          #+#    #+#             */
+/*   Updated: 2024/04/02 02:00:36 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "minishell.h"
 
-int pipe_parse_error(t_node *node)
+int pipe_parse_error(t_command *cmd)
 {
-    t_node *ptr; 
-
-    ptr = node;
-    while(ptr && !ft_strncmp(ptr->type, "space", 5))
-        ptr = ptr -> next;
-    if (ptr && !ft_strncmp(ptr->type, "pipe", 4))
+    t_command *tmp;
+    tmp = cmd;
+    while(tmp)
     {
-        printf("parse error near `|'\n");
-        return 1;
-    }
-    while (ptr)
-    {
-        if (ptr && !ft_strncmp(ptr->type, "pipe", 4))
+        if(tmp && tmp->cmd && !tmp->cmd[0])
         {
-            ptr = ptr -> next;
-            while(ptr && !ft_strncmp(ptr->type, "space", 5))
-                ptr = ptr -> next;
-            if(!ptr || !ft_strncmp(ptr->type, "pipe", 4))
-            {
-                printf("parse error near `|'\n");
-                return 1;
-            }
+            // printf("minishell$ parse error near `|'\n");
+            return (127);
         }
-        if(ptr)
-            ptr = ptr -> next;
+        tmp = tmp->next;
     }
     return 0;
 }
-
 void display_cmd(t_command *node)
 {
     int i;
@@ -71,8 +56,6 @@ t_command *set_newlist(t_node **node)
     int fd_in = 0;
     int flag = 0;
 
-    if (pipe_parse_error(*node))
-        return (NULL);
     while (*node) 
     {
         handle_space(node, &array, &s);
@@ -88,17 +71,19 @@ t_command *set_newlist(t_node **node)
         }
     }
     array = ft_array(array, s);
-    if(array && *array)
+    if(array)
         ft_lstadd_back_cmd(&cmd, ft_lstnew_cmd(array, fd_in, fd_out));
-    // printf("-------------commands------------\n");
-    // display_cmd(cmd);
-    // printf("-------------fin commands-------------\n");
-    return (cmd);
+    if(pipe_parse_error(cmd) == 127)
+        return NULL;
+    printf("-------------commands------------\n");
+    display_cmd(cmd);
+    printf("-------------fin commands-------------\n");
+    return cmd;
 }
 
 void handle_space(t_node **node, char ***array, char **s) 
 {
-    if (!*node)
+      if(!*node)
         return ;
     if (!ft_strncmp((*node)->type, "space", 5))
     {
@@ -120,7 +105,7 @@ void handle_pipe(t_node **node, t_command **cmd, char ***array, int *fd_in, int 
         return ;
     if (!ft_strncmp((*node)->type, "pipe", 4)) 
     {
-        if (*array && **array) 
+        if (*array) 
         {
             response = ft_lstnew_cmd(*array, *fd_in, *fd_out);
             ft_lstadd_back_cmd(cmd, response);
@@ -128,8 +113,6 @@ void handle_pipe(t_node **node, t_command **cmd, char ***array, int *fd_in, int 
             *fd_out = 1;
             *fd_in = 0;
         }
-        // else
-        //     printf("minishell$ parse error near `|'\n");
         *node = (*node)->next;
     }
 }
@@ -144,9 +127,9 @@ void handle_append_or_red_out(t_node **node, int *fd_out, int flag)
         if (!ft_strncmp((*node)->type, "append", 6))
             flag = 1;
         *node = (*node)->next;
-        while (*node && !ft_strncmp((*node)->type, "space", 5))
+        while (!ft_strncmp((*node)->type, "space", 5))
             *node = (*node)->next;
-        if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type, "quote", 5))) 
+        if (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type, "quote", 5)) 
         {
             if (flag)
                 *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
@@ -183,66 +166,77 @@ void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag)
             perror("");
     }
 }
+
+void execute_commands(t_command *cmd, t_node **env, t_node **addresses)
+{
+    t_command *tmp;
+    char *path;
+   int i = 0;
+    tmp= cmd;
+    path = getenv("PATH");
+    while(tmp)
+    {
+        tmp = tmp->next;
+        i++;
+    }
+    while(cmd) 
+    {
+        // if(!is_builtin(cmd, env, addresses))
+        // {
+            cmd->cmd = ft_pathname(path, cmd->cmd);
+            make_process(cmd,env,  path);
+        // }
+        cmd = cmd->next;
+    }
+    while(i-- > 0)
+        wait(NULL);
+}
 int check_builtin(char *command)
 {
-    if(!command)
-        return (0);
-    if(ft_strncmp(command, "/usr/bin/env", 12) == 0)
+    if(strcmp(command, "/usr/bin/env") == 0)
         return (1);
-    else if(ft_strncmp(command, "/bin/pwd", 8) == 0)
+    else if(strcmp(command, "/bin/pwd") == 0)
         return (1);
-    else if(ft_strncmp(command, "/bin/echo", 9) == 0)
+    else if(strcmp(command, "/bin/echo") == 0)
         return (1);
-    else if(ft_strncmp(command, "/usr/bin/cd", 11) == 0)
+    // else if(strcmp(command, "unset") == 0)
+    //     return (1);
+    // else if(strcmp(command, "export") == 0)
+    //     return (1);
+    else if(strcmp(command, "/usr/bin/cd") == 0)
         return (1);
     return (0);
 }
 
-int exec_builtin(char **command, char **env)
+int exec_builtin(char **command, t_node **env)
 {
-    if(!command)
+    // puts("hello");
+    if(!command || !*command)
         return (0);
-    if(ft_strncmp(command[0], "/usr/bin/env", 12) == 0)
-        return (exec_env(env), 1);
-    else if(ft_strncmp(command[0], "/bin/pwd", 8) == 0)
+    if(strcmp(command[0], "/usr/bin/env") == 0)
+        return (exec_env(*env), 1);
+    else if(strcmp(command[0], "/bin/pwd") == 0)
         return (exec_pwd(), 1);
-    else if(ft_strncmp(command[0], "/bin/echo", 9) == 0)
-        return (exec_echo(command, env),1);
-    else if(ft_strncmp(command[0], "/usr/bin/cd", 11) == 0)
+    else if(strcmp(command[0], "/bin/echo") == 0)
+        return (exec_echo(command, *env),1);
+    // else if(strcmp(command[0], "unset") == 0)
+    //     return ( 1);
+    // else if(strcmp(command[0], "export") == 0)
+    //     return (1);
+    else if(strcmp(command[0], "/usr/bin/cd") == 0)
         return (exec_cd(command[1]),1);
     return (0);
 }
-void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses)
-{
-    t_command *tmp;
-    char *path;
-    tmp= cmd;
-    path = get_environment(*env, "PATH=");
-    while(cmd) 
-    {
-        if(!is_builtin(cmd, env, export_env, addresses))
-        {
-            cmd->cmd = ft_pathname(path, cmd->cmd, *env);
-            // make_process(cmd, *env);
-            make_process(cmd,*env,  path);
-        }
-        cmd = cmd->next;
-    }
-    while(wait(NULL)>0);
-}
-int make_process(t_command *command, char **env, char *path)
+void make_process(t_command *command,t_node **env,  char *path)
 {
     int fd[2];
     int pid;
-    int flag  = 0;
-    int response = 0;
-    if(!command->cmd)
-        return 0;
     if(command->next)
     {
         if(pipe(fd) == -1)
             perror("Error creating pipe");
     }
+    int flag = 0;
     pid = fork();
     if(pid == -1)
         perror("Error forking");
@@ -250,17 +244,19 @@ int make_process(t_command *command, char **env, char *path)
     {
         if(check_builtin(command->cmd[0]))
             flag = 1;
-        dup2(command->input, 0);
         if(command->input != 0)
+        {
+            dup2(command->input, 0);
             close(command->input);
-        if(command->next && command->output == 1 || flag == 1)
+        }
+        if ((command->next && command->output == 1) || flag == 1)
         {
             dup2(fd[1], 1);
             close(fd[1]);
             if(flag == 1)
-            {
-                if(!exec_builtin(command->cmd , env))
-                    exit(1);
+            {               
+                if(!exec_builtin(command->cmd, env))
+                    return ;
                 exit(0);
             }
         }
@@ -269,19 +265,19 @@ int make_process(t_command *command, char **env, char *path)
             dup2(command->output, 1);
             close(command->output);
         }
-        response = execve(command->cmd[0], command->cmd,env);
+        // puts(command->cmd[0]);
+        execve(command->cmd[0], command->cmd, NULL);
+        perror("Error execve");
     }
     else
     {
         close(fd[1]);
         command = command->next;
         if(command)
-            command->input = fd[0];
-        else
-            close(fd[0]);
+        command->input = fd[0];
     }
-    return 0;
 }
+
 
 int ft_herdoc(char *s)
 {
@@ -289,12 +285,13 @@ int ft_herdoc(char *s)
     char *line;
     char *tmp;
     pipe(fd);
+    dup2(fd[0], 0);
     while(1)
     {
-        line = readline("heredoc> ");
+        line = readline("heredoc>");
         if(!line)
             break;
-        if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
+        if(!ft_strncmp(line, s, ft_strlen(s)))
         {
             free(line);
             break;
@@ -307,46 +304,27 @@ int ft_herdoc(char *s)
     close(fd[1]);
     return (fd[0]);
 }
-char	*get_environment(char **envp, char *var)
-{
-	int		i;
-	char	*response;
-
-	response = NULL;
-	i = 0;
-	while (envp && envp[i])
-	{
-		response = ft_strnstr(envp[i], var, ft_strlen(var));
-		if (response)
-            return response + ft_strlen(var);
-		i++;
-	}
-	return (NULL);
-}
-char	**ft_pathname(char *p, char **cmdargs, char **env)
+char	**ft_pathname(char *p, char **cmdargs)
 {
 	int		i;
 	char	*cmd;
     char    **paths;
 
     paths = ft_split(p, ':');
-    if(!cmdargs || !*cmdargs)
+    if(!paths || !cmdargs || !*cmdargs)
         return ( NULL);
 	i = -1;
     if(cmdargs[0][0] == '/')
         return (cmdargs);
-	while (paths && paths[++i])
+	while (paths[++i])
 	{
 		cmd = ft_join_free(paths[i], "/");
 		cmd = ft_join_free(cmd, cmdargs[0]);
 		if (access(cmd, F_OK | X_OK) == 0)
-        {
-            cmdargs[0] = cmd;
-            return (cmdargs);
-        }
+			break;
 	}
-    printf("command not found\n");
-	return (NULL);
+    cmdargs[0] = cmd;
+	return (cmdargs);
 }
 char	*ft_join_free(char *s, const char *buf)
 {

@@ -1,4 +1,0 @@
-echo 
-unset
-herdoc
-herdoce
