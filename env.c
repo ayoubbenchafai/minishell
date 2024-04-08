@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/08 02:26:34 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:00:27 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,12 +145,11 @@ void exec_export(char *var, char ***env, char ***ex_env)
         export_print(*ex_env);
         return ;
     }
-    if (ex_env || *ex_env || !get_equal(var))
+    if (ex_env && *ex_env && !get_equal(var))
     {
        export_env(var, ex_env);
        return ;
     }
-    printf("(((((((((((((((( test : %s\n", var);
     while(env && *env && (*env)[i])
     {
         
@@ -162,8 +161,13 @@ void exec_export(char *var, char ***env, char ***ex_env)
         }
         i++;
     }
+    printf("[test : %s]\n", var);
+
     if (is_valid_key(var))
+    {
         *env = ft_array(*env, ft_strdup(var));
+        *ex_env = ft_array(*ex_env, ft_strdup(var));
+    }
     else
         printf("export: not a valid identifier\n");
 }

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/08 01:44:11 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/08 03:19:45 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,37 @@ int check_var(char *var)
     }
     return (1);
 }
+int	is_valid_key(char *command)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(command[i]) && command[i] != '_')
+		return (0);
+	while (command[i])
+	{
+		if (!ft_isalnum(command[i])
+			&& command[i] != '_' && command[i] != '='
+			&& command[i] != '$')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+//aben+=chafai
+char *join_export(char *var)
+{
+    int i = 0;
+    char *s;
+    while(var[i])
+    {
+        if(var[i] == '+')
+            s = ft_strdup(var + i);
+        i++;
+    }
+    // printf("%s\n", s);
+    return (s);
+}
 
 // export hello           valid
 //export HELLO=123        valid
@@ -114,6 +145,7 @@ int main(int ac, char *av[])
     // (void)(ac);
     if(!av[1])
         return (1);
-        printf("%d\n", check_var(av[1]));
+        printf("%s\n", join_export(av[1]));
+        printf("%s\n", join_export(av[1]));
     return 0;
 }
