@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/04 03:09:03 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/08 01:44:11 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,28 +61,7 @@ char  **get_env_export(char **env)
     array[i] = NULL;
     return (array);       
 }
-// void set_export(char *var, char **env)
-// {
-//     int i;
-//     i = 0;
-    
-//     if(!var)
-//         return ;
-//     while(env && *env && (*env)[i])
-//     {
-//         if(!ft_strncmp((*env)[i], var, get_equal(var)))
-//         {
-//             free((*env)[i]);
-//             (*env)[i] = ft_strdup(var);
-//             return ;
-//         }
-//         i++;
-//     }
-//     if (ft_isalpha(var[0]) || var[0] == '_')
-//         *env = ft_array(*env, ft_strdup(var));
-//     else
-//          printf("export: not a valid identifier\n");
-// }
+
 void sort_env(char **env)
 {
     int i;
@@ -102,25 +81,39 @@ void sort_env(char **env)
     }
 }
 
-int main(int ac, char *av[], char *env[]) 
+int check_var(char *var)
 {
-    (void)ac;
-    (void)(*av);
-    (void)(*env);
-    // int i; 
-    // char **array;
-    
-    // i = 0;
-    // array = get_env_export(env);
-    // sort_env(array);
-    // i = -1;
-    // while(array && array[++i])
-    //     ft_putendl_fd(array[i], 1);
-    char *s ="_3";
-    // char *s ="ft_isalpha(var[1])";
-    if(ft_isalpha(s[1]))
-        puts("true");
-    else
-        puts("false");
+    int i= 0;
+    if(!var)
+        return (0);
+    if (var[0] == '_')
+        i++;
+    if(!ft_isalnum(var[i]))
+        return (0);
+    while(var[i])
+    {
+        if(var[i] == '=' || var[i] == '_')
+            i++;
+        else if(!ft_isalnum(var[i]))
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
+// export hello           valid
+//export HELLO=123        valid
+// export A-              not valid
+//export A_123            valid 
+// export HELLO="123 A-"  valid
+// export ben chafai  valid => each word in line
+// export =   ==> error
+// export 123   ==> error
+int main(int ac, char *av[]) 
+{
+    // (void)(ac);
+    if(!av[1])
+        return (1);
+        printf("%d\n", check_var(av[1]));
     return 0;
 }
