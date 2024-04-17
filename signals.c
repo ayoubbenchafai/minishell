@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:34:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/06 02:16:26 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/17 15:46:30 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,11 @@ void ctr_d(void)
 
 void ctr_c(int sig)
 {
+    printf("int sig : %d\n", sig);
     if(sig == SIGINT)
     {
         write(1,"\n",1);
-        // get_exit_status = 1;
+        get_exit_status = 1;
         rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
@@ -41,7 +42,9 @@ void bach_slash(int sig)
 {
     if (sig == SIGQUIT)
     {
-        // signal(SIGQUIT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN); 
         get_exit_status = 1;
     }
 }
+
+//$_ the last argument 

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/08 03:00:27 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/17 15:04:15 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ char **get_env(char **env)
     array[i] = NULL;
     return (array);
 }
+
+
 
 // void exec_export(char *var, char ***env)
 // {
@@ -161,7 +163,7 @@ void exec_export(char *var, char ***env, char ***ex_env)
         }
         i++;
     }
-    printf("[test : %s]\n", var);
+    // printf("[test : %s]\n", var);
 
     if (is_valid_key(var))
     {

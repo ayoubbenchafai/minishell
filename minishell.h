@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/wait.h> // wait
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <signal.h>
@@ -15,12 +16,13 @@ typedef struct s_node
 	char *type;
 	struct s_node *next;
 } t_node;
+
 typedef struct s_command
 {
     char    **cmd;
     int     input;
     int     output;
-    struct s_command   *next;
+    struct s_command  *next;
 }           t_command;
 
 
@@ -42,7 +44,8 @@ char	*ft_join_free(char *s, const char *buf);
 char	**ft_pathname(char *p, char **cmdargs, char **env);
 int ft_herdoc(char *s);
 // int make_process(t_command *command, char **env);
-int make_process(t_command *command, char **env, char *path);
+// int make_process(t_command *command, char **env, char *path);
+int make_process(t_command *command, char **env, char *path, int *i);
 char **ft_array(char **array, char *s);
 void run_signals();
 void ctr_d();
@@ -59,14 +62,14 @@ char	*get_environment(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path);
 // int is_builtin(t_command *commands, char ***env, t_node **addresses);
-int is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses);
-int expand(char *var, char **env);
-int exec_pwd();
-int exec_cd(char *path);
-int exec_env(char **env);
+int     is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses);
+int     expand(char *var, char **env);
+int     exec_pwd();
+int     exec_cd(char *path);
+int     exec_env(char **env);
 void    put_env(t_node **env, char *var, t_node **addresses);
 void    unset_env(t_node **env, char *var);
-int get_equal(char *s);
+int     get_equal(char *s);
 int		ft_malloc(size_t size, void **ptr, t_node **addresses);
 t_node	*ft_alloc(void **value, char *type);
 void	add_back(t_node **lst, t_node *new);
@@ -78,4 +81,6 @@ void    ft_expand(char *line, t_node **commands, int *offset, t_node **addresses
 void    parse_line(char *line, t_node **commands, t_node **addresses, int i);
 void    array_to_list(t_node **lst, char **array, t_node **addresses);
 int     check_char(char *s,char c);
+
+int	ft_lstsize_cmd(t_command *cmd);
 #endif

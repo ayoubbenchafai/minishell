@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/08 01:37:11 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/17 19:56:01 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,8 @@ t_command *set_newlist(t_node **node)
     // printf("-------------fin commands-------------\n");
     return (cmd);
 }
+
+
 
 void handle_space(t_node **node, char ***array, char **s) 
 {
@@ -214,23 +216,51 @@ int exec_builtin(char **command, char **env)
 }
 void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses)
 {
-    t_command *tmp;
     char *path;
-    tmp= cmd;
+    int pid = 0;
+    int size = ft_lstsize_cmd(cmd);
     path = get_environment(*env, "PATH=");
     while(cmd) 
     {
-        if(!is_builtin(cmd, env, export_env, addresses))
+        if(is_builtin(cmd, env, export_env, addresses))// && szie == 1)
+            break;
+        else 
         {
+            //echo | pwd | cd
             cmd->cmd = ft_pathname(path, cmd->cmd, *env);
             // make_process(cmd, *env);
-            make_process(cmd,*env,  path);
+            // make_process(cmd,*env,  path);
+            make_process(cmd,*env,  path, &pid);
         }
         cmd = cmd->next;
     }
-    while(wait(NULL)>0);
+    int status;
+    int g_pid;
+
+    if(size == 1 && is_builtin(cmd, env, export_env, addresses))
+        return ;
+    while (size--)
+    {
+        printf("test\n");
+        
+        g_pid = wait(&status);
+        if(g_pid == -1)
+        {
+            printf("Errno(error wait)\n");
+            return ;
+        }
+        if(g_pid == pid)
+            get_exit_status = WEXITSTATUS(status);
+        if(WIFSIGNALED(status))
+        {
+            if(WTERMSIG(status) == 2)
+                get_exit_status = 130;
+            else if(WTERMSIG(status) == 3)
+                get_exit_status = 131;
+        }
+    }
 }
-int make_process(t_command *command, char **env, char *path)
+int make_process(t_command *command, char **env, char *path, int *i)
 {
     int fd[2];
     int pid;
@@ -250,6 +280,7 @@ int make_process(t_command *command, char **env, char *path)
     {
         if(check_builtin(command->cmd[0]))
             flag = 1;
+        if(command->input != 0)
         dup2(command->input, 0);
         if(command->input != 0)
             close(command->input);
@@ -273,6 +304,8 @@ int make_process(t_command *command, char **env, char *path)
     }
     else
     {
+        //()
+        *i = pid;
         close(fd[1]);
         command = command->next;
         if(command)
@@ -333,7 +366,7 @@ char	**ft_pathname(char *p, char **cmdargs, char **env)
     if(!cmdargs || !*cmdargs)
         return ( NULL);
 	i = -1;
-    if(cmdargs[0][0] == '/')
+    if(cmdargs[0][0] == '/' )//|| is_builtin())
         return (cmdargs);
 	while (paths && paths[++i])
 	{
@@ -430,4 +463,21 @@ char **ft_array(char **array, char *s)
     new[j + 1] = NULL;
     free(array);
     return new;
+}
+
+int	ft_lstsize_cmd(t_command *cmd)
+{
+	int		len;
+	t_command	*ptr;
+
+	if (!cmd)
+		return (0);
+	len = 0;
+	ptr = cmd;
+	while (ptr)
+	{
+		len++;
+		ptr = ptr -> next;
+	}
+	return (len);
 }
