@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/19 12:39:30 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:17:51 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,27 +157,38 @@ int get_equal(char *s)
 int check_error(char *var)
 {
     int i = 0;
+    int j;
     int size;
     
     if(var[i] == '_')
         i++;
+    j = i;
     if(!ft_isalpha(var[i]))
         return (0);
     size = get_equal(var);
-    if (check_char(var, '+') && size == 0)
-        return (0);
-    while(var[i] && i < size)
+    while(var[i] && (size == 0))
     {
-        if(var[i] == '+' && var[i + 1])
-        {
-            i++;
-            if(var[i] == '=')
-                break;
-            else 
-                return (0);
-        }
+        if(var[i]!='_')
         if (!ft_isalnum(var[i]))
             return (0);
+        i++;
+    }
+    i += j;
+    while(i < size)
+    {
+        if(var[i] != '_')
+        {
+            if(var[i] == '+' && var[i + 1])
+            {
+                i++;
+                if(var[i] == '=')
+                    break;
+            else 
+                return (0);
+             }
+        if (!ft_isalnum(var[i]))
+            return (0);
+        }
         i++;
     }
     printf("%s\n", var);

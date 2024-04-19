@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/19 13:00:03 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:57:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,12 @@ void	export_print(char **export_env)
             
         while((*export_env)[i])
         {
-            ft_putchar_fd((*export_env)[i], 1);
-            if((*export_env)[i] == '=')
-                ft_putchar_fd('"', 1);
+            if((*export_env)[i] != '+')
+            {
+                ft_putchar_fd((*export_env)[i], 1);
+                if((*export_env)[i] == '=')
+                    ft_putchar_fd('"', 1);
+            }
             i++;
         }
         if(check_char(*export_env, '+') && !get_equal(*export_env))
@@ -110,46 +113,62 @@ int	is_valid_key(char *command)
 int check_error(char *var)
 {
     int i = 0;
+    int j;
     int size;
     
     if(var[i] == '_')
         i++;
+    j = i;
     if(!ft_isalpha(var[i]))
         return (0);
     size = get_equal(var);
-    if (check_char(var, '+') && size == 0)
-        return (0);
-    while(var[i] && i < size)
+    while(var[i] && (size == 0))
     {
-        if(var[i] == '+' && var[i + 1])
-        {
-            i++;
-            if(var[i] == '=')
-                break;
-            else 
-                return (0);
-        }
+        if(var[i]!='_')
         if (!ft_isalnum(var[i]))
             return (0);
+        i++;
+    }
+    i += j;
+    while(i < size)
+    {
+        if(var[i] != '_')
+        {
+            if(var[i] == '+' && var[i + 1])
+            {
+                i++;
+                if(var[i] == '=')
+                    break;
+            else 
+                return (0);
+             }
+        if (!ft_isalnum(var[i]))
+            return (0);
+        }
         i++;
     }
     // printf("%s\n", var);
     return (1);
 }
+
 void export_env(char *var, char ***ex_env)
 {
     int i;
-    i = 0;
+    size_t size;
     
-    if(!check_error(var)) // ghadi nbdelha b function jdida li 9adit 
-    {
-        printf("export: not a valid identifier\n");
-        return ;
-    }
+    i = 0;
+    size = (size_t)get_equal(var);
+    if (size == 0)
+        size = ft_strlen(var);
+    // if(!get_equal(var))
+    // {
+    //     *ex_env = ft_array(*ex_env, ft_strdup(var));
+    //         return ;
+    // }
     while(ex_env && *ex_env && (*ex_env)[i])
     {
         
-        if (!ft_strncmp((*ex_env)[i], var, ft_strlen(var)))
+        if (!ft_strncmp((*ex_env)[i], var, size))
         {
             free((*ex_env)[i]);
             (*ex_env)[i] = ft_strdup(var);
@@ -158,60 +177,115 @@ void export_env(char *var, char ***ex_env)
         i++;
     }
     *ex_env = ft_array(*ex_env, ft_strdup(var));
-        return ;
 }
+
+// void exec_export(char *var, char ***env, char ***ex_env)
+// {
+//     int i;
+//     int j;
+    
+//     i = 0;
+//     j = 0;   
+//     if(!var)
+//     {
+//         export_print(*ex_env);
+//         return ;
+//     }
+//     if(!check_error(var)) // ghadi nbdelha b function jdida li 9adit 
+//     {
+//         printf("export: not a valid identifier\n");
+//         return ;
+//     }
+//     if (ex_env && *ex_env && !get_equal(var))
+//     {
+//         // not equal   => strlen
+//         // equal exist => get_equal
+//        export_env(var, ex_env); 
+//        return ;
+       
+//     }
+//     while(env && *env && (*env)[i])
+//     {
+        
+//         if (!ft_strncmp((*env)[i], var, get_equal(var)))
+//         {
+//             if(check_char(var, '+'))
+//             {
+//                 char *s = ft_strjoin(var ,var + get_equal(var) + 1);
+//                 printf("%s\n", s);
+//             }
+//             else
+//                 free((*env)[i]);
+//             (*env)[i] = ft_strdup(var);
+//             return ;
+//         }
+//         i++;
+//     }
+//     export_env(var, ex_env);
+//     // while(ex_env && *ex_env && (*ex_env)[j])
+//     // {
+//     //     if (check_error(var) && !ft_strncmp((*ex_env)[j], var, ft_strlen(var)))
+//     //     {
+//     //         free((*ex_env)[j]);
+//     //         (*ex_env)[j] = ft_strdup(var);
+//     //         return ;
+//     //     }
+//     //     j++;
+//     // }
+//     if (check_error(var))
+//     {
+//         *env = ft_array(*env, ft_strdup(var));
+//         *ex_env = ft_array(*ex_env, ft_strdup(var));
+//     }
+//     else
+//         printf("export: not a valid identifier\n");
+// }
 
 void exec_export(char *var, char ***env, char ***ex_env)
 {
-    int i;
+    int i = 0;
     int j;
-    
-    i = 0;
-    j = 0;
     
     if(!var)
     {
         export_print(*ex_env);
         return ;
     }
-    if (ex_env && *ex_env && !get_equal(var))
+    if(!check_error(var))
     {
-       export_env(var, ex_env);
+        printf("export: not a valid identifier\n");
+        return ;
+    }
+    //env ==> obliger = exist
+    //export_env ==> pas obligatoire
+    if (!get_equal(var))
+    {
+       export_env(var, ex_env); 
        return ;
     }
+    j = get_equal(var);
+    if(check_char(var, '+'))
+        j--;
     while(env && *env && (*env)[i])
     {
-        
-        if (check_error(var) && !ft_strncmp((*env)[i], var, get_equal(var)))
+        if (!ft_strncmp((*env)[i], var, j))
         {
-            // puts((*env)[i]);
-            // puts(var);
-            free((*env)[i]);
-            (*env)[i] = ft_strdup(var);
+            if(check_char(var, '+'))
+            {
+                char *s = ft_strjoin((*env)[i] ,var + get_equal(var) + 1);
+                (*env)[i] = ft_strdup(s);
+            }
+            else
+            {
+                free((*env)[i]);
+                (*env)[i] = ft_strdup(var);
+            }
             return ;
         }
         i++;
     }
-    while(ex_env && *ex_env && (*ex_env)[j])
-    {
-        
-        if (check_error(var) && !ft_strncmp((*ex_env)[j], var, get_equal(var)))
-        {
-            if(check_char(var, '+'))
-                puts("yes");
-            free((*ex_env)[j]);
-            (*ex_env)[j] = ft_strdup(var);
-            return ;
-        }
-        j++;
-    }
-    if (check_error(var))
-    {
-        *env = ft_array(*env, ft_strdup(var));
-        *ex_env = ft_array(*ex_env, ft_strdup(var));
-    }
-    else
-        printf("export: not a valid identifier\n");
+    *env = ft_array(*env, var);
+    *ex_env = ft_array(*ex_env, var);
 }
 
 void exec_unset(char *s, char ***env)
