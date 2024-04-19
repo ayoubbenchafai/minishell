@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/19 16:17:51 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:05:49 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,7 @@ int main(int ac, char *av[])
         i++;
     }
     printf("%d\n",check_error(av[1]));    
-    // printf("(%s)\n",get_s(av[1]));    
-    // printf("(%s)\n",s);    
+    printf("(%s)\n",get_s(av[1]));    
+    printf("%d\n",get_equal(av[1]));    
     return 0;
 }

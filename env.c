@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/19 18:15:52 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:15:40 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,85 @@ void export_env(char *var, char ***ex_env)
     }
     *ex_env = ft_array(*ex_env, ft_strdup(var));
 }
-
+void env_export_two(char *var, char ***env)
+{
+    int i = 0;
+    int j = 0;
+    size_t size;
+    //-----------------------------------
+    //export makinach = 
+    if (size == 0)
+        size = ft_strlen(var);
+    size = get_equal(var);
+        // kayna =
+    if(check_char(var, '+'))
+    {
+        size = get_equal(var);
+        size--;
+    }
+    //-----------------------------------
+    //env kayna =
+    j = get_equal(var);
+    if(check_char(var, '+'))
+        j--;
+    //-----------------------------------
+    /*
+      int size = get_equal(var);
+      if(size == 0) (= not exist)
+      {
+        -----export--------
+            strlen
+      }
+      else (= exist)
+      {
+        if(!+)
+        {
+            env     ==> get_equal
+            export  ==> get_equal
+        }
+        else (+ exist)
+        {
+            env ==> get_equal -1;
+            export ==> get_equal -1;
+        }
+      }
+    
+    */    
+    while(env && *env && (*env)[i])
+    {
+        if (!ft_strncmp((*env)[i], var, j))
+        {
+            if(check_char(var, '+'))
+            {
+                char *s = ft_strjoin((*env)[i] ,var + get_equal(var) + 1);
+                (*env)[i] = ft_strdup(s);
+            }
+            else
+            {
+                free((*env)[i]);
+                (*env)[i] = ft_strdup(var);
+            }
+            return ;
+        }
+        i++;
+    }
+    *env = ft_array(*env, var);
+}
+void hhhh(char *var)
+{
+    int size = get_equal(var);
+    int j = 0;
+    
+    if(size == 0) //export only 
+        j = ft_strlen(var);
+    else // env && export
+    {
+        if(!check_char(var, '+'))
+            j = size;
+        else
+            j = size - 1;
+    }
+}
 void exec_export(char *var, char ***env, char ***ex_env)
 {
     int i = 0;
@@ -270,10 +348,10 @@ void exec_export(char *var, char ***env, char ***ex_env)
        export_env(var, ex_env); 
        return ;
     }
+    export_env(var, ex_env); 
     j = get_equal(var);
     if(check_char(var, '+'))
         j--;
-    export_env(var, ex_env); 
     while(env && *env && (*env)[i])
     {
         if (!ft_strncmp((*env)[i], var, j))
