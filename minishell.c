@@ -197,14 +197,14 @@ int is_builtin(t_command *commands, char ***env, char ***export_env, t_node **ad
 {
 	if(!commands->cmd)
 		return 0;
-	// if(!ft_strncmp(commands->cmd[0], "echo", 4))
-		// return(exec_echo(commands->cmd, *env), 1);
-	// else if(!ft_strncmp(commands->cmd[0], "pwd", 3))
-	// 	return (exec_pwd(), 1);
-	// else if(!ft_strncmp(commands->cmd[0], "cd", 2))
-	// 	return (exec_cd(commands->cmd[1]), 1);
-	// else if(!ft_strncmp(commands->cmd[0], "env", 3))
-	// 	return (exec_env(*env), 1);
+	if(!ft_strncmp(commands->cmd[0], "echo", 4))
+		return(exec_echo(commands->cmd, *env), 1);
+	else if(!ft_strncmp(commands->cmd[0], "pwd", 3))
+		return (exec_pwd(), 1);
+	else if(!ft_strncmp(commands->cmd[0], "cd", 2))
+		return (exec_cd(commands->cmd[1]), 1);
+	else if(!ft_strncmp(commands->cmd[0], "env", 3))
+		return (exec_env(*env), 1);
 	// if(!ft_strncmp(commands->cmd[0], "export", 6) && commands->cmd[1])
 	if(!ft_strncmp(commands->cmd[0], "export", 6))
 		return (exec_export(commands->cmd[1], env, export_env), 1);

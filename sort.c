@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/08 03:19:45 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 12:39:30 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,18 @@ char  **get_env_export(char **env)
     array[i] = NULL;
     return (array);       
 }
-
+int check_char(char *s,char c)
+{
+    if(!s)
+        return 0;
+    while(*s)
+    {
+        if(*s == c)
+            return 1;
+        s++;
+    }
+    return (0);
+}
 void sort_env(char **env)
 {
     int i;
@@ -118,19 +129,7 @@ int	is_valid_key(char *command)
 	return (1);
 }
 //aben+=chafai
-char *join_export(char *var)
-{
-    int i = 0;
-    char *s;
-    while(var[i])
-    {
-        if(var[i] == '+')
-            s = ft_strdup(var + i);
-        i++;
-    }
-    // printf("%s\n", s);
-    return (s);
-}
+
 
 // export hello           valid
 //export HELLO=123        valid
@@ -140,12 +139,76 @@ char *join_export(char *var)
 // export ben chafai  valid => each word in line
 // export =   ==> error
 // export 123   ==> error
+
+int get_equal(char *s)
+{
+    int i;
+
+    i = 0;
+    while(s && s[i])
+    {
+        if(s[i] == '=')
+            return (i);
+        i++;
+    }
+    return (0);
+}
+
+int check_error(char *var)
+{
+    int i = 0;
+    int size;
+    
+    if(var[i] == '_')
+        i++;
+    if(!ft_isalpha(var[i]))
+        return (0);
+    size = get_equal(var);
+    if (check_char(var, '+') && size == 0)
+        return (0);
+    while(var[i] && i < size)
+    {
+        if(var[i] == '+' && var[i + 1])
+        {
+            i++;
+            if(var[i] == '=')
+                break;
+            else 
+                return (0);
+        }
+        if (!ft_isalnum(var[i]))
+            return (0);
+        i++;
+    }
+    printf("%s\n", var);
+    return (1);
+}
+
+char *get_s(char *var)
+{
+    int i = 0;
+    return (var + get_equal(var) + 1);
+}
+
 int main(int ac, char *av[]) 
 {
-    // (void)(ac);
-    if(!av[1])
-        return (1);
-        printf("%s\n", join_export(av[1]));
-        printf("%s\n", join_export(av[1]));
+    (void)(ac);
+    int i = 0;
+    char *var = "export=hatim";
+    char *s =NULL;
+    char *array[3] = {"aben=ay||", "export=", "unset"};
+    while(i < 3)
+    {
+        if(!ft_strncmp(array[i], var, get_equal(var)))
+        {
+            char *s = ft_strjoin(array[i], var + get_equal(var) + 1);
+            printf("(%s)\n",s);    
+            
+        }
+        i++;
+    }
+    printf("%d\n",check_error(av[1]));    
+    // printf("(%s)\n",get_s(av[1]));    
+    // printf("(%s)\n",s);    
     return 0;
 }

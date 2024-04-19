@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/17 19:56:01 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 11:33:48 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,6 @@ t_command *set_newlist(t_node **node)
     array = ft_array(array, s);
     if(array && *array)
         ft_lstadd_back_cmd(&cmd, ft_lstnew_cmd(array, fd_in, fd_out));
-    // printf("-------------commands------------\n");
-    // display_cmd(cmd);
-    // printf("-------------fin commands-------------\n");
     return (cmd);
 }
 
@@ -130,8 +127,6 @@ void handle_pipe(t_node **node, t_command **cmd, char ***array, int *fd_in, int 
             *fd_out = 1;
             *fd_in = 0;
         }
-        // else
-        //     printf("minishell$ parse error near `|'\n");
         *node = (*node)->next;
     }
 }
@@ -185,6 +180,7 @@ void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag)
             perror("");
     }
 }
+
 int check_builtin(char *command)
 {
     if(!command)
@@ -218,18 +214,16 @@ void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **a
 {
     char *path;
     int pid = 0;
-    int size = ft_lstsize_cmd(cmd);
+    // int size = ft_lstsize_cmd(cmd);
     path = get_environment(*env, "PATH=");
     while(cmd) 
     {
-        if(is_builtin(cmd, env, export_env, addresses))// && szie == 1)
-            break;
-        else 
+        // if(is_builtin(cmd, env, export_env, addresses))// && szie == 1)
+            // break;
+        // else 
+        if(!is_builtin(cmd, env, export_env, addresses))
         {
-            //echo | pwd | cd
             cmd->cmd = ft_pathname(path, cmd->cmd, *env);
-            // make_process(cmd, *env);
-            // make_process(cmd,*env,  path);
             make_process(cmd,*env,  path, &pid);
         }
         cmd = cmd->next;
@@ -237,28 +231,30 @@ void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **a
     int status;
     int g_pid;
 
-    if(size == 1 && is_builtin(cmd, env, export_env, addresses))
-        return ;
-    while (size--)
-    {
-        printf("test\n");
+    // if(size == 1 && is_builtin(cmd, env, export_env, addresses))
+        // return ;
+    // while (size--)
+    // {
+    //     printf("test\n");
         
-        g_pid = wait(&status);
-        if(g_pid == -1)
-        {
-            printf("Errno(error wait)\n");
-            return ;
-        }
-        if(g_pid == pid)
-            get_exit_status = WEXITSTATUS(status);
-        if(WIFSIGNALED(status))
-        {
-            if(WTERMSIG(status) == 2)
-                get_exit_status = 130;
-            else if(WTERMSIG(status) == 3)
-                get_exit_status = 131;
-        }
-    }
+    //     g_pid = wait(&status);
+    //     if(g_pid == -1)
+    //     {
+    //         printf("Errno(error wait)\n");
+    //         return ;
+    //     }
+    //     if(g_pid == pid)
+    //         get_exit_status = WEXITSTATUS(status);
+    //     if(WIFSIGNALED(status))
+    //     {
+    //         if(WTERMSIG(status) == 2)
+    //             get_exit_status = 130;
+    //         else if(WTERMSIG(status) == 3)
+    //             get_exit_status = 131;
+    //     }
+    // }
+
+    while (wait(NULL)>0);
 }
 int make_process(t_command *command, char **env, char *path, int *i)
 {

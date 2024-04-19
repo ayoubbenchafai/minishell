@@ -24,7 +24,7 @@
 
 NAME = minishell
 CC = cc
-CFLAGS = 
+CFLAGS = -fsanitize=address
 OBJ = $(SRC:.c=.o)
 
 LINKREADLINELIB = $(shell brew --prefix readline)/lib
