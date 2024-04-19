@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/19 11:33:48 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:29:02 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,23 +158,26 @@ void handle_append_or_red_out(t_node **node, int *fd_out, int flag)
 
 void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag) 
 {
-    if(!*node)
+    if (!*node)
         return ;
     if (!ft_strncmp((*node)->type, "here_doc", 8) || !ft_strncmp((*node)->type, "rd_in", 5)) 
     {
         flag = 0;
         if (!ft_strncmp((*node)->type, "rd_in", 5))
             flag = 1;
-        *node = (*node)->next;
-        while (!ft_strncmp((*node)->type, "space", 5))
-            *node = (*node)->next;
-        if (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type, "quote", 5)) 
+        if((*node)->next)
         {
-            if (flag)
-                *fd_in = open((*node)->value, O_RDONLY, 0644);
-            else
-                *fd_in = ft_herdoc((*node)->value);
             *node = (*node)->next;
+            while (!ft_strncmp((*node)->type, "space", 5))
+                *node = (*node)->next;
+            if (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type, "quote", 5)) 
+            {
+                if (flag)
+                    *fd_in = open((*node)->value, O_RDONLY, 0644);
+            else
+                    *fd_in = ft_herdoc((*node)->value);
+                *node = (*node)->next;
+            }
         }
         else
             perror("");
