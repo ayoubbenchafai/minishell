@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/19 19:05:49 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:30:31 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,26 +200,43 @@ char *get_s(char *var)
     int i = 0;
     return (var + get_equal(var) + 1);
 }
-
+int get_best_size(char *var)
+{
+    int j = 0;
+    int size = get_equal(var);
+    
+    if(size == 0) //export only 
+        j = ft_strlen(var);
+    else // env && export
+    {
+        if(!check_char(var, '+'))
+            j = size;
+        else
+            j = size - 1;
+    }
+    return (j);
+}
 int main(int ac, char *av[]) 
 {
     (void)(ac);
     int i = 0;
-    char *var = "export=hatim";
-    char *s =NULL;
-    char *array[3] = {"aben=ay||", "export=", "unset"};
-    while(i < 3)
-    {
-        if(!ft_strncmp(array[i], var, get_equal(var)))
-        {
-            char *s = ft_strjoin(array[i], var + get_equal(var) + 1);
-            printf("(%s)\n",s);    
+    // char *var = "export=hatim";
+    // char *s =NULL;
+    // char *array[3] = {"aben=ay||", "export=", "unset"};
+    // while(i < 3)
+    // {
+    //     if(!ft_strncmp(array[i], var, get_equal(var)))
+    //     {
+    //         char *s = ft_strjoin(array[i], var + get_equal(var) + 1);
+    //         printf("(%s)\n",s);    
             
-        }
-        i++;
-    }
-    printf("%d\n",check_error(av[1]));    
-    printf("(%s)\n",get_s(av[1]));    
-    printf("%d\n",get_equal(av[1]));    
+    //     }
+    //     i++;
+    // }
+    // printf("%d\n",check_error(av[1]));    
+    // printf("(%s)\n",get_s(av[1])); 
+    if(!get_best_size(av[1]))
+        return (0);   
+    printf("%d\n",hhhh(av[1]));    
     return 0;
 }

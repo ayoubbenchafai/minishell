@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/19 19:15:40 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 11:44:14 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void swap(char **a, char **b)
     *a = *b;
     *b = c;
 }
+
 void sort_env(char **env)
 {
     int i;
@@ -58,6 +59,39 @@ void sort_env(char **env)
     }
 }
 
+// int exec_env(char **env)
+// {
+//     int i;
+
+//     i = 0;
+//     while(env && env[i])
+//     {
+//         ft_putstr_fd(env[i], 1);
+//         ft_putstr_fd("\n", 1);
+//         i++;
+//     }
+//     return 0;
+// }
+int exec_env(char **env)
+{
+    int i;
+    int j;
+    
+    i = 0;
+    while(env && env[i])
+    {
+        j = 0;
+        while(env[i][j])
+        {
+            if(env[i][j] != '+')
+                ft_putchar_fd(env[i][j], 1);
+            j++;
+        }
+        ft_putstr_fd("\n", 1);
+        i++;
+    }
+    return 0;
+}
 void	export_print(char **export_env)
 {
     // if(!export_env || !*export_env)
@@ -90,24 +124,6 @@ void	export_print(char **export_env)
 		ft_putstr_fd("\n", 1);
 		export_env++;
 	}
-}
-
-int	is_valid_key(char *command)
-{
-	int	i;
-
-	i = 0;
-	if (!ft_isalpha(command[i]) && command[i] != '_')
-		return (0);
-	while (command[i])
-	{
-		if (!ft_isalnum(command[i])
-			&& command[i] != '_' && command[i] != '='
-			&& command[i] != '$')
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 int check_error(char *var)
@@ -151,151 +167,30 @@ int check_error(char *var)
     return (1);
 }
 
-
-
-// void exec_export(char *var, char ***env, char ***ex_env)
-// {
-//     int i;
-//     int j;
-    
-//     i = 0;
-//     j = 0;   
-//     if(!var)
-//     {
-//         export_print(*ex_env);
-//         return ;
-//     }
-//     if(!check_error(var)) // ghadi nbdelha b function jdida li 9adit 
-//     {
-//         printf("export: not a valid identifier\n");
-//         return ;
-//     }
-//     if (ex_env && *ex_env && !get_equal(var))
-//     {
-//         // not equal   => strlen
-//         // equal exist => get_equal
-//        export_env(var, ex_env); 
-//        return ;
-       
-//     }
-//     while(env && *env && (*env)[i])
-//     {
-        
-//         if (!ft_strncmp((*env)[i], var, get_equal(var)))
-//         {
-//             if(check_char(var, '+'))
-//             {
-//                 char *s = ft_strjoin(var ,var + get_equal(var) + 1);
-//                 printf("%s\n", s);
-//             }
-//             else
-//                 free((*env)[i]);
-//             (*env)[i] = ft_strdup(var);
-//             return ;
-//         }
-//         i++;
-//     }
-//     export_env(var, ex_env);
-//     // while(ex_env && *ex_env && (*ex_env)[j])
-//     // {
-//     //     if (check_error(var) && !ft_strncmp((*ex_env)[j], var, ft_strlen(var)))
-//     //     {
-//     //         free((*ex_env)[j]);
-//     //         (*ex_env)[j] = ft_strdup(var);
-//     //         return ;
-//     //     }
-//     //     j++;
-//     // }
-//     if (check_error(var))
-//     {
-//         *env = ft_array(*env, ft_strdup(var));
-//         *ex_env = ft_array(*ex_env, ft_strdup(var));
-//     }
-//     else
-//         printf("export: not a valid identifier\n");
-// }
-
-void export_env(char *var, char ***ex_env)
+int get_best_size(char *var)
 {
-    int i;
-    size_t size;
-    
-    i = 0;
-    size = get_equal(var);
-    if (size == 0)
-        size = ft_strlen(var);
-    if(check_char(var, '+'))
-    {
-        size = get_equal(var);
-        size--;
-    }
-    while(ex_env && *ex_env && (*ex_env)[i])
-    {
-        if (!ft_strncmp((*ex_env)[i], var, size))
-        {
-            if(check_char(var, '+'))
-            {
-                char *s = ft_strjoin((*ex_env)[i] ,var + get_equal(var) + 1);
-                (*ex_env)[i] = ft_strdup(s);
-            }
-            else
-            {
-                free((*ex_env)[i]);
-                (*ex_env)[i] = ft_strdup(var);
-            }
-            return ;
-        }
-        i++;
-    }
-    *ex_env = ft_array(*ex_env, ft_strdup(var));
-}
-void env_export_two(char *var, char ***env)
-{
-    int i = 0;
     int j = 0;
-    size_t size;
-    //-----------------------------------
-    //export makinach = 
-    if (size == 0)
-        size = ft_strlen(var);
-    size = get_equal(var);
-        // kayna =
-    if(check_char(var, '+'))
-    {
-        size = get_equal(var);
-        size--;
-    }
-    //-----------------------------------
-    //env kayna =
-    j = get_equal(var);
-    if(check_char(var, '+'))
-        j--;
-    //-----------------------------------
-    /*
-      int size = get_equal(var);
-      if(size == 0) (= not exist)
-      {
-        -----export--------
-            strlen
-      }
-      else (= exist)
-      {
-        if(!+)
-        {
-            env     ==> get_equal
-            export  ==> get_equal
-        }
-        else (+ exist)
-        {
-            env ==> get_equal -1;
-            export ==> get_equal -1;
-        }
-      }
+    int size = get_equal(var);
     
-    */    
+    if (size == 0) //export only 
+        j = ft_strlen(var);
+    else // env && export
+    {
+        if(!check_char(var, '+'))
+            j = size;
+        else
+            j = size - 1;
+    }
+    return (j);
+}
+
+void env_export_all_cases(char *var, char ***env, int size)
+{
+    int i;   
+    
     while(env && *env && (*env)[i])
     {
-        if (!ft_strncmp((*env)[i], var, j))
+        if (!ft_strncmp((*env)[i], var, size))
         {
             if(check_char(var, '+'))
             {
@@ -313,25 +208,14 @@ void env_export_two(char *var, char ***env)
     }
     *env = ft_array(*env, var);
 }
-void hhhh(char *var)
-{
-    int size = get_equal(var);
-    int j = 0;
-    
-    if(size == 0) //export only 
-        j = ft_strlen(var);
-    else // env && export
-    {
-        if(!check_char(var, '+'))
-            j = size;
-        else
-            j = size - 1;
-    }
-}
+
+
+
 void exec_export(char *var, char ***env, char ***ex_env)
 {
     int i = 0;
     int j;
+    int size;
     
     if(!var)
     {
@@ -343,34 +227,14 @@ void exec_export(char *var, char ***env, char ***ex_env)
         printf("export: not a valid identifier\n");
         return ;
     }
+    size = get_best_size(var);
     if (!get_equal(var))
     {
-       export_env(var, ex_env); 
+       env_export_all_cases(var, ex_env, size);
        return ;
     }
-    export_env(var, ex_env); 
-    j = get_equal(var);
-    if(check_char(var, '+'))
-        j--;
-    while(env && *env && (*env)[i])
-    {
-        if (!ft_strncmp((*env)[i], var, j))
-        {
-            if(check_char(var, '+'))
-            {
-                char *s = ft_strjoin((*env)[i] ,var + get_equal(var) + 1);
-                (*env)[i] = ft_strdup(s);
-            }
-            else
-            {
-                free((*env)[i]);
-                (*env)[i] = ft_strdup(var);
-            }
-            return ;
-        }
-        i++;
-    }
-    *env = ft_array(*env, var);
+    env_export_all_cases(var, ex_env, size); 
+    env_export_all_cases(var, env, size); 
 }
 
 void exec_unset(char *s, char ***env)
@@ -400,19 +264,7 @@ void exec_unset(char *s, char ***env)
     *env = unset_array;
 }
 
-int exec_env(char **env)
-{
-    int i;
 
-    i = 0;
-    while(env && env[i])
-    {
-        ft_putstr_fd(env[i], 1);
-        ft_putstr_fd("\n", 1);
-        i++;
-    }
-    return 0;
-}
 
 int get_equal(char *s)
 {
