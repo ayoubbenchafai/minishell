@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/20 13:04:44 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 16:11:27 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,6 +251,19 @@ void	export_print(char **export_env)
 		export_env++;
 	}
 }
+
+int get_len_char(char *s, char c)
+{
+    int i = 0;
+    int len= 0;
+    while(s && s[i])
+    {
+        if(s[i] == c)
+            return (i);
+        i++;
+    }
+    return (len);
+}
 int main(int ac, char *av[]) 
 {
     (void)(ac);
@@ -273,7 +286,14 @@ int main(int ac, char *av[])
     // if(!get_best_size(av[1]))
     //     return (0);   
     // printf("%d\n",hhhh(av[1]));  
-    while(++i < ac)
-    export_print(av + i)  ;
+    // while(++i < ac)
+    // export_print(av + i)  ;
+    char *var = "ayoub+=";
+    int len = get_equal(var);
+    if(var[len - 1] == '+' && var[len] == '=')
+        puts("yes");
+    
+    printf("%c , %c\n",var[len], var[len - 1]);
+    printf("%d\n", get_len_char("ay+oub+=", '+'));
     return 0;
 }
