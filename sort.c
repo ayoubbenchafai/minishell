@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/19 19:30:31 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 13:04:44 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int check_char(char *s,char c)
     }
     return (0);
 }
+
 void sort_env(char **env)
 {
     int i;
@@ -216,6 +217,40 @@ int get_best_size(char *var)
     }
     return (j);
 }
+
+void	export_print(char **export_env)
+{
+    // if(!export_env || !*export_env)
+    //     return ; 
+    int i;
+    
+	// sort_env(export_env);
+	while (export_env && *export_env)
+	{
+        i = 0;
+		ft_putstr_fd("declare -x ", 1);
+        while((*export_env)[i])
+        {
+            if((*export_env)[i] != '+')
+            {
+                if(!(*export_env)[i + 1])
+                    ft_putchar_fd((*export_env)[i], 1);
+                if((*export_env)[i] == '=')
+                    ft_putchar_fd('"', 1);
+            }
+            i++;
+        }
+        if(check_char(*export_env, '+') && !get_equal(*export_env))
+        {
+            ft_putchar_fd('=', 1);
+            ft_putchar_fd('"', 1);
+        }
+        if(get_equal(*export_env))
+            ft_putchar_fd('"', 1);
+		ft_putstr_fd("\n", 1);
+		export_env++;
+	}
+}
 int main(int ac, char *av[]) 
 {
     (void)(ac);
@@ -235,8 +270,10 @@ int main(int ac, char *av[])
     // }
     // printf("%d\n",check_error(av[1]));    
     // printf("(%s)\n",get_s(av[1])); 
-    if(!get_best_size(av[1]))
-        return (0);   
-    printf("%d\n",hhhh(av[1]));    
+    // if(!get_best_size(av[1]))
+    //     return (0);   
+    // printf("%d\n",hhhh(av[1]));  
+    while(++i < ac)
+    export_print(av + i)  ;
     return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 11:44:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 13:29:39 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@ int check_error(char *var)
     while(var[i] && (size == 0))
     {
         if(var[i]!='_')
-        if (!ft_isalnum(var[i]))
-            return (0);
+            if (!ft_isalnum(var[i]))
+                return (0);
         i++;
     }
     i += j;
@@ -188,6 +188,7 @@ void env_export_all_cases(char *var, char ***env, int size)
 {
     int i;   
     
+    i = 0;
     while(env && *env && (*env)[i])
     {
         if (!ft_strncmp((*env)[i], var, size))

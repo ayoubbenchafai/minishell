@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 19:33:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/20 11:40:12 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 12:56:39 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	export_print(char **export_env)
 	{
         i = 0;
 		ft_putstr_fd("declare -x ", 1);
+            
         while((*export_env)[i])
         {
             if((*export_env)[i] != '+')

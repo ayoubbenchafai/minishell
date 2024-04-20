@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/19 18:29:02 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 12:13:50 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,9 +250,9 @@ void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **a
     //         get_exit_status = WEXITSTATUS(status);
     //     if(WIFSIGNALED(status))
     //     {
-    //         if(WTERMSIG(status) == 2)
+    //         if(WTERMSIG(status) == 2) // (WTERMSIG(status) == SIGINT)
     //             get_exit_status = 130;
-    //         else if(WTERMSIG(status) == 3)
+    //         else if(WTERMSIG(status) == 3)// (WTERMSIG(status) == SIGQUIT)
     //             get_exit_status = 131;
     //     }
     // }
