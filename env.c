@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 16:14:00 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:56:52 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,9 @@ int exec_env(char **env)
         j = 0;
         while(env[i][j])
         {
-            if(env[i][j] != '+')
-                ft_putchar_fd(env[i][j], 1);
+            if(env[i][j] == '+' && env[i][j + 1] == '=')
+                j++;
+            ft_putchar_fd(env[i][j], 1);
             j++;
         }
         ft_putstr_fd("\n", 1);
@@ -106,12 +107,11 @@ void	export_print(char **export_env)
             
         while((*export_env)[i])
         {
-            if((*export_env)[i] != '+')
-            {
-                ft_putchar_fd((*export_env)[i], 1);
+            if ((*export_env)[i]== '+' && (*export_env)[i + 1] == '=')
+                i++;
+            ft_putchar_fd((*export_env)[i], 1);
                 if((*export_env)[i] == '=')
                     ft_putchar_fd('"', 1);
-            }
             i++;
         }
         if(check_char(*export_env, '+') && !get_equal(*export_env))
