@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 15:29:25 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:11:44 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,13 +222,21 @@ void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **a
     path = get_environment(*env, "PATH=");
     while(cmd) 
     {
-        if(is_builtin(cmd, env, export_env, addresses) && size == 1)
-            break;
+        // if(is_builtin(cmd, env, export_env, addresses) && size == 1)
+        //     // break;
+
+        // if(!is_builtin(cmd, env, export_env, addresses))
+        //     cmd->cmd = ft_pathname(path, cmd -> cmd, *env);
+        // // printf("flag : %d, %s\n", flag, cmd->cmd[0]);
+        // make_process(cmd, *env, path, &pid, *export_env);
+        // cmd = cmd->next;
 
         if(!is_builtin(cmd, env, export_env, addresses))
-            cmd->cmd = ft_pathname(path, cmd -> cmd, *env);
-        printf("flag : %d, %s\n", flag, cmd->cmd[0]);
-        make_process(cmd, *env, path, &pid, *export_env);
+        {
+            cmd->cmd = ft_pathname(path, cmd->cmd, *env);
+            // make_process(cmd, *env);
+            make_process(cmd,*env, path, &pid);
+        }
         cmd = cmd->next;
     }
     // int status;
@@ -259,7 +267,7 @@ void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **a
 
     while (wait(NULL)>0);
 }
-int make_process(t_command *command, char **env, char *path, int *i, char **export_env)
+int make_process(t_command *command, char **env, char *path, int *i)
 {
     int fd[2];
     int pid;
@@ -295,8 +303,8 @@ int make_process(t_command *command, char **env, char *path, int *i, char **expo
             // {
                 // if(!exec_builtin(command->cmd , env))
                     // exit(1);
-                     if(is_builtin(command, &env, &export_env, NULL))
-                exit(0);
+                    //  if(is_builtin(command, &env, &export_env, NULL))
+                        // exit(0);
             // }
         }
         else if(command->output != 1)

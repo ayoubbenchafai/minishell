@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 17:56:52 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:25:25 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,9 +198,10 @@ int get_len_char(char *s, char c)
 void env_export_all_cases(char *var, char ***env, int size)
 {
     int i;   
+    int len;
     
     i = 0;
-    int len = get_equal(var);
+    len = get_equal(var);
     while(env && *env && (*env)[i])
     {
         if (!ft_strncmp((*env)[i], var, size))
