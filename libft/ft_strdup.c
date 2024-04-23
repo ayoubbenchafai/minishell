@@ -1,27 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 23:28:20 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/06 21:32:54 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 19:38:36 by aben-cha          #+#    #+#             */
+/*   Updated: 2023/11/15 13:36:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *str)
+char	*ft_strdup(const char *s1)
 {
-	char	*ptr;
-	size_t	len;
+	int		i;
+	char	*tab;
 
-	len = ft_strlen(str);
-	ptr = (char *)malloc(len + 1);
-	if (ptr == NULL)
+	i = 0;
+	tab = (char *)malloc((ft_strlen(s1) + 1) * sizeof(char));
+	if (tab == NULL)
 		return (NULL);
-	ptr = (char *)ft_memcpy(ptr, str, len);
-	ptr[len] = '\0';
-	return (ptr);
+	while (s1[i])
+	{
+		tab[i] = s1[i];
+		i++;
+	}
+	tab[i] = '\0';
+	return (tab);
 }

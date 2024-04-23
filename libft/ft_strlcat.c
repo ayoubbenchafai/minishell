@@ -1,39 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   ft_strlcat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 19:13:05 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/07 11:32:50 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 18:39:58 by aben-cha          #+#    #+#             */
+/*   Updated: 2023/11/16 15:51:10 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+size_t	ft_strlcat(char *dest, const char *src, size_t dstsize)
 {
-	size_t			len_d;
-	size_t			len_s;
-	unsigned int	i;
+	size_t	len_dest;
+	size_t	len_src;
+	size_t	i;
+	size_t	d;
 
-	if (!dstsize && src)
-		return (ft_strlen(src));
 	i = 0;
-	len_s = ft_strlen(src);
-	len_d = ft_strlen((const char *)dst);
-	if (dstsize <= len_d)
-		return (dstsize + len_s);
-	if (dstsize > len_d)
+	len_src = ft_strlen(src);
+	if (dstsize == 0)
+		return (len_src);
+	len_dest = ft_strlen(dest);
+	d = len_dest;
+	if (dstsize <= len_dest)
+		return (dstsize + len_src);
+	while (src[i] && (d < dstsize - 1))
 	{
-		while (i < (dstsize - len_d - 1) && src[i])
-		{
-			dst[len_d + i] = src[i];
-			i++;
-		}
-		dst[len_d + i] = '\0';
-		return (len_d + len_s);
+		dest[d++] = src[i];
+		i++;
 	}
-	return (len_s + dstsize);
+	dest[d] = '\0';
+	return (len_dest + len_src);
 }

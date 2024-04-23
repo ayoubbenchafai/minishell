@@ -1,47 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 14:48:57 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/06 21:37:10 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 19:47:50 by aben-cha          #+#    #+#             */
+/*   Updated: 2024/03/14 00:40:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static void	copy(char *ptr, const char *s)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	while (*ptr)
-		ptr++;
-	while (*s)
-	{
-		*ptr = *s;
-		ptr++;
-		s++;
-	}
-	*ptr = '\0';
-}
-
-char	*ft_strjoin(const char *s1, const char *s2)
-{
-	size_t	len;
+	size_t	i;
+	int		j;
+	size_t	size;
 	char	*ptr;
 
-	if (!s1 && !s2)
-		return (ft_strdup(""));
+	i = 0;
+	j = 0;
 	if (!s1)
 		return (ft_strdup(s2));
 	if (!s2)
-		return (ft_strdup(s1));
-	len = ft_strlen(s1) + ft_strlen(s2);
-	ptr = (char *)malloc(len + 1);
+		return (NULL);
+	size = ft_strlen(s1) + ft_strlen(s2);
+	ptr = (char *)malloc(sizeof(char) * (size + 1));
 	if (ptr == NULL)
 		return (NULL);
-	ptr[0] = '\0';
-	copy(ptr, s1);
-	copy(ptr, s2);
+	while (i < ft_strlen(s1))
+	{
+		ptr[i] = s1[i];
+		i++;
+	}
+	while (i < size)
+		ptr[i++] = s2[j++];
+	ptr[i] = '\0';
 	return (ptr);
 }

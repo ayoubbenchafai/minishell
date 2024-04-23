@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 18:11:44 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:03:38 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,18 +184,24 @@ void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag)
     }
 }
 
-int check_builtin(char *command)
+static int check_builtin(t_command *commands)
 {
-    if(!command)
+    if(!commands || !commands->cmd)
         return (0);
-    if(ft_strncmp(command, "/usr/bin/env", 12) == 0)
-        return (1);
-    else if(ft_strncmp(command, "/bin/pwd", 8) == 0)
-        return (1);
-    else if(ft_strncmp(command, "/bin/echo", 9) == 0)
-        return (1);
-    else if(ft_strncmp(command, "/usr/bin/cd", 11) == 0)
-        return (1);
+	if(!ft_strncmp(commands->cmd[0], "echo", 4))
+		return(1);
+	else if(!ft_strncmp(commands->cmd[0], "pwd", 3))
+		return (1);
+	else if(!ft_strncmp(commands->cmd[0], "cd", 2))
+		return (1);
+	else if(!ft_strncmp(commands->cmd[0], "env", 3))
+		return (1);
+	if(!ft_strncmp(commands->cmd[0], "export", 6))
+		return (1);
+	else if(!ft_strncmp(commands->cmd[0], "unset", 5))
+		return (1);
+	else if(!ft_strncmp(commands->cmd[0], "$", 1))
+		return (1);
     return (0);
 }
 
@@ -213,66 +219,72 @@ int exec_builtin(char **command, char **env)
         return (exec_cd(command[1]),1);
     return (0);
 }
-void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses)
+void execute_commands(t_command *cmd, t_env *environment, t_node **addresses)
 {
     char *path;
     int pid = 0;
     int flag = 0;
     int size = ft_lstsize_cmd(cmd);
-    path = get_environment(*env, "PATH=");
+    path = get_environment(environment->env, "PATH=");
     while(cmd) 
     {
-        // if(is_builtin(cmd, env, export_env, addresses) && size == 1)
-        //     // break;
+        if(is_builtin(cmd, environment, addresses) && size == 1)
+            return ;
 
-        // if(!is_builtin(cmd, env, export_env, addresses))
-        //     cmd->cmd = ft_pathname(path, cmd -> cmd, *env);
-        // // printf("flag : %d, %s\n", flag, cmd->cmd[0]);
-        // make_process(cmd, *env, path, &pid, *export_env);
-        // cmd = cmd->next;
-
-        if(!is_builtin(cmd, env, export_env, addresses))
-        {
-            cmd->cmd = ft_pathname(path, cmd->cmd, *env);
-            // make_process(cmd, *env);
-            make_process(cmd,*env, path, &pid);
-        }
+        if(!check_builtin(cmd))
+            cmd->cmd = ft_pathname(path, cmd->cmd, environment->env);
+        make_process(cmd, environment, path, &pid);
         cmd = cmd->next;
+
+        // if(!is_builtin(cmd, environment, addresses))
+        // {
+        //     cmd->cmd = ft_pathname(path, cmd->cmd, environment->env);
+        //     // make_process(cmd, *env);
+        //     make_process(cmd, environment->env, path, &pid);
+        // }
+        // cmd = cmd->next;
     }
-    // int status;
-    // int g_pid;
+    int status;
+    int g_pid;
 
     // if(size == 1 && is_builtin(cmd, env, export_env, addresses))
         // return ;
-    // while (size--)
-    // {
-    //     printf("test\n");
+    while (size--)
+    {
         
-    //     g_pid = wait(&status);
-    //     if(g_pid == -1)
-    //     {
-    //         printf("Errno(error wait)\n");
-    //         return ;
-    //     }
-    //     if(g_pid == pid)
-    //         get_exit_status = WEXITSTATUS(status);
-    //     if(WIFSIGNALED(status))
-    //     {
-    //         if(WTERMSIG(status) == 2) // (WTERMSIG(status) == SIGINT)
-    //             get_exit_status = 130;
-    //         else if(WTERMSIG(status) == 3)// (WTERMSIG(status) == SIGQUIT)
-    //             get_exit_status = 131;
-    //     }
-    // }
-
-    while (wait(NULL)>0);
+        g_pid = wait(&status);
+        if(g_pid == -1)
+            exit_status(127);
+            // return ;
+        if(g_pid == pid)
+            exit_status(WEXITSTATUS(status));
+        if(WIFSIGNALED(status))
+        {
+            if(WTERMSIG(status) == 2) // (WTERMSIG(status) == SIGINT)
+            {
+                ft_putendl_fd("Interrupt: 2", 2);
+                exit_status(130);
+                // return ;
+            }
+                // get_exit_status = 130;
+         
+            else if(WTERMSIG(status) == 3)// (WTERMSIG(status) == SIGQUIT)
+            {
+                ft_putendl_fd("Quit: 3", 2);
+                exit_status(131);
+            }
+                // get_exit_status = 131;
+        }
+    }
+    // printf("exit status : %d\n", get_exit_status);
+    // while (wait(NULL)>0);
 }
-int make_process(t_command *command, char **env, char *path, int *i)
+int make_process(t_command *command, t_env *env, char *path, int *i)
 {
     int fd[2];
     int pid;
-    int flag  = 0;
     int response = 0;
+    // run_signals();
     if(!command->cmd)
         return 0;
     if(command->next)
@@ -281,42 +293,32 @@ int make_process(t_command *command, char **env, char *path, int *i)
             perror("Error creating pipe");
     }
     
-    printf("flag = : %d\n", flag);
     pid = fork();
     if(pid == -1)
         perror("Error forking");
     if(pid == 0)
     {
-        // if(check_builtin(command->cmd[0]))
-        //     flag = 1;
-       
-        flag = 1;
+        signal_exec();
         if(command->input != 0)
         dup2(command->input, 0);
         if(command->input != 0)
             close(command->input);
-        if(command->next && command->output == 1 || flag == 1)
+        if(command->next && command->output == 1)
         {
             dup2(fd[1], 1);
             close(fd[1]);
-            // if(flag == 1)
-            // {
-                // if(!exec_builtin(command->cmd , env))
-                    // exit(1);
-                    //  if(is_builtin(command, &env, &export_env, NULL))
-                        // exit(0);
-            // }
+            if(is_builtin(command, env, NULL))
+                exit(0);
         }
         else if(command->output != 1)
         {
             dup2(command->output, 1);
             close(command->output);
         }
-        response = execve(command->cmd[0], command->cmd,env);
+        response = execve(command->cmd[0], command->cmd,env->env);
     }
     else
     {
-        //()
         *i = pid;
         close(fd[1]);
         command = command->next;
@@ -493,3 +495,25 @@ int	ft_lstsize_cmd(t_command *cmd)
 	}
 	return (len);
 }
+
+// void exec_exit(char **cmd)
+// {
+//     if(!cmd[1])
+//         exit(0);
+//     else
+//         exit(ft_atoi(cmd[1]));
+// }
+// void	_exit_(char **cmd)
+// {
+// 	if (cmd[1] && !is_digit(cmd[1]))
+// 		(ft_putstr_fd("exit\n", 2), print_error(3, "exit", cmd[1],
+// 				"numeric argument required"), exit_with_status(255), exit(-1));
+// 	if (calc_args(cmd) > 2)
+// 		return (ft_putstr_fd("exit\n", 2),
+// 			print_error(2, "exit", "too many arguments"),
+// 			// exit_with_status(INCORRECT_USAGE));
+// 	if (calc_args(cmd) == 1)
+// 		exit(0);
+// 	else
+// 		exit(ft_atoi(cmd[1]));
+// }

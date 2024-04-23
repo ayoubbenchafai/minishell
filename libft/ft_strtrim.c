@@ -1,45 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_strtrim.c                                       :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 15:26:19 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/06 21:58:35 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 19:53:05 by aben-cha          #+#    #+#             */
+/*   Updated: 2023/11/15 11:33:50 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	check(char str, char const *set)
+static int	check_char(const char *set, char c)
 {
+	if (set == NULL)
+		return (0);
 	while (*set)
 	{
-		if (*set == str)
+		if (*set == c)
 			return (1);
 		set++;
 	}
 	return (0);
 }
 
-char	*ft_strtrim(const char *str, char const *set)
+char	*ft_strtrim(const char *s1, const char *set)
 {
-	int	i;
-	int	start;
+	int	begin;
+	int	end;
+	int	size;
 
-	if (!str)
-		return (ft_strdup(""));
-	else if (!set)
-		return (ft_strdup(str));
-	i = 0;
-	while (check(str[i], set))
-		i++;
-	if (str[i])
-		start = i;
-	while (str[i])
-		i++;
-	while (check(str[i - 1], set))
-		i--;
-	return (ft_substr(str, start, i - start));
+	if (s1 == NULL || set == NULL)
+		return (NULL);
+	begin = 0;
+	end = ft_strlen(s1) - 1;
+	while (s1[begin] && check_char(set, s1[begin]))
+		begin++;
+	while ((end >= 0) && check_char(set, s1[end]))
+		end--;
+	size = end - begin + 1;
+	return (ft_substr(s1, begin, size));
 }

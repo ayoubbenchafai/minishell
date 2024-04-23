@@ -17,6 +17,12 @@ typedef struct s_node
 	struct s_node *next;
 } t_node;
 
+typedef struct s_env
+{
+    char **env;
+    char **export;
+} t_env;
+
 typedef struct s_command
 {
     char    **cmd;
@@ -28,13 +34,16 @@ typedef struct s_command
 
 int get_exit_status;
 //-----------------------------------------------------
-
+void	exit_status(int exit_status);
+void	signal_exec(void);
+//-
 t_command *set_newlist(t_node **node);
 void handle_space(t_node **node, char ***array, char **s);
 void handle_pipe(t_node **node, t_command **cmd, char ***array, int *fd_in, int *fd_out);
 void handle_append_or_red_out(t_node **node, int *fd_out, int flag);
 void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag);
-void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses);
+// void execute_commands(t_command *cmd, char ***env,char ***export_env, t_node **addresses);
+void execute_commands(t_command *cmd, t_env *environment, t_node **addresses);
 
 void display_cmd(t_command *cmd);
 t_command *ft_lstnew_cmd(char **cmd, int input, int output);
@@ -45,7 +54,8 @@ char	**ft_pathname(char *p, char **cmdargs, char **env);
 int ft_herdoc(char *s);
 // int make_process(t_command *command, char **env);
 // int make_process(t_command *command, char **env, char *path);
-int make_process(t_command *command, char **env, char *path, int *i);
+// int make_process(t_command *command, char **env, char *path, int *i);
+int make_process(t_command *command, t_env *env, char *path, int *i);
 // int make_process(t_command *command, char **env, char *path, int *i, char **export_env);
 char **ft_array(char **array, char *s);
 void run_signals();
@@ -55,7 +65,8 @@ void bach_slash(int sig);
 int pipe_parse_error(t_node *node);
 char **get_env(char **env);
 // void exec_export(char *var, char ***env);
-void exec_export(char *var, char ***env, char ***export_env);
+// void exec_export(char *var, char ***env, char ***export_env);
+void exec_export(char *var, t_env *environment);
 void exec_unset(char *s, char ***env);
 //-----------------------------------------------------
 void exec_echo(char **cmd, char **env);
@@ -63,7 +74,8 @@ char	*get_environment(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path);
 // int is_builtin(t_command *commands, char ***env, t_node **addresses);
-int     is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses);
+// int     is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses);
+int is_builtin(t_command *commands, t_env *environment, t_node **addresses);
 int     expand(char *var, char **env);
 int     exec_pwd();
 int     exec_cd(char *path);

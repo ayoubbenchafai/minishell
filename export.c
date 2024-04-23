@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 19:33:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/20 16:12:34 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/23 12:41:37 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	export_print(char **export_env)
 	}
 }
 
-void exec_export(char *var, char ***env, char ***ex_env)
+void exec_export(char *var, t_env *environment)
 {
     int i = 0;
     int j;
@@ -97,22 +97,23 @@ void exec_export(char *var, char ***env, char ***ex_env)
     
     if(!var)
     {
-        export_print(*ex_env);
+        export_print(environment->export);
         return ;
     }
     if(!check_error(var))
     {
         printf("export: not a valid identifier\n");
+        exit_status(1);
         return ;
     }
     size = get_best_size(var);
     if (!get_equal(var))
     {
-    //    export_env(var, ex_env); 
-       env_export_all_cases(var, ex_env, size);
+       env_export_all_cases(var, environment->export, size);
        return ;
     }
-    env_export_all_cases(var, ex_env, size); 
-    env_export_all_cases(var, env, size); 
+    env_export_all_cases(var, environment->export, size); 
+    env_export_all_cases(var, environment->env, size); 
+    exit_status(0);
     //env
 }

@@ -8,11 +8,13 @@ int exec_cd(char *path)
     if(path == NULL || !ft_strncmp(path, "~", 1))
     {
         response = chdir(getenv("HOME"));
+        exit_status(response);
         return response;
     }
     if(path[0] == '/')
     {
         response = chdir(path);
+        exit_status(response);
         return response;
     }
     else
@@ -24,6 +26,7 @@ int exec_cd(char *path)
         free(new_path);
         response = chdir(cwd);
         free(cwd);
+        exit_status(response);
         return response;
     }
     return 0;

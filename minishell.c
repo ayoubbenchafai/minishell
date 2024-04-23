@@ -193,58 +193,78 @@ int quotes_syntax(char *line)
 	}
 	return 0;
 }
-int is_builtin(t_command *commands, char ***env, char ***export_env, t_node **addresses)
+int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 {
 	if(!commands->cmd)
 		return 0;
 	if(!ft_strncmp(commands->cmd[0], "echo", 4))
-		return(exec_echo(commands->cmd, *env), 1);
+		return(exec_echo(commands->cmd, environment->env), 1);
 	else if(!ft_strncmp(commands->cmd[0], "pwd", 3))
 		return (exec_pwd(), 1);
 	else if(!ft_strncmp(commands->cmd[0], "cd", 2))
 		return (exec_cd(commands->cmd[1]), 1);
 	else if(!ft_strncmp(commands->cmd[0], "env", 3))
-		return (exec_env(*env), 1);
-	// if(!ft_strncmp(commands->cmd[0], "export", 6) && commands->cmd[1])
+		return (exec_env(environment->env), 1);
 	if(!ft_strncmp(commands->cmd[0], "export", 6))
-		return (exec_export(commands->cmd[1], env, export_env), 1);
+		return (exec_export(commands->cmd[1], environment), 1);
 	else if(!ft_strncmp(commands->cmd[0], "unset", 5))
-		return (exec_unset(commands->cmd[1], env),1);
+		return (exec_unset(commands->cmd[1], &environment->env),1);
 	else if(!ft_strncmp(commands->cmd[0], "$", 1))
-		return (printf("command not found: "), expand(commands->cmd[0], *env), 1);
+		return (printf("command not found: "), expand(commands->cmd[0], environment->env), 1);
 	return 0;
+}
+
+static void	print_words(char **words)
+{
+	int	i;
+
+	i = 0;
+	while (words && words[i])
+	{
+		ft_putstr_fd(words[i++], 1);
+		if (words[i])
+			ft_putstr_fd(" ", 1);
+	}
+    exit_status(0);
 }
 void exec_echo(char **cmd, char **env)
 {
-	if(!ft_strncmp(cmd[1], "-n", 2))
+	int i;
+	int j;
+	int flag;
+
+	i = 0;
+	flag = 0;
+    if(cmd && cmd[1])
+    {
+        if(!ft_strncmp(cmd[1], "$?", 2))
+        {
+            ft_putstr_fd(ft_itoa(get_exit_status), 1);
+            ft_putstr_fd(cmd[1] + 2, 1);
+            ft_putstr_fd("\n", 1);
+			exit_status(0);
+            return ;
+        }
+    }
+	while (cmd && cmd[++i])
 	{
-		int i;
-		i = 1;
-		while(cmd[i++])
+		if(cmd[i][0] == '-')
 		{
-			if(!expand(cmd[i], env))
-				ft_putstr_fd(cmd[i], 1);
-			if(cmd[i + 1])
-				ft_putstr_fd(" ", 1);
+			j = 0;
+			while(cmd[i][++j] == 'n');
+			if(cmd[i][j] != '\0')
+				break ;
+			else
+				flag = 1;
 		}
+		else
+			break ;
 	}
+	if (flag == 1)
+		print_words(&cmd[i]);
 	else
 	{
-		int i;
-
-		i = 0;
-		if(!cmd[1])
-		{
-			ft_putstr_fd("\n", 1);
-			return ;
-		}
-		while(cmd[i++])
-		{
-			if(!expand(cmd[i], env))
-				ft_putstr_fd(cmd[i], 1);
-			if(cmd[i + 1])
-				ft_putstr_fd(" ", 1);
-		}
+		print_words(&cmd[i]);
 		ft_putstr_fd("\n", 1);
 	}
 }
@@ -253,8 +273,9 @@ int main(int argc, char **argv, char **env)
 	char    *line = NULL;
 	t_node  *tokens = NULL;
     t_node  *addresses = NULL;
-	char **env_lst = get_env(env);
-	char **export_env = get_env(env);
+	t_env environment;
+	environment.env = get_env(env);
+	environment.export = get_env(env);
 	get_exit_status = 0;
 	run_signals();
 	while(1)
@@ -270,7 +291,7 @@ int main(int argc, char **argv, char **env)
 			continue;
 		}
 		parse_line(line, &tokens, &addresses, 0);
-		execute_commands(set_newlist(&tokens), &env_lst, &export_env ,&addresses);
+		execute_commands(set_newlist(&tokens), &environment,&addresses);
 		tokens = NULL;
 		free(line);
     }

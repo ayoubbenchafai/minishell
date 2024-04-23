@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 21:56:13 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/10 23:42:31 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 19:31:32 by aben-cha          #+#    #+#             */
+/*   Updated: 2024/04/23 19:11:54 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,29 @@
 
 int	ft_atoi(const char *str)
 {
-	int					i;
-	int					signe;
-	unsigned long long	a;
+	int				i;
+	int				sign;
+	unsigned long	result;
 
-	a = 0;
-	signe = 1;
 	i = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+	sign = 1;
+	result = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
 		i++;
-	if (str[i] == 45)
+	if (str[i] == '-' || str[i] == '+')
 	{
-		signe = signe * -1;
+		if (str[i] == '-')
+			sign *= -1;
 		i++;
 	}
-	else if (str[i] == 43)
-		i++;
-	while (str[i] >= 48 && str[i] <= 57)
+	while (str[i] >= '0' && str[i] <= '9')
 	{
-		a = a * 10 + str[i++] - 48;
-		if (a > LONG_MAX && signe == 1)
+		result = (result * 10) + str[i] - '0';
+		if ((result >= 9223372036854775807) && (sign == 1))
 			return (-1);
-		else if (a > LONG_MAX && signe == -1)
+		if ((result > 9223372036854775807) && (sign == -1))
 			return (0);
+		i++;
 	}
-	return ((int)a * signe);
+	return (sign * (int)result);
 }

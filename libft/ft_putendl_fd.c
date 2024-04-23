@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_putendl_fd.c                                    :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/03 17:48:42 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/06 21:28:08 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 22:06:33 by aben-cha          #+#    #+#             */
+/*   Updated: 2023/11/15 13:08:26 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 void	ft_putendl_fd(char *s, int fd)
 {
-	char	c;
-
-	if (fd < 0 || !s)
+	if (fd >= 0)
+	{
+		ft_putstr_fd(s, fd);
+		ft_putchar_fd('\n', fd);
+	}
+	else
 		return ;
-	c = '\n';
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd(c, fd);
 }

@@ -1,58 +1,53 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_itoa.c                                          :+:      :+:    :+:   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 18:24:52 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/06 19:19:19 by miguiji          ###   ########.fr       */
+/*   Created: 2023/11/09 21:42:47 by aben-cha          #+#    #+#             */
+/*   Updated: 2023/11/16 12:17:18 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	size_counter(int nbr)
+static int	number_digits(int n)
 {
-	int	i;
+	int	len;
 
-	i = 0;
-	if (nbr == 0)
-		return (1);
-	if (nbr < 0)
-		i = 1;
-	while (nbr)
+	len = 0;
+	if (n == 0)
+		len++;
+	if (n < 0)
+		len++;
+	while (n != 0)
 	{
-		nbr = nbr / 10;
-		i++;
+		n /= 10;
+		len++;
 	}
-	return (i);
+	return (len);
 }
 
-char	*ft_itoa(int nbr)
+char	*ft_itoa(int n)
 {
-	char		*ptr;
-	long int	nbr_long;
-	int			size;
+	int		size;
+	char	*ptr;
 
-	size = size_counter(nbr);
-	ptr = (char *)malloc(size + 1);
-	if (ptr == NULL)
-		return (ptr);
+	size = number_digits(n);
+	ptr = (char *)malloc(sizeof(char) * (size + 1));
+	if (!ptr)
+		return (NULL);
 	ptr[size] = '\0';
-	if (nbr == 0)
-		ptr[0] = 48;
-	nbr_long = (long int)nbr;
-	if (nbr_long < 0)
-	{
+	if (n < 0)
 		ptr[0] = '-';
-		nbr_long = -nbr_long;
-	}
-	while (nbr_long)
+	if (n == 0)
+		ptr[0] = '0';
+	size--;
+	while (n != 0)
 	{
-		ptr[size - 1] = nbr_long % 10 + 48;
-		nbr_long = nbr_long / 10;
-		size--;
+		ptr[size--] = n % 10 * ((n >= 0) - (n < 0)) + '0';
+		n /= 10;
 	}
 	return (ptr);
 }

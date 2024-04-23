@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/20 18:25:25 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/23 15:22:27 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ char **get_env(char **env)
     array[i] = NULL;
     return (array);
 }
+
+// 
 
 void swap(char **a, char **b)
 {   
@@ -104,14 +106,17 @@ void	export_print(char **export_env)
 	{
         i = 0;
 		ft_putstr_fd("declare -x ", 1);
-            
         while((*export_env)[i])
         {
             if ((*export_env)[i]== '+' && (*export_env)[i + 1] == '=')
                 i++;
             ft_putchar_fd((*export_env)[i], 1);
-                if((*export_env)[i] == '=')
-                    ft_putchar_fd('"', 1);
+            if ((*export_env)[i] == '=' && (*export_env)[i - 1] != '=')
+            {
+                ft_putchar_fd('"', 1);
+                if(check_char(*export_env, '"'))
+                    ft_putchar_fd('\\', 1);
+            }
             i++;
         }
         if(check_char(*export_env, '+') && !get_equal(*export_env))
@@ -120,7 +125,11 @@ void	export_print(char **export_env)
             ft_putchar_fd('"', 1);
         }
         if(get_equal(*export_env))
+        {
+            if(check_char(*export_env, '"'))
+                ft_putchar_fd('\\', 1);
             ft_putchar_fd('"', 1);
+        }
 		ft_putstr_fd("\n", 1);
 		export_env++;
 	}
@@ -176,10 +185,10 @@ int get_best_size(char *var)
         j = ft_strlen(var);
     else // env && export
     {
-        if(!check_char(var, '+'))
-            j = size;
-        else
+        if(var[size - 1] == '+' && var[size] == '=')
             j = size - 1;
+        else
+            j = size;
     }
     return (j);
 }
@@ -204,7 +213,9 @@ void env_export_all_cases(char *var, char ***env, int size)
     len = get_equal(var);
     while(env && *env && (*env)[i])
     {
-        if (!ft_strncmp((*env)[i], var, size))
+        if (!ft_strncmp((*env)[i], var, size) && !check_char(var, '='))
+            return ;
+        else if (!ft_strncmp((*env)[i], var, size) && check_char(var, '='))
         {
             if(var[len - 1] == '+' && var[len] == '=')
             {
@@ -225,7 +236,7 @@ void env_export_all_cases(char *var, char ***env, int size)
 
 
 
-void exec_export(char *var, char ***env, char ***ex_env)
+void exec_export(char *var, t_env *enviroment)
 {
     int i = 0;
     int j;
@@ -233,22 +244,25 @@ void exec_export(char *var, char ***env, char ***ex_env)
     
     if(!var)
     {
-        export_print(*ex_env);
+        export_print(enviroment->export);
         return ;
     }
+    printf("var = %s\n", var);
     if(!check_error(var))
     {
         printf("export: not a valid identifier\n");
+        exit_status(1);
         return ;
     }
     size = get_best_size(var);
     if (!get_equal(var))
     {
-       env_export_all_cases(var, ex_env, size);
+       env_export_all_cases(var, &enviroment->export, size);
        return ;
     }
-    env_export_all_cases(var, ex_env, size); 
-    env_export_all_cases(var, env, size); 
+    env_export_all_cases(var, &enviroment->export, size); 
+    env_export_all_cases(var, &enviroment->env, size); 
+    exit_status(0);
 }
 
 void exec_unset(char *s, char ***env)
@@ -263,7 +277,7 @@ void exec_unset(char *s, char ***env)
             len++;
         i++;
     }
-    char **unset_array = (char **)malloc((sizeof(char *) * (len+1)));
+    char **unset_array = (char **)malloc((sizeof(char *) * (len + 1)));
     if(!unset_array)
         return ;
     i = 0;
@@ -276,6 +290,7 @@ void exec_unset(char *s, char ***env)
     }
     unset_array[j] = NULL;
     *env = unset_array;
+    exit_status(0);
 }
 
 
@@ -308,20 +323,21 @@ int check_char(char *s,char c)
 int expand(char *var, char **env)
 {
     int i;
+    char *trim;
 
     i = 0;
-    if (!check_char(var, '$'))
-        return (0);
-    char *trim = ft_strnstr(var, "$",ft_strlen(var));
+    // trim = ft_strnstr(var, "$",ft_strlen(var));
+    trim = ft_strtrim(var, "$");
+    
     while (env && env[i])
     {
-        if (!ft_strncmp(env[i], trim + 1, get_equal(env[i])))
+        if (!ft_strncmp(env[i], trim, get_equal(env[i])))
         {
             ft_putstr_fd(env[i] + get_equal(env[i]) + 1, 1);
-            ft_putstr_fd("\n", 1);
+            ft_putchar_fd('\n', 1);
             return (1);
         }
         i++;
     }
-    return 0;
+    return (0);
 }

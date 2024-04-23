@@ -6,13 +6,14 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/20 16:11:27 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/23 19:13:14 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "libft/libft.h"
 
 void swap(char **a, char **b)
@@ -141,82 +142,89 @@ int	is_valid_key(char *command)
 // export =   ==> error
 // export 123   ==> error
 
-int get_equal(char *s)
+int get_equal(char *s, char c)
 {
     int i;
 
     i = 0;
     while(s && s[i])
     {
-        if(s[i] == '=')
+        if(s[i] == c)
             return (i);
         i++;
     }
     return (0);
 }
 
-int check_error(char *var)
-{
-    int i = 0;
-    int j;
-    int size;
+// int check_error(char *var)
+// {
+//     int i = 0;
+//     int j;
+//     int size;
     
-    if(var[i] == '_')
-        i++;
-    j = i;
-    if(!ft_isalpha(var[i]))
-        return (0);
-    size = get_equal(var);
-    while(var[i] && (size == 0))
-    {
-        if(var[i]!='_')
-        if (!ft_isalnum(var[i]))
-            return (0);
-        i++;
-    }
-    i += j;
-    while(i < size)
-    {
-        if(var[i] != '_')
-        {
-            if(var[i] == '+' && var[i + 1])
-            {
-                i++;
-                if(var[i] == '=')
-                    break;
-            else 
-                return (0);
-             }
-        if (!ft_isalnum(var[i]))
-            return (0);
-        }
-        i++;
-    }
-    printf("%s\n", var);
-    return (1);
-}
+//     if(var[i] == '_')
+//         i++;
+//     j = i;
+//     if(!ft_isalpha(var[i]))
+//         return (0);
+//     size = get_equal(var);
+//     while(var[i] && (size == 0))
+//     {
+//         if(var[i]!='_')
+//         if (!ft_isalnum(var[i]))
+//             return (0);
+//         i++;
+//     }
+//     i += j;
+//     while(i < size)
+//     {
+//         if(var[i] != '_')
+//         {
+//             if(var[i] == '+' && var[i + 1])
+//             {
+//                 i++;
+//                 if(var[i] == '=')
+//                     break;
+//             else 
+//                 return (0);
+//              }
+//         if (!ft_isalnum(var[i]))
+//             return (0);
+//         }
+//         i++;
+//     }
+//     printf("%s\n", var);
+//     return (1);
+// }
 
 char *get_s(char *var)
 {
     int i = 0;
-    return (var + get_equal(var) + 1);
+    return (var + get_equal(var, '=') + 1);
 }
-int get_best_size(char *var)
-{
-    int j = 0;
-    int size = get_equal(var);
+// int get_best_size(char *var)
+// {
+//     int j = 0;
+//     int size = get_equal(var);
     
-    if(size == 0) //export only 
-        j = ft_strlen(var);
-    else // env && export
-    {
-        if(!check_char(var, '+'))
-            j = size;
-        else
-            j = size - 1;
-    }
-    return (j);
-}
+//     if(size == 0) //export only 
+//         j = ft_strlen(var);
+//     else // env && export
+//     {
+//         // if(!check_char(var, '+'))
+//         //     j = size;
+//         // else
+//         //     j = size;
+        
+//         if(var[size - 1] == '+' && var[size] == '=')
+//             j = size - 1;
+//         else if(var[size] == '=')
+//             j = size + 1;
+//         else
+//             j = size;
+//     }
+//     return (j);
+// }
 
 void	export_print(char **export_env)
 {
@@ -240,12 +248,12 @@ void	export_print(char **export_env)
             }
             i++;
         }
-        if(check_char(*export_env, '+') && !get_equal(*export_env))
+        if(check_char(*export_env, '+') && !get_equal(*export_env, '='))
         {
             ft_putchar_fd('=', 1);
             ft_putchar_fd('"', 1);
         }
-        if(get_equal(*export_env))
+        if(get_equal(*export_env, '='))
             ft_putchar_fd('"', 1);
 		ft_putstr_fd("\n", 1);
 		export_env++;
@@ -264,36 +272,111 @@ int get_len_char(char *s, char c)
     }
     return (len);
 }
+// int get_best_size(char *var)
+// {
+//     int j = 0;
+//     int size = get_equal(var);
+    
+//     if (size == 0) //export only 
+//         j = ft_strlen(var);
+//     else // env && export
+//     {
+//         if(!check_char(var, '+'))
+//             j = size;
+//         else
+//             j = size - 1;
+//     }
+//     return (j);
+// }
+char	*get_environment(char **envp, char *var)
+{
+	int		i;
+	char	*response;
+
+	response = NULL;
+	i = 0;
+	while (envp && envp[i])
+	{
+		response = ft_strnstr(envp[i], var, ft_strlen(var));
+		if (response)
+            return response + ft_strlen(var);
+		i++;
+	}
+	return (NULL);
+}
+
+
+int set_expand(char *var)
+{
+    int i = 0;
+    char *s;
+    while(var && var[i])
+    {
+        if(var[i]=='$')
+            i++;
+        else 
+            return(i);
+        i++;
+    }
+    return (i);
+}
+//$$$$USER$$$$ ==> should print $$$username$$$$
+//$$$aben-cha$$$
+void exec_exit(char **cmd)
+{
+    if(!cmd[1])
+        exit(0);
+    else if (cmd[1] && cmd[2])
+    {
+        ft_putstr_fd("exit\n", 2);
+        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+        // exit_status(1);
+    }
+    else
+    {
+        int i = 0;
+        while(cmd[1][i])
+        {
+            if(!ft_isdigit(cmd[1][i]))
+            {
+                ft_putstr_fd("exit\n", 2);
+                ft_putstr_fd("minishell: exit: ", 2);
+                ft_putstr_fd(cmd[1], 2);
+                ft_putstr_fd(": numeric argument required\n", 2);
+                //exit_status(255);
+                exit(255);
+            }
+            i++;
+        }
+    }
+    printf("exit ,  %d\n", ft_atoi(cmd[1]));
+    //exit_status(ft_atoi(cmd[1]));
+    exit(ft_atoi(cmd[1]));//khsha tbdel exit status
+}
+
+void get_exit_value(char *av)
+{
+    // static int value = 0;
+    // value = n;
+    int res = ft_atoi(av);
+    if(res >= 256)
+        res = (256  - res) * (-1);
+    else if(res < 0)
+        res = 256 + res;
+    //255 = > 255
+    //256 => 0
+    //257 => 1
+    // 2147483648 => 0
+    //9223372036854775807 => 255
+    //9223372036854775807> => 255 error numeric argument required
+    
+    printf("exit ,  %d\n", res);
+}
 int main(int ac, char *av[]) 
 {
-    (void)(ac);
     int i = 0;
-    // char *var = "export=hatim";
-    // char *s =NULL;
-    // char *array[3] = {"aben=ay||", "export=", "unset"};
-    // while(i < 3)
-    // {
-    //     if(!ft_strncmp(array[i], var, get_equal(var)))
-    //     {
-    //         char *s = ft_strjoin(array[i], var + get_equal(var) + 1);
-    //         printf("(%s)\n",s);    
-            
-    //     }
-    //     i++;
-    // }
-    // printf("%d\n",check_error(av[1]));    
-    // printf("(%s)\n",get_s(av[1])); 
-    // if(!get_best_size(av[1]))
-    //     return (0);   
-    // printf("%d\n",hhhh(av[1]));  
-    // while(++i < ac)
-    // export_print(av + i)  ;
-    char *var = "ayoub+=";
-    int len = get_equal(var);
-    if(var[len - 1] == '+' && var[len] == '=')
-        puts("yes");
-    
-    printf("%c , %c\n",var[len], var[len - 1]);
-    printf("%d\n", get_len_char("ay+oub+=", '+'));
+    while(++i < ac)
+        // exec_exit(av + i);
+        get_exit_value(av[i]);
     return 0;
 }
