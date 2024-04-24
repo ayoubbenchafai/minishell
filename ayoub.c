@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/23 17:03:38 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/24 18:42:29 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,20 +235,10 @@ void execute_commands(t_command *cmd, t_env *environment, t_node **addresses)
             cmd->cmd = ft_pathname(path, cmd->cmd, environment->env);
         make_process(cmd, environment, path, &pid);
         cmd = cmd->next;
-
-        // if(!is_builtin(cmd, environment, addresses))
-        // {
-        //     cmd->cmd = ft_pathname(path, cmd->cmd, environment->env);
-        //     // make_process(cmd, *env);
-        //     make_process(cmd, environment->env, path, &pid);
-        // }
-        // cmd = cmd->next;
     }
     int status;
     int g_pid;
 
-    // if(size == 1 && is_builtin(cmd, env, export_env, addresses))
-        // return ;
     while (size--)
     {
         
@@ -262,12 +252,9 @@ void execute_commands(t_command *cmd, t_env *environment, t_node **addresses)
         {
             if(WTERMSIG(status) == 2) // (WTERMSIG(status) == SIGINT)
             {
-                ft_putendl_fd("Interrupt: 2", 2);
+                write(1,"\n",1);
                 exit_status(130);
-                // return ;
             }
-                // get_exit_status = 130;
-         
             else if(WTERMSIG(status) == 3)// (WTERMSIG(status) == SIGQUIT)
             {
                 ft_putendl_fd("Quit: 3", 2);
@@ -276,15 +263,14 @@ void execute_commands(t_command *cmd, t_env *environment, t_node **addresses)
                 // get_exit_status = 131;
         }
     }
-    // printf("exit status : %d\n", get_exit_status);
-    // while (wait(NULL)>0);
 }
 int make_process(t_command *command, t_env *env, char *path, int *i)
 {
     int fd[2];
     int pid;
     int response = 0;
-    // run_signals();
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
     if(!command->cmd)
         return 0;
     if(command->next)
@@ -292,7 +278,6 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
         if(pipe(fd) == -1)
             perror("Error creating pipe");
     }
-    
     pid = fork();
     if(pid == -1)
         perror("Error forking");
@@ -300,7 +285,7 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
     {
         signal_exec();
         if(command->input != 0)
-        dup2(command->input, 0);
+            dup2(command->input, 0);
         if(command->input != 0)
             close(command->input);
         if(command->next && command->output == 1)
@@ -316,6 +301,7 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
             close(command->output);
         }
         response = execve(command->cmd[0], command->cmd,env->env);
+        exit(127);
     }
     else
     {
@@ -380,7 +366,7 @@ char	**ft_pathname(char *p, char **cmdargs, char **env)
     if(!cmdargs || !*cmdargs)
         return ( NULL);
 	i = -1;
-    if(cmdargs[0][0] == '/' )//|| is_builtin())
+    if(cmdargs[0][0] == '/' || cmdargs[0][0] == '.')
         return (cmdargs);
 	while (paths && paths[++i])
 	{

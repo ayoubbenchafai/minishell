@@ -268,21 +268,17 @@ void exec_echo(char **cmd, char **env)
 		ft_putstr_fd("\n", 1);
 	}
 }
-int main(int argc, char **argv, char **env)
+
+int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses)
 {
-	char    *line = NULL;
-	t_node  *tokens = NULL;
-    t_node  *addresses = NULL;
-	t_env environment;
-	environment.env = get_env(env);
-	environment.export = get_env(env);
-	get_exit_status = 0;
-	run_signals();
+	char *line;
+
+	line = NULL;
 	while(1)
 	{
 		line = readline("minishell$ ");
 		if(!line || !strncmp(line, "exit", 4))
-			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(),0);
+			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
 		if(line[0] != '\0')
 			add_history(line);
 		if(quotes_syntax(line))
@@ -291,10 +287,28 @@ int main(int argc, char **argv, char **env)
 			continue;
 		}
 		parse_line(line, &tokens, &addresses, 0);
-		execute_commands(set_newlist(&tokens), &environment,&addresses);
+		execute_commands(set_newlist(&tokens), environment,&addresses);
 		tokens = NULL;
 		free(line);
     }
-	free_addresses(addresses);
+	return (1);
+}
+int main(int argc, char **argv, char **env)
+{
+	(void)(argc);
+	(void)(argv);
+	char    *line;
+	t_node  *tokens; 
+    t_node  *addresses;
+	t_env environment;
+	
+	line = NULL;
+	tokens = NULL;
+	addresses = NULL;
+	environment.env = get_env(env);
+	environment.export = get_env(env);
+	get_exit_status = 0;
+	run_signals();
+	ft_minishell(tokens, &environment, addresses);
 	return 0;
 }

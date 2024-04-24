@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/23 15:22:27 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/24 18:41:00 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ void	export_print(char **export_env)
             if ((*export_env)[i] == '=' && (*export_env)[i - 1] != '=')
             {
                 ft_putchar_fd('"', 1);
-                if(check_char(*export_env, '"'))
-                    ft_putchar_fd('\\', 1);
+                // if(check_char(*export_env, '"'))
+                //     ft_putchar_fd('\\', 1);
             }
             i++;
         }
@@ -126,8 +126,8 @@ void	export_print(char **export_env)
         }
         if(get_equal(*export_env))
         {
-            if(check_char(*export_env, '"'))
-                ft_putchar_fd('\\', 1);
+            // if(check_char(*export_env, '"'))
+            //     ft_putchar_fd('\\', 1);
             ft_putchar_fd('"', 1);
         }
 		ft_putstr_fd("\n", 1);
@@ -232,6 +232,7 @@ void env_export_all_cases(char *var, char ***env, int size)
         i++;
     }
     *env = ft_array(*env, var);
+    exit_status(0);
 }
 
 
@@ -262,7 +263,7 @@ void exec_export(char *var, t_env *enviroment)
     }
     env_export_all_cases(var, &enviroment->export, size); 
     env_export_all_cases(var, &enviroment->env, size); 
-    exit_status(0);
+    
 }
 
 void exec_unset(char *s, char ***env)

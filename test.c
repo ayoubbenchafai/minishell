@@ -6,28 +6,13 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 02:58:52 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/02 02:00:36 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/24 15:11:48 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "minishell.h"
 
-int pipe_parse_error(t_command *cmd)
-{
-    t_command *tmp;
-    tmp = cmd;
-    while(tmp)
-    {
-        if(tmp && tmp->cmd && !tmp->cmd[0])
-        {
-            // printf("minishell$ parse error near `|'\n");
-            return (127);
-        }
-        tmp = tmp->next;
-    }
-    return 0;
-}
 void display_cmd(t_command *node)
 {
     int i;

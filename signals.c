@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:34:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/23 21:01:43 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/24 18:37:42 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,17 @@ void run_signals(void)
 {
     rl_catch_signals = 0;
     signal(SIGINT, ctr_c);
-    signal(SIGQUIT, bach_slash);
+    signal(SIGQUIT, SIG_IGN);
+    // signal(SIGQUIT, bach_slash);
 }
 
 void	signal_exec(void)
 {
-	if (signal(SIGINT, SIG_DFL) == SIG_ERR
-		|| signal(SIGQUIT, SIG_DFL) == SIG_ERR)
-		return (exit_status(1));
+	// if (signal(SIGINT, SIG_DFL) == SIG_ERR
+	// 	|| signal(SIGQUIT, SIG_DFL) == SIG_ERR)
+	// 	return (exit_status(1));
+    signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
 }
 
 void ctr_d(void)
@@ -38,21 +41,35 @@ void	exit_status(int exit_status)
 
 void ctr_c(int sig)
 {
-    // (void)sig;
-    if(sig == SIGINT)
-    {
+    (void)sig;
+    // if(sig == SIGINT)
+    // {
         write(1,"\n",1);
-        get_exit_status = 1;
         rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
-    }
+        get_exit_status = 1;
+    // }
 }
-void bach_slash(int sig)
-{
-    if (sig == SIGQUIT)
-    {
-        get_exit_status = 0;
-        signal(SIGQUIT, SIG_IGN);
-    }
-}
+
+// void handle_signal(int sig)
+// {
+//     if(sig == SIGINT)
+//     {
+//         write(1,"\n",1);
+//         get_exit_status = 130;
+//     }
+//     else if(sig == SIGQUIT)
+//     {
+//         write(1,"Quit: 3\n",8);
+//         get_exit_status = 131;
+//     }
+// }
+// void bach_slash(int sig)
+// {
+//     if (sig == SIGQUIT)
+//     {
+//         get_exit_status = 0;
+//         signal(SIGQUIT, SIG_IGN);
+//     }
+// }
