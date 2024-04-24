@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/23 19:13:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/24 12:51:08 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,7 +326,7 @@ void exec_exit(char **cmd)
 {
     if(!cmd[1])
         exit(0);
-    else if (cmd[1] && cmd[2])
+    else if (cmd && cmd[1] && cmd[2])
     {
         ft_putstr_fd("exit\n", 2);
         ft_putstr_fd("minishell: exit: too many arguments\n", 2);
@@ -335,7 +335,7 @@ void exec_exit(char **cmd)
     else
     {
         int i = 0;
-        while(cmd[1][i])
+        while(cmd && cmd[1][i])
         {
             if(!ft_isdigit(cmd[1][i]))
             {
@@ -349,28 +349,26 @@ void exec_exit(char **cmd)
             i++;
         }
     }
-    printf("exit ,  %d\n", ft_atoi(cmd[1]));
-    //exit_status(ft_atoi(cmd[1]));
-    exit(ft_atoi(cmd[1]));//khsha tbdel exit status
+    if(cmd  && cmd[1])
+    {
+        printf("exit ,  %d\n", ft_atoi(cmd[1]));
+        //exit_status(ft_atoi(cmd[1]));
+        exit(ft_atoi(cmd[1]));//khsha tbdel exit status
+    }
 }
 
 void get_exit_value(char *av)
 {
-    // static int value = 0;
-    // value = n;
-    int res = ft_atoi(av);
-    if(res >= 256)
-        res = (256  - res) * (-1);
-    else if(res < 0)
-        res = 256 + res;
     //255 = > 255
     //256 => 0
     //257 => 1
     // 2147483648 => 0
     //9223372036854775807 => 255
     //9223372036854775807> => 255 error numeric argument required
-    
-    printf("exit ,  %d\n", res);
+    unsigned long  res = ft_atoi(av);
+    res = res % 256;
+    printf("exit: %d\n", (int)res);
+    // exit(res);
 }
 int main(int ac, char *av[]) 
 {
