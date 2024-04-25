@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/24 15:16:09 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:27:14 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -370,11 +370,18 @@ void get_exit_value(char *av)
     printf("exit: %d\n", (int)res);
     // exit(res);
 }
+int exit_status(int exit_status)
+{
+    static int n = 0;
+    if(exit_status != -1)
+        n = exit_status;
+    return (n);
+}
 int main(int ac, char *av[]) 
 {
-    int i = 0;
-    while(++i < ac)
-        // exec_exit(av + i);
-        get_exit_value(av[i]);
+    // int i = 0;
+    // while(++i < ac)
+    //     // exec_exit(av + i);
+    //     get_exit_value(av[i]);
     return 0;
 }

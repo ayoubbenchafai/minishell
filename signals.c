@@ -6,18 +6,30 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:34:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/24 18:37:42 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:30:53 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void run_signals(void)
+int exit_status(int exit_status)
 {
-    rl_catch_signals = 0;
-    signal(SIGINT, ctr_c);
+    static int n;
+    
+    if (exit_status != -1)
+        n = exit_status;
+    return (n);
+}
+void run_signals(int flag)
+{
+    if(flag == 1)
+    {
+        rl_catch_signals = 0;
+        signal(SIGINT, ctr_c);
+    }   
+    else 
+        signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
-    // signal(SIGQUIT, bach_slash);
 }
 
 void	signal_exec(void)
@@ -34,42 +46,21 @@ void ctr_d(void)
     ft_putstr_fd("exit\n", 1);
     exit(0);
 }
-void	exit_status(int exit_status)
-{
-	get_exit_status = exit_status;
-}
+// void	exit_status(int exit_status)
+// {
+// 	get_exit_status = exit_status;
+// }
 
 void ctr_c(int sig)
 {
-    (void)sig;
-    // if(sig == SIGINT)
-    // {
+    // (void)sig;
+    if(sig == SIGINT)
+    {
         write(1,"\n",1);
         rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
-        get_exit_status = 1;
-    // }
+        exit_status(1);
+        // get_exit_status = 1;
+    }
 }
-
-// void handle_signal(int sig)
-// {
-//     if(sig == SIGINT)
-//     {
-//         write(1,"\n",1);
-//         get_exit_status = 130;
-//     }
-//     else if(sig == SIGQUIT)
-//     {
-//         write(1,"Quit: 3\n",8);
-//         get_exit_status = 131;
-//     }
-// }
-// void bach_slash(int sig)
-// {
-//     if (sig == SIGQUIT)
-//     {
-//         get_exit_status = 0;
-//         signal(SIGQUIT, SIG_IGN);
-//     }
-// }

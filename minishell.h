@@ -32,9 +32,9 @@ typedef struct s_command
 }           t_command;
 
 
-int get_exit_status;
+// int get_exit_status;
 //-----------------------------------------------------
-void	exit_status(int exit_status);
+int	exit_status(int exit_status);
 void	signal_exec(void);
 //-
 t_command *set_newlist(t_node **node);
@@ -58,10 +58,10 @@ int ft_herdoc(char *s);
 int make_process(t_command *command, t_env *env, char *path, int *i);
 // int make_process(t_command *command, char **env, char *path, int *i, char **export_env);
 char **ft_array(char **array, char *s);
-void run_signals();
+void run_signals(int flag);
 void ctr_d();
 void ctr_c(int sig);
-void bach_slash(int sig);
+// void bach_slash(int sig);
 int pipe_parse_error(t_node *node);
 char **get_env(char **env);
 // void exec_export(char *var, char ***env);

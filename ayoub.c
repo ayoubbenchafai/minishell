@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/24 18:42:29 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:07:46 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int pipe_parse_error(t_node *node)
     if (ptr && !ft_strncmp(ptr->type, "pipe", 4))
     {
         printf("parse error near `|'\n");
+        exit_status(258);
         return 1;
     }
     while (ptr)
@@ -34,6 +35,7 @@ int pipe_parse_error(t_node *node)
             if(!ptr || !ft_strncmp(ptr->type, "pipe", 4))
             {
                 printf("parse error near `|'\n");
+                exit_status(258);
                 return 1;
             }
         }
@@ -269,8 +271,9 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
     int fd[2];
     int pid;
     int response = 0;
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
+    run_signals(0);
+    // signal(SIGINT, SIG_IGN);
+    // signal(SIGQUIT, SIG_IGN);
     if(!command->cmd)
         return 0;
     if(command->next)
@@ -315,15 +318,32 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
     }
     return 0;
 }
+void signal_here_doc(int sig)
+{
+    if(sig == SIGINT)
+    {
+        
+        // get_exit_status = 1;
+        // exit_status(1);
+        write(1,"\n",1);
+        rl_replace_line("", 0);
+        rl_on_new_line();
+        rl_redisplay();
+        exit_status(1);
+    }
+}
 
 int ft_herdoc(char *s)
 {
     int fd[2];
     char *line;
     char *tmp;
-    pipe(fd);
+    pipe(fd); // protection
+    // signal(SIGINT, signal_here_doc);
     while(1)
     {
+        if(exit_status(-1) == 1)
+            break;
         line = readline("heredoc> ");
         if(!line)
             break;

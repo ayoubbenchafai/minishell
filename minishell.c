@@ -239,7 +239,7 @@ void exec_echo(char **cmd, char **env)
     {
         if(!ft_strncmp(cmd[1], "$?", 2))
         {
-            ft_putstr_fd(ft_itoa(get_exit_status), 1);
+            ft_putstr_fd(ft_itoa(exit_status(-1)), 1);
             ft_putstr_fd(cmd[1] + 2, 1);
             ft_putstr_fd("\n", 1);
 			exit_status(0);
@@ -276,6 +276,7 @@ int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses)
 	line = NULL;
 	while(1)
 	{
+		run_signals(1);
 		line = readline("minishell$ ");
 		if(!line || !strncmp(line, "exit", 4))
 			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
@@ -307,8 +308,6 @@ int main(int argc, char **argv, char **env)
 	addresses = NULL;
 	environment.env = get_env(env);
 	environment.export = get_env(env);
-	get_exit_status = 0;
-	run_signals();
 	ft_minishell(tokens, &environment, addresses);
 	return 0;
 }
