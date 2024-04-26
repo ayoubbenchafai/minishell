@@ -66,7 +66,8 @@ int pipe_parse_error(t_node *node);
 char **get_env(char **env);
 // void exec_export(char *var, char ***env);
 // void exec_export(char *var, char ***env, char ***export_env);
-void exec_export(char *var, t_env *environment);
+// void exec_export(char *var, t_env *environment);
+void exec_export(char **vars, t_env *enviroment);
 void exec_unset(char *s, char ***env);
 //-----------------------------------------------------
 void exec_echo(char **cmd, char **env);

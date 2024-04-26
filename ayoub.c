@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/25 20:07:46 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/26 12:05:05 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,11 @@ void execute_commands(t_command *cmd, t_env *environment, t_node **addresses)
         
         g_pid = wait(&status);
         if(g_pid == -1)
-            exit_status(127);
+        {
+            printf("error\n");
+            return ;
+            // exit_status(127);
+        }
             // return ;
         if(g_pid == pid)
             exit_status(WEXITSTATUS(status));
@@ -326,9 +330,9 @@ void signal_here_doc(int sig)
         // get_exit_status = 1;
         // exit_status(1);
         write(1,"\n",1);
-        rl_replace_line("", 0);
-        rl_on_new_line();
-        rl_redisplay();
+        // rl_replace_line("", 0);
+        // rl_on_new_line();
+        // rl_redisplay();
         exit_status(1);
     }
 }
@@ -338,12 +342,16 @@ int ft_herdoc(char *s)
     int fd[2];
     char *line;
     char *tmp;
+    signal(SIGINT, SIG_DFL);
     pipe(fd); // protection
-    // signal(SIGINT, signal_here_doc);
     while(1)
     {
+        signal(SIGINT, signal_here_doc);
         if(exit_status(-1) == 1)
-            break;
+        {
+            close(fd[1]);
+            return (-1);
+        }
         line = readline("heredoc> ");
         if(!line)
             break;
@@ -398,7 +406,9 @@ char	**ft_pathname(char *p, char **cmdargs, char **env)
             return (cmdargs);
         }
 	}
-    printf("command not found\n");
+    // printf("command not found\n");
+    printf("minishell: %s:command not found\n", cmdargs[0]);
+    exit_status(127);
 	return (NULL);
 }
 char	*ft_join_free(char *s, const char *buf)

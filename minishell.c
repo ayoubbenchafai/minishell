@@ -206,11 +206,13 @@ int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 	else if(!ft_strncmp(commands->cmd[0], "env", 3))
 		return (exec_env(environment->env), 1);
 	if(!ft_strncmp(commands->cmd[0], "export", 6))
-		return (exec_export(commands->cmd[1], environment), 1);
+		// return (exec_export(commands->cmd[1], environment), 1);
+		return (exec_export(commands->cmd, environment), 1);
+
 	else if(!ft_strncmp(commands->cmd[0], "unset", 5))
 		return (exec_unset(commands->cmd[1], &environment->env),1);
 	else if(!ft_strncmp(commands->cmd[0], "$", 1))
-		return (printf("command not found: "), expand(commands->cmd[0], environment->env), 1);
+		return (printf("minishell : %d: command not found\n", exit_status(-1)), expand(commands->cmd[0], environment->env), 1);
 	return 0;
 }
 

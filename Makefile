@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = 
+CFLAGS = -fsanitize=address
 SRC = minishell.c ft_malloc.c f.c pwd.c cd.c env.c ayoub.c signals.c
 OBJ = $(SRC:.c=.o)
 

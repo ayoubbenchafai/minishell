@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/24 18:41:00 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/26 12:44:37 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,6 @@ void sort_env(char **env)
     }
 }
 
-// int exec_env(char **env)
-// {
-//     int i;
-
-//     i = 0;
-//     while(env && env[i])
-//     {
-//         ft_putstr_fd(env[i], 1);
-//         ft_putstr_fd("\n", 1);
-//         i++;
-//     }
-//     return 0;
-// }
 int exec_env(char **env)
 {
     int i;
@@ -237,33 +224,35 @@ void env_export_all_cases(char *var, char ***env, int size)
 
 
 
-void exec_export(char *var, t_env *enviroment)
+void exec_export(char **vars, t_env *enviroment)
 {
-    int i = 0;
-    int j;
+    int i;
     int size;
     
-    if(!var)
+    i = 1;
+    if(!vars || !vars[1])
     {
         export_print(enviroment->export);
         return ;
     }
-    printf("var = %s\n", var);
-    if(!check_error(var))
+    while(vars && vars[i])
     {
-        printf("export: not a valid identifier\n");
-        exit_status(1);
-        return ;
+        size = get_best_size(vars[i]);
+        if(!check_error(vars[i]))
+        {
+            printf("export: not a valid identifier\n");
+            exit_status(1);
+            return ;
+        }
+        if (!get_equal(vars[i]))
+        {
+            env_export_all_cases(vars[i++], &enviroment->export, size);
+            continue ;
+        }
+        env_export_all_cases(vars[i], &enviroment->export, size);
+        env_export_all_cases(vars[i], &enviroment->env, size);
+        i++;
     }
-    size = get_best_size(var);
-    if (!get_equal(var))
-    {
-       env_export_all_cases(var, &enviroment->export, size);
-       return ;
-    }
-    env_export_all_cases(var, &enviroment->export, size); 
-    env_export_all_cases(var, &enviroment->env, size); 
-    
 }
 
 void exec_unset(char *s, char ***env)
