@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/28 22:31:00 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/28 22:39:09 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -424,6 +424,7 @@ static void  ft_read_input(char *s, t_heredoc *heredoc)
 int ft_herdoc(char *s)
 {
     int         pid;
+    int status;
     t_heredoc   heredoc;
     heredoc.fd_write = open("here_doc", O_CREAT | O_RDWR | O_TRUNC, 0644);
     heredoc.fd_read = open("here_doc", O_RDONLY, 0644);
@@ -439,7 +440,15 @@ int ft_herdoc(char *s)
         ft_read_input(s, &heredoc);
         exit(0);
     }
-    wait(NULL);
+    int a = wait(&status);
+    if(a == -1)
+        return (-1);
+    if(WIFEXITED(status))
+    {
+        if(WEXITSTATUS(status) == 1)
+            exit_status(1);
+            // return (-1);
+    }
     close(heredoc.fd_write);
     return (heredoc.fd_read);
 }
