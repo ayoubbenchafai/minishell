@@ -10,6 +10,9 @@
 #include "libft/libft.h"
 #include <unistd.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <termios.h>
+
 typedef struct s_node
 {
 	void *value;
@@ -31,8 +34,12 @@ typedef struct s_command
     struct s_command  *next;
 }           t_command;
 
+typedef struct s_heredoc
+{
+    int fd_write;
+    int fd_read;
+}   t_heredoc;
 
-// int get_exit_status;
 //-----------------------------------------------------
 int	exit_status(int exit_status);
 void	signal_exec(void);

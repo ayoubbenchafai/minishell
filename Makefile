@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -fsanitize=address
+CFLAGS = #-fsanitize=address
 SRC = minishell.c ft_malloc.c f.c pwd.c cd.c env.c ayoub.c signals.c
 OBJ = $(SRC:.c=.o)
 
@@ -17,12 +17,12 @@ $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(CFLAGS) -g -c $< -I $(LINKREADLINELIB1) -o $@
 
 clean:
+	(cd libft && make clean)
 	rm -f $(OBJ)
-	$(MAKE) -C libft clean
 
 fclean: clean
+	(cd libft && make fclean)
 	rm -f $(NAME)
-	$(MAKE) -C libft fclean
 
 re: fclean all
 

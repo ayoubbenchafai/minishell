@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/25 18:27:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/28 15:29:08 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,9 +365,9 @@ void get_exit_value(char *av)
     // 2147483648 => 0
     //9223372036854775807 => 255
     //9223372036854775807> => 255 error numeric argument required
-    unsigned long  res = ft_atoi(av);
+    unsigned int  res = ft_atoi(av);
     res = res % 256;
-    printf("exit: %d\n", (int)res);
+    printf("exit: %d\n", res);
     // exit(res);
 }
 int exit_status(int exit_status)
@@ -377,11 +377,69 @@ int exit_status(int exit_status)
         n = exit_status;
     return (n);
 }
+typedef struct s_heredoc
+{
+    int fd_write;
+    int fd_read;
+}   t_heredoc;
+
+static void  ft_read_input(char *s, t_heredoc *heredoc)
+{
+    char *line;
+    char *tmp;
+    while(1)
+    {
+        // if(exit_status(-1) == 1)
+        //     break ;  
+        line = readline("heredoc> ");
+        if(!line)
+            break ;
+        if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
+        {
+            free(line);
+            break;
+        }
+        tmp = ft_strjoin(line, "\n");
+        write(heredoc->fd_write, tmp, ft_strlen(tmp));
+        free(tmp);
+        free(line);
+    }
+    close(heredoc->fd_write);
+    close(heredoc->fd_read);
+    
+}
+int ft_herdoc(char *s)
+{
+    int         pid;
+    t_heredoc   heredoc;
+    heredoc.fd_write = open("here_doc", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    heredoc.fd_read = open("here_doc", O_RDONLY, 0644);
+    if(heredoc.fd_write == -1 || heredoc.fd_read == -1 || unlink("here_doc") == -1)
+        return (-1);
+    pid = fork();
+    if(pid == -1)
+        return (-1);
+    if(pid == 0)
+    {
+        ft_read_input(s, &heredoc);
+        exit(0);
+    }
+        wait(NULL);
+    close(heredoc.fd_write);
+    return (heredoc.fd_read);
+}
+    
+    // if(pid == 0)
+    // {
+    //     ft_read_input(s, &heredoc);
+    //     exit(0);
+    // }
+    // else
+    //     wait(NULL);
+    // close(heredoc.fd_write);
+    // return (heredoc.fd_read);
+}
 int main(int ac, char *av[]) 
 {
-    // int i = 0;
-    // while(++i < ac)
-    //     // exec_exit(av + i);
-    //     get_exit_value(av[i]);
     return 0;
 }

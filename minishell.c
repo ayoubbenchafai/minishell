@@ -213,7 +213,7 @@ int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 		return (exec_unset(commands->cmd[1], &environment->env),1);
 	else if(!ft_strncmp(commands->cmd[0], "$", 1))
 		return (printf("minishell : %d: command not found\n", exit_status(-1)), expand(commands->cmd[0], environment->env), 1);
-	return 0;
+	return (0);
 }
 
 static void	print_words(char **words)
@@ -270,10 +270,21 @@ void exec_echo(char **cmd, char **env)
 		ft_putstr_fd("\n", 1);
 	}
 }
+static void    get_terminal_attr(struct termios *original_termios)
+{
+    tcgetattr(STDIN_FILENO, original_termios);
+    original_termios->c_lflag &= ~ECHOCTL;
+    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
+}
+static void    restore_terminal_attributes(struct termios *original_termios)
+{
+    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
+}
 
-int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses)
+int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses, struct termios *original_termios)
 {
 	char *line;
+	char *tmp;
 
 	line = NULL;
 	while(1)
@@ -293,6 +304,7 @@ int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses)
 		execute_commands(set_newlist(&tokens), environment,&addresses);
 		tokens = NULL;
 		free(line);
+		restore_terminal_attributes(original_termios);
     }
 	return (1);
 }
@@ -304,12 +316,14 @@ int main(int argc, char **argv, char **env)
 	t_node  *tokens; 
     t_node  *addresses;
 	t_env environment;
-	
+	struct termios original_termios;
+
 	line = NULL;
 	tokens = NULL;
 	addresses = NULL;
+	get_terminal_attr(&original_termios);
 	environment.env = get_env(env);
 	environment.export = get_env(env);
-	ft_minishell(tokens, &environment, addresses);
+	ft_minishell(tokens, &environment, addresses, &original_termios);
 	return 0;
 }

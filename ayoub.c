@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/26 12:05:05 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/28 22:31:00 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag)
             {
                 if (flag)
                     *fd_in = open((*node)->value, O_RDONLY, 0644);
-            else
+                else
                     *fd_in = ft_herdoc((*node)->value);
                 *node = (*node)->next;
             }
@@ -324,50 +324,126 @@ int make_process(t_command *command, t_env *env, char *path, int *i)
 }
 void signal_here_doc(int sig)
 {
-    if(sig == SIGINT)
-    {
-        
-        // get_exit_status = 1;
-        // exit_status(1);
-        write(1,"\n",1);
-        // rl_replace_line("", 0);
-        // rl_on_new_line();
-        // rl_redisplay();
-        exit_status(1);
-    }
+    (void)(sig);
+    write(1,"\n",1);
+        exit(1);
 }
 
-int ft_herdoc(char *s)
+// int ft_herdoc(char *s)
+// {
+//     int fd[2]; 
+//     signal(SIGINT, signal_here_doc);
+//     char *line;
+//     char *tmp;
+//     pipe(fd);
+//     while(1)
+//     {
+//         if(exit_status(-1) == 1)
+//             break ;  
+//         line = readline("heredoc> ");
+//         if(!line)
+//             break;
+//         if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
+//         {
+//             free(line);
+//             break;
+//         }
+//         tmp = ft_strjoin(line, "\n");
+//         write(fd[1], tmp, ft_strlen(tmp));
+//         free(tmp);
+//         free(line);
+//     }
+//     close(fd[1]);
+//     return (fd[0]);
+// }
+
+// int ft_herdoc(char *s)
+// {
+//     signal(SIGINT, signal_here_doc);
+//     char *line;
+//     char *tmp;
+//     int fd_write = open("here_doc", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+//     int fd_read = open("here_doc", O_RDONLY, 0644);
+//     if(fd_write == -1 || fd_read == -1)
+//     {
+//         perror("Error opening file");
+//         return -1;
+//     }
+//     if(unlink("here_doc") == -1)
+//     {
+//         perror("Error deleting file");
+//         return -1;
+//     }
+//     while(1)
+//     {
+//         if(exit_status(-1) == 1)
+//             break ;  
+//         line = readline("heredoc> ");
+//         if(!line)
+//             break;
+//         if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
+//         {
+//             free(line);
+//             break;
+//         }
+//         tmp = ft_strjoin(line, "\n");
+//         write(fd_write, tmp, ft_strlen(tmp));
+//         free(tmp);
+//         free(line);
+//     }
+//     close(fd_write);
+//     return (fd_read);
+// }
+
+static void  ft_read_input(char *s, t_heredoc *heredoc)
 {
-    int fd[2];
     char *line;
     char *tmp;
-    signal(SIGINT, SIG_DFL);
-    pipe(fd); // protection
+    signal(SIGINT, signal_here_doc);
+    // rl_catch_signals = 1;
     while(1)
     {
-        signal(SIGINT, signal_here_doc);
-        if(exit_status(-1) == 1)
-        {
-            close(fd[1]);
-            return (-1);
-        }
+        // if(exit_status(-1) == 1)
+        //     break ;  
         line = readline("heredoc> ");
         if(!line)
-            break;
+            break ;
         if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
         {
             free(line);
             break;
         }
         tmp = ft_strjoin(line, "\n");
-        write(fd[1], tmp, ft_strlen(tmp));
+        write(heredoc->fd_write, tmp, ft_strlen(tmp));
         free(tmp);
         free(line);
     }
-    close(fd[1]);
-    return (fd[0]);
+    // close(heredoc->fd_write);
+    // close(heredoc->fd_read);
 }
+int ft_herdoc(char *s)
+{
+    int         pid;
+    t_heredoc   heredoc;
+    heredoc.fd_write = open("here_doc", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    heredoc.fd_read = open("here_doc", O_RDONLY, 0644);
+    if(heredoc.fd_write == -1 || heredoc.fd_read == -1 || unlink("here_doc") == -1)
+        return (-1);
+    run_signals(0);
+    pid = fork();
+    if(pid == -1)
+        return (-1);
+    if(pid == 0)
+    {
+        // signal(SIGINT, SIG_DFL);
+        ft_read_input(s, &heredoc);
+        exit(0);
+    }
+    wait(NULL);
+    close(heredoc.fd_write);
+    return (heredoc.fd_read);
+}
+
 char	*get_environment(char **envp, char *var)
 {
 	int		i;
