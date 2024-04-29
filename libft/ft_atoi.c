@@ -6,19 +6,18 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 19:31:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/29 21:09:26 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/29 22:26:49 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-// #include <limits.h>
 
 int	ft_atoi(const char *str)
 {
 	int				i;
 	int				sign;
-	long long		result;
-	// long long		prev;
+	long  long		result;
+	long  long		prev;
 
 	i = 0;
 	sign = 1;
@@ -33,13 +32,16 @@ int	ft_atoi(const char *str)
 	}
 	while (str[i] >= '0' && str[i] <= '9')
 	{
+        prev = result;
 		result = (result * 10) + str[i] - '0';
-		if(result > LONG_MAX)
-		{
-			ft_putendl_fd("minishell: numeric argument required", 2);
-			exit_status(255);
-			return (255);
-		}
+        printf("prev : %lld, result: %lld\n", prev, result);
+        if(prev != result / 10)
+        {
+            ft_putendl_fd("exit", 2);
+            ft_putendl_fd("minishell: numeric argument required", 2);
+            exit_status(255);
+            exit(-1);
+        }
 		i++;
 	}
 	return (sign * result);

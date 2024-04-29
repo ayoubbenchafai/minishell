@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/29 21:07:56 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/29 22:29:29 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,46 +417,12 @@ void exec_exit(char **cmd)
         exit(ft_atoi(cmd[1]));//khsha tbdel exit status
     }
 }
-// int	ft_atoi(const char *str)
-// {
-// 	int				i;
-// 	int				sign;
-// 	unsigned  long		result;
-// 	// long long		prev;
-
-// 	i = 0;
-// 	sign = 1;
-// 	result = 0;
-// 	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
-// 		i++;
-// 	if (str[i] == '-' || str[i] == '+')
-// 	{
-// 		if (str[i] == '-')
-// 			sign *= -1;
-// 		i++;
-// 	}
-// 	while (str[i] >= '0' && str[i] <= '9')
-// 	{
-// 		result = (result * 10) + str[i] - '0';
-//         if (result == ULONG_MAX && sign == 1)
-//             return (255);
-// 		if(result > ULONG_MAX && sign == 1)
-//         {
-//             ft_putendl_fd("minishell: numeric argument required", 2);
-//             exit_status(255);
-//             return (255);
-//         }
-// 		i++;
-// 	}
-// 	return (sign * result);
-// }
-
 int	ft_atoi(const char *str)
 {
 	int				i;
 	int				sign;
 	long  long		result;
-	long long		prev;
+	long  long		prev;
 
 	i = 0;
 	sign = 1;
@@ -473,8 +439,10 @@ int	ft_atoi(const char *str)
 	{
         prev = result;
 		result = (result * 10) + str[i] - '0';
+        // printf("prev : %lld, result: %lld\n", prev, result);
         if(prev != result / 10)
         {
+            ft_putendl_fd("exit", 2);
             ft_putendl_fd("minishell: numeric argument required", 2);
             exit_status(255);
             exit(-1);
@@ -498,14 +466,15 @@ void get_exit_value(char *av)
     else
         res = res % 256;
     printf("exit: %d\n", res);
+    exit(res);
 }
 int main(int ac, char *av[]) 
 {
-    int i = 0;
-    while(++i < ac)
-        get_exit_value(av[i]);
-        // exec_exit(av + i);
+    // int i = 0;
+    // while(++i < ac)
+    //     get_exit_value(av[i]);
+    //     // exec_exit(av + i);
 
-    // printf("exit: %d\n", ft_atoi(av[1]));
+    printf("exit: %d\n", ft_atoi(av[1]));
     return 0;
 }
