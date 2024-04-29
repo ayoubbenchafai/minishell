@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/03 00:15:49 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/28 15:29:08 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/29 21:07:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include "libft/libft.h"
 
 void swap(char **a, char **b)
@@ -322,6 +323,66 @@ int set_expand(char *var)
 }
 //$$$$USER$$$$ ==> should print $$$username$$$$
 //$$$aben-cha$$$
+
+int exit_status(int exit_status)
+{
+    static int n = 0;
+    if(exit_status != -1)
+        n = exit_status;
+    return (n);
+}
+typedef struct s_heredoc
+{
+    int fd_write;
+    int fd_read;
+}   t_heredoc;
+
+// static void  ft_read_input(char *s, t_heredoc *heredoc)
+// {
+//     char *line;
+//     char *tmp;
+//     while(1)
+//     {
+//         // if(exit_status(-1) == 1)
+//         //     break ;  
+//         line = readline("heredoc> ");
+//         if(!line)
+//             break ;
+//         if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
+//         {
+//             free(line);
+//             break;
+//         }
+//         tmp = ft_strjoin(line, "\n");
+//         write(heredoc->fd_write, tmp, ft_strlen(tmp));
+//         free(tmp);
+//         free(line);
+//     }
+//     close(heredoc->fd_write);
+//     close(heredoc->fd_read);
+    
+// }
+// int ft_herdoc(char *s)
+// {
+//     int         pid;
+//     t_heredoc   heredoc;
+//     heredoc.fd_write = open("here_doc", O_CREAT | O_RDWR | O_TRUNC, 0644);
+//     heredoc.fd_read = open("here_doc", O_RDONLY, 0644);
+//     if(heredoc.fd_write == -1 || heredoc.fd_read == -1 || unlink("here_doc") == -1)
+//         return (-1);
+//     pid = fork();
+//     if(pid == -1)
+//         return (-1);
+//     if(pid == 0)
+//     {
+//         ft_read_input(s, &heredoc);
+//         exit(0);
+//     }
+//         wait(NULL);
+//     close(heredoc.fd_write);
+//     return (heredoc.fd_read);
+// }
+
 void exec_exit(char **cmd)
 {
     if(!cmd[1])
@@ -351,12 +412,77 @@ void exec_exit(char **cmd)
     }
     if(cmd  && cmd[1])
     {
-        printf("exit ,  %d\n", ft_atoi(cmd[1]));
+        printf("exit ,  %d\n", ft_atoi(cmd[1]) % 256);
         //exit_status(ft_atoi(cmd[1]));
         exit(ft_atoi(cmd[1]));//khsha tbdel exit status
     }
 }
+// int	ft_atoi(const char *str)
+// {
+// 	int				i;
+// 	int				sign;
+// 	unsigned  long		result;
+// 	// long long		prev;
 
+// 	i = 0;
+// 	sign = 1;
+// 	result = 0;
+// 	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+// 		i++;
+// 	if (str[i] == '-' || str[i] == '+')
+// 	{
+// 		if (str[i] == '-')
+// 			sign *= -1;
+// 		i++;
+// 	}
+// 	while (str[i] >= '0' && str[i] <= '9')
+// 	{
+// 		result = (result * 10) + str[i] - '0';
+//         if (result == ULONG_MAX && sign == 1)
+//             return (255);
+// 		if(result > ULONG_MAX && sign == 1)
+//         {
+//             ft_putendl_fd("minishell: numeric argument required", 2);
+//             exit_status(255);
+//             return (255);
+//         }
+// 		i++;
+// 	}
+// 	return (sign * result);
+// }
+
+int	ft_atoi(const char *str)
+{
+	int				i;
+	int				sign;
+	long  long		result;
+	long long		prev;
+
+	i = 0;
+	sign = 1;
+	result = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+        prev = result;
+		result = (result * 10) + str[i] - '0';
+        if(prev != result / 10)
+        {
+            ft_putendl_fd("minishell: numeric argument required", 2);
+            exit_status(255);
+            exit(-1);
+        }
+		i++;
+	}
+	return (sign * result);
+}
 void get_exit_value(char *av)
 {
     //255 = > 255
@@ -365,81 +491,21 @@ void get_exit_value(char *av)
     // 2147483648 => 0
     //9223372036854775807 => 255
     //9223372036854775807> => 255 error numeric argument required
-    unsigned int  res = ft_atoi(av);
-    res = res % 256;
+    int res = ft_atoi(av);
+    printf("res: %d\n", res);
+    if(res < 0)
+        res = 256 + res;
+    else
+        res = res % 256;
     printf("exit: %d\n", res);
-    // exit(res);
-}
-int exit_status(int exit_status)
-{
-    static int n = 0;
-    if(exit_status != -1)
-        n = exit_status;
-    return (n);
-}
-typedef struct s_heredoc
-{
-    int fd_write;
-    int fd_read;
-}   t_heredoc;
-
-static void  ft_read_input(char *s, t_heredoc *heredoc)
-{
-    char *line;
-    char *tmp;
-    while(1)
-    {
-        // if(exit_status(-1) == 1)
-        //     break ;  
-        line = readline("heredoc> ");
-        if(!line)
-            break ;
-        if(!ft_strncmp(line, s, ft_strlen(s)) && ft_strlen(line) == ft_strlen(s))
-        {
-            free(line);
-            break;
-        }
-        tmp = ft_strjoin(line, "\n");
-        write(heredoc->fd_write, tmp, ft_strlen(tmp));
-        free(tmp);
-        free(line);
-    }
-    close(heredoc->fd_write);
-    close(heredoc->fd_read);
-    
-}
-int ft_herdoc(char *s)
-{
-    int         pid;
-    t_heredoc   heredoc;
-    heredoc.fd_write = open("here_doc", O_CREAT | O_RDWR | O_TRUNC, 0644);
-    heredoc.fd_read = open("here_doc", O_RDONLY, 0644);
-    if(heredoc.fd_write == -1 || heredoc.fd_read == -1 || unlink("here_doc") == -1)
-        return (-1);
-    pid = fork();
-    if(pid == -1)
-        return (-1);
-    if(pid == 0)
-    {
-        ft_read_input(s, &heredoc);
-        exit(0);
-    }
-        wait(NULL);
-    close(heredoc.fd_write);
-    return (heredoc.fd_read);
-}
-    
-    // if(pid == 0)
-    // {
-    //     ft_read_input(s, &heredoc);
-    //     exit(0);
-    // }
-    // else
-    //     wait(NULL);
-    // close(heredoc.fd_write);
-    // return (heredoc.fd_read);
 }
 int main(int ac, char *av[]) 
 {
+    int i = 0;
+    while(++i < ac)
+        get_exit_value(av[i]);
+        // exec_exit(av + i);
+
+    // printf("exit: %d\n", ft_atoi(av[1]));
     return 0;
 }

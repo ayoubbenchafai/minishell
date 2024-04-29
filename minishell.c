@@ -312,18 +312,18 @@ int main(int argc, char **argv, char **env)
 {
 	(void)(argc);
 	(void)(argv);
-	char    *line;
-	t_node  *tokens; 
-    t_node  *addresses;
-	t_env environment;
-	struct termios original_termios;
+	char			*line;
+	t_env			envir;
+	t_node			*tokens; 
+    t_node  		*addresses;
+	struct termios	original_termios;
 
 	line = NULL;
 	tokens = NULL;
 	addresses = NULL;
 	get_terminal_attr(&original_termios);
-	environment.env = get_env(env);
-	environment.export = get_env(env);
-	ft_minishell(tokens, &environment, addresses, &original_termios);
+	envir.env = get_env(env);
+	envir.export = get_env(env);
+	ft_minishell(tokens, &envir, addresses, &original_termios);
 	return 0;
 }
