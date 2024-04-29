@@ -193,6 +193,45 @@ int quotes_syntax(char *line)
 	}
 	return 0;
 }
+
+void exec_exit(char **cmd)
+{
+    if(!cmd[1])
+	{
+		ft_putstr_fd("exit\n", 2);
+		exit_status(0);
+		exit(0);
+	}
+    else if (cmd && cmd[1] && cmd[2])
+    {
+        ft_putstr_fd("exit\n", 2);
+        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+        exit_status(1);
+		return ;
+    }
+    else
+    {
+        int i = 0;
+        while(cmd && cmd[1][i])
+        {
+            if(!ft_isdigit(cmd[1][i]))
+            {
+                ft_putstr_fd("exit\n", 2);
+                ft_putstr_fd("minishell: exit: ", 2);
+                ft_putstr_fd(cmd[1], 2);
+                ft_putstr_fd(": numeric argument required\n", 2);
+                exit_status(255);
+                exit(255);
+            }
+            i++;
+        }
+    }
+    if(cmd  && cmd[1])
+    {
+        exit_status(ft_atoi(cmd[1]));
+        exit(ft_atoi(cmd[1]));//khsha tbdel exit status
+    }
+}
 int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 {
 	if(!commands->cmd)
@@ -205,6 +244,9 @@ int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 		return (exec_cd(commands->cmd[1]), 1);
 	else if(!ft_strncmp(commands->cmd[0], "env", 3))
 		return (exec_env(environment->env), 1);
+	else if(!strncmp(commands->cmd[0], "exit", 4))
+		return (exec_exit(commands->cmd), 1);
+		
 	if(!ft_strncmp(commands->cmd[0], "export", 6))
 		// return (exec_export(commands->cmd[1], environment), 1);
 		return (exec_export(commands->cmd, environment), 1);
@@ -212,7 +254,7 @@ int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
 	else if(!ft_strncmp(commands->cmd[0], "unset", 5))
 		return (exec_unset(commands->cmd[1], &environment->env),1);
 	else if(!ft_strncmp(commands->cmd[0], "$", 1))
-		return (printf("minishell : %d: command not found\n", exit_status(-1)), expand(commands->cmd[0], environment->env), 1);
+		return (printf("minishell : %d: command not found\n", exit_status(-1)), exit_status(127),expand(commands->cmd[0], environment->env), 1);
 	return (0);
 }
 
@@ -291,7 +333,7 @@ int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses, struct t
 	{
 		run_signals(1);
 		line = readline("minishell$ ");
-		if(!line || !strncmp(line, "exit", 4))
+		if(!line)
 			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
 		if(line[0] != '\0')
 			add_history(line);

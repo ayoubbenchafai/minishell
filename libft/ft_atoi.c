@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 19:31:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/29 22:26:49 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/04/29 22:36:53 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,11 @@ int	ft_atoi(const char *str)
 	{
         prev = result;
 		result = (result * 10) + str[i] - '0';
-        printf("prev : %lld, result: %lld\n", prev, result);
         if(prev != result / 10)
         {
             ft_putendl_fd("exit", 2);
             ft_putendl_fd("minishell: numeric argument required", 2);
-            exit_status(255);
+            // exit_status(255);
             exit(-1);
         }
 		i++;
