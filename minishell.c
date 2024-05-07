@@ -17,7 +17,7 @@ int check_pipes(char *line)
 
 int special_char(char c)
 {
-	char *special = " $<>&|;\'\"\t";
+	char *special = " <>&|;\'\"\t";
 	int i = 0;
 	while(special[i])
 	{
@@ -43,7 +43,7 @@ void ft_expand(char *line, t_node **commands, int *offset, t_node **addresses)
 			break;
 		++i;
 	}
-	tmp = malloc(i + 1);
+	tmp = ft_malloc(i + 1, addresses);
 	if(!tmp)
 		return ;
 	while(j < i)
@@ -53,7 +53,6 @@ void ft_expand(char *line, t_node **commands, int *offset, t_node **addresses)
 	}
 	tmp[j] = '\0';
 	ft_lstadd_back1(commands, ft_lstnew1(tmp, "var", addresses));
-	free(tmp);
 	*offset = *offset + i - 1;
 }
 
@@ -72,7 +71,7 @@ void ft_word(char *line, t_node **commands, int *offset, t_node **addresses)
 			break;
 		++i;
 	}
-	tmp = malloc(i + 1);
+	tmp = ft_malloc(i + 1, addresses);
 	if(!tmp)
 		return ;
 	while(j < i)
@@ -82,7 +81,7 @@ void ft_word(char *line, t_node **commands, int *offset, t_node **addresses)
 	}
 	tmp[j] = '\0';
 	ft_lstadd_back1(commands, ft_lstnew1(tmp, "word", addresses));
-	free(tmp);
+	// free(tmp);
 	*offset = *offset + i - 1;
 }
 void ft_quotes(char *line, t_node **commands, int *offset, t_node **addresses)
@@ -90,17 +89,16 @@ void ft_quotes(char *line, t_node **commands, int *offset, t_node **addresses)
 	int i;
 	int j;
 	char *tmp;
-	tmp = NULL;
-	i = 0;
+
+	i = 1;
 	j = 0;
-	++i;
 	while(line[i])
 	{
 		if(line[0] == line[i])
 			break;
 		++i;
 	}
-	tmp = malloc(i + 1);
+	tmp = ft_malloc(i + 1, addresses);
 	if(!tmp)
 		return ;
 	while(j < i-1)
@@ -109,8 +107,10 @@ void ft_quotes(char *line, t_node **commands, int *offset, t_node **addresses)
 		j++;
 	}
 	tmp[j] = '\0';
-	ft_lstadd_back1(commands, ft_lstnew1(tmp, "quote", addresses));
-	free(tmp);
+	if (line[0] == '\'')
+		ft_lstadd_back1(commands, ft_lstnew1(tmp, "s_quote", addresses));
+	else
+		ft_lstadd_back1(commands, ft_lstnew1(tmp, "d_quote", addresses));
 	*offset = *offset + i;
 }
 int check_quote(char *line, char c,	int *offset)
@@ -145,8 +145,8 @@ void parse_line(char *line, t_node **commands, t_node **addresses, int i)
 	{
 		if(line[i] == ' ' || line[i] == '\t')
 			ft_lstadd_back1(commands, ft_lstnew1(" ", "space", addresses));
-		else if(line[i] == '$')
-			ft_expand(&line[i], commands, &i, addresses);
+		// else if(line[i] == '$')
+		// 	ft_expand(&line[i], commands, &i, addresses);
 		else if(line[i] == '<' && line[i + 1] == '<' && ++i)
 			ft_lstadd_back1(commands, ft_lstnew1("<<", "here_doc", addresses));
 		else if(line[i] == '>' && line[i + 1] == '>' && ++i)
@@ -167,10 +167,7 @@ void parse_line(char *line, t_node **commands, t_node **addresses, int i)
 			i++;
 	}
 }
-void f()
-{
-	system("leaks minishell");
-}
+
 int quotes_syntax(char *line)
 {
 	int i;
@@ -181,11 +178,13 @@ int quotes_syntax(char *line)
 		if(line[i] == '\'' && check_quote(&line[i], '\'', &i) == 0)
 		{
 			printf("quote error\n");
+			exit_status(127);
 			return 1;
 		}
 		if(line[i] == '\"' && check_quote(&line[i], '\"', &i) == 0)
 		{
 			printf("quote error\n");
+			exit_status(127);
 			return 1;
 		}
 		if(line[i])
@@ -193,179 +192,70 @@ int quotes_syntax(char *line)
 	}
 	return 0;
 }
-
-void exec_exit(char **cmd)
+int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 {
-    if(!cmd[1])
-	{
-		ft_putstr_fd("exit\n", 2);
-		exit_status(0);
-		exit(0);
-	}
-    else if (cmd && cmd[1] && cmd[2])
-    {
-        ft_putstr_fd("exit\n", 2);
-        ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-        exit_status(1);
-		return ;
-    }
-    else
-    {
-        int i = 0;
-        while(cmd && cmd[1][i])
-        {
-            if(!ft_isdigit(cmd[1][i]))
-            {
-                ft_putstr_fd("exit\n", 2);
-                ft_putstr_fd("minishell: exit: ", 2);
-                ft_putstr_fd(cmd[1], 2);
-                ft_putstr_fd(": numeric argument required\n", 2);
-                exit_status(255);
-                exit(255);
-            }
-            i++;
-        }
-    }
-    if(cmd  && cmd[1])
-    {
-        exit_status(ft_atoi(cmd[1]));
-        exit(ft_atoi(cmd[1]));//khsha tbdel exit status
-    }
-}
-int is_builtin(t_command *commands, t_env *environment, t_node **addresses)
-{
-	if(!commands->cmd)
+	t_node *add;
+	
+	add = NULL;
+	if (!commands->cmd)
 		return 0;
-	if(!ft_strncmp(commands->cmd[0], "echo", 4))
-		return(exec_echo(commands->cmd, environment->env), 1);
-	else if(!ft_strncmp(commands->cmd[0], "pwd", 3))
+	if(!ft_strcmp(commands->cmd[0], "echo"))
+		return(exec_echo(commands->cmd, env->env, addresses), 1);
+	else if(!ft_strcmp(commands->cmd[0], "pwd"))
 		return (exec_pwd(), 1);
-	else if(!ft_strncmp(commands->cmd[0], "cd", 2))
-		return (exec_cd(commands->cmd[1]), 1);
-	else if(!ft_strncmp(commands->cmd[0], "env", 3))
-		return (exec_env(environment->env), 1);
-	else if(!strncmp(commands->cmd[0], "exit", 4))
+	// else if(!ft_strcmp(commands->cmd[0], "cd"))
+	// 	return (exec_cd(commands->cmd[1], env, addresses), 1);      
+	else if(!ft_strcmp(commands->cmd[0], "env"))
+		return (exec_env(env->env), 1);
+	else if(!ft_strcmp(commands->cmd[0], "export"))
+		return (exec_export(commands->cmd, &env->env, &env->export, addresses), 1);
+	else if(!ft_strcmp(commands->cmd[0], "unset"))
+	{
+		exec_unset(commands->cmd[1], &env->env, addresses);
+		exec_unset(commands->cmd[1], &env->export, addresses);
+		return (1);
+	}
+	else if(!ft_strcmp(commands->cmd[0], "exit"))
 		return (exec_exit(commands->cmd), 1);
-		
-	if(!ft_strncmp(commands->cmd[0], "export", 6))
-		// return (exec_export(commands->cmd[1], environment), 1);
-		return (exec_export(commands->cmd, environment), 1);
-
-	else if(!ft_strncmp(commands->cmd[0], "unset", 5))
-		return (exec_unset(commands->cmd[1], &environment->env),1);
-	else if(!ft_strncmp(commands->cmd[0], "$", 1))
-		return (printf("minishell : %d: command not found\n", exit_status(-1)), exit_status(127),expand(commands->cmd[0], environment->env), 1);
-	return (0);
+	return 0;
 }
 
-static void	print_words(char **words)
+void f(void)
 {
-	int	i;
-
-	i = 0;
-	while (words && words[i])
-	{
-		ft_putstr_fd(words[i++], 1);
-		if (words[i])
-			ft_putstr_fd(" ", 1);
-	}
-    exit_status(0);
-}
-void exec_echo(char **cmd, char **env)
-{
-	int i;
-	int j;
-	int flag;
-
-	i = 0;
-	flag = 0;
-    if(cmd && cmd[1])
-    {
-        if(!ft_strncmp(cmd[1], "$?", 2))
-        {
-            ft_putstr_fd(ft_itoa(exit_status(-1)), 1);
-            ft_putstr_fd(cmd[1] + 2, 1);
-            ft_putstr_fd("\n", 1);
-			exit_status(0);
-            return ;
-        }
-    }
-	while (cmd && cmd[++i])
-	{
-		if(cmd[i][0] == '-')
-		{
-			j = 0;
-			while(cmd[i][++j] == 'n');
-			if(cmd[i][j] != '\0')
-				break ;
-			else
-				flag = 1;
-		}
-		else
-			break ;
-	}
-	if (flag == 1)
-		print_words(&cmd[i]);
-	else
-	{
-		print_words(&cmd[i]);
-		ft_putstr_fd("\n", 1);
-	}
-}
-static void    get_terminal_attr(struct termios *original_termios)
-{
-    tcgetattr(STDIN_FILENO, original_termios);
-    original_termios->c_lflag &= ~ECHOCTL;
-    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
-}
-static void    restore_terminal_attributes(struct termios *original_termios)
-{
-    tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
-}
-
-int ft_minishell(t_node *tokens, t_env *environment ,t_node *addresses, struct termios *original_termios)
-{
-	char *line;
-	char *tmp;
-
-	line = NULL;
-	while(1)
-	{
-		run_signals(1);
-		line = readline("minishell$ ");
-		if(!line)
-			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
-		if(line[0] != '\0')
-			add_history(line);
-		if(quotes_syntax(line))
-		{
-			free(line);
-			continue;
-		}
-		parse_line(line, &tokens, &addresses, 0);
-		execute_commands(set_newlist(&tokens), environment,&addresses);
-		tokens = NULL;
-		free(line);
-		restore_terminal_attributes(original_termios);
-    }
-	return (1);
+	system("leaks minishell");
 }
 int main(int argc, char **argv, char **env)
 {
-	(void)(argc);
-	(void)(argv);
-	char			*line;
-	t_env			envir;
-	t_node			*tokens; 
-    t_node  		*addresses;
-	struct termios	original_termios;
-
-	line = NULL;
-	tokens = NULL;
-	addresses = NULL;
-	get_terminal_attr(&original_termios);
+	char    *line = NULL;
+	t_node  *tokens = NULL;
+    t_node  *addresses = NULL;
+	t_env   envir;
+	struct termios original_termios;
 	envir.env = get_env(env);
 	envir.export = get_env(env);
-	ft_minishell(tokens, &envir, addresses, &original_termios);
+	get_terminal_attr(&original_termios);
+	while(1)
+	{
+		run_signals(1);
+		line = readline("\033[1;34mminishell$ \033[0m");
+		if(!line)
+			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(),0);
+		if(quotes_syntax(line))
+		{
+			free(line);
+			line = NULL;
+			continue;
+		}
+		if(line[0] != '\0' && ((line[0] < 9 || line[0] > 13) && line[0] != 32))
+			add_history(line);
+		parse_line(line, &tokens, &addresses, 0);
+		execute_commands(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
+		tokens = NULL;
+		free(line);
+		line = NULL;
+		addresses = NULL;
+		restore_terminal_attributes(&original_termios);
+		// free_addresses(addresses);
+    }
 	return 0;
 }

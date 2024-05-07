@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:34:38 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/04/28 19:17:20 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/01 16:33:39 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int exit_status(int exit_status)
         n = exit_status;
     return (n);
 }
+
 void run_signals(int flag)
 {
     if(flag == 1)
@@ -32,7 +33,7 @@ void run_signals(int flag)
     signal(SIGQUIT, SIG_IGN);
 }
 
-void	signal_exec(void)
+void	signal_default(void)
 {
     signal(SIGINT, SIG_DFL);
     signal(SIGQUIT, SIG_DFL);
@@ -55,20 +56,3 @@ void ctr_c(int sig)
         exit_status(1);
     }
 }
-// void ctr_c(int sig)
-// {
-//     write(1,"\n",1);
-//     if(sig == SIGINT)
-//     {
-//         if (exit_status(-1) == 1)
-//         {
-//             rl_redisplay();
-//             exit_status(1);
-//         }
-//         else
-//         {
-//             rl_replace_line("", 0);
-//             rl_on_new_line();
-//         }
-//     }
-// }
