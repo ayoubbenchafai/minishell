@@ -92,23 +92,31 @@ int case_two(char *var, int i, int size)
     return (1);
 }
 
-int check_error(char *var)
+// int check_error(char *var, int flag)
+int check_error(char *var, int flag)
 {
     int i = 0;
     int j;
     int size;
     
-    if (var[i] == '_')
+    while(var[i] == '_')
+    {
+        if (!var[i + 1])
+            return (1);
         i++;
+    }
+    if (i == 0 && !ft_isalpha(var[i]))
+            return (0);
     j = i;
-    if(!ft_isalnum(var[i]))
+    if (!ft_isalnum(var[i]))
         return (0);
     size = get_equal(var);
     if (!case_one(var, &i, size))
         return (0);
     i += j;
-    if(!case_two(var, i, size))
-        return (0);
+    if (flag == 1)
+        if (!case_two(var, i, size))
+            return (0);
     return (1);
 }
 

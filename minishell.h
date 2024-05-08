@@ -109,6 +109,14 @@ int     ft_atoi(const char *str);
 void    exec_exit(char **cmd);
 int     ft_isdigit(int c);
 
+//----
+// int check_error(char *var);
+int check_error(char *var, int flag);
+int get_best_size(char *var);
+void swap(char **a, char **b);  
+int case_one(char *var, int *i, int size);
+int case_two(char *var, int i, int size);
+
 //-----------------------
 int pipe_parse_error(t_node *node);
 char **get_env(char **env);
