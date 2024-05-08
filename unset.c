@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/08 19:16:54 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/08 23:14:30 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ void exec_unset(char *s, char ***env, t_node **addresses)
     while(env && *env && (*env)[i])
     {
         // if (check_char((*env)[i],'='))
-        if((*env)[i][get_equal((*env)[i]) + 1] == '=') // ha 3lash = makatkhdemch
-        {
-            printf("((((---->   %c))))\n", (*env)[i][get_equal((*env)[i] + 1)]);
-            size++;
-        }
+        // if((*env)[i][get_equal((*env)[i]) + 1] == '=') // ha 3lash = makatkhdemch
+        // {
+        //     printf("((((---->   %c))))\n", (*env)[i][get_equal((*env)[i] + 1)]);
+        //     size++;
+        // }
         if (ft_strncmp((*env)[i], s, get_equal((*env)[i])))
             unset_array[j++] = ft_strdup((*env)[i], addresses);
         i++;
