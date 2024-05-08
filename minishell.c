@@ -211,6 +211,12 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 		return (exec_export(commands->cmd, &env->env, &env->export, addresses), 1);
 	else if(!ft_strcmp(commands->cmd[0], "unset"))
 	{
+		if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
+    	{
+        	printf("minishell: unset: `%s': not a valid identifier\n", commands->cmd[1]);
+			exit_status(1);
+        	return (1);
+   		}
 		exec_unset(commands->cmd[1], &env->env, addresses);
 		exec_unset(commands->cmd[1], &env->export, addresses);
 		return (1);

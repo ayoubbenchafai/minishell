@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/08 23:14:30 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/08 23:19:51 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,6 @@ void exec_unset(char *s, char ***env, t_node **addresses)
     int len = 0;
     if(!s)
         return ;
-    if (!check_error(s, 0) || s[get_equal(s) + 1] == '=')
-    {
-        printf("minishell: unset: `%s': not a valid identifier\n", s);
-        return ;
-    }
-    // if(check_char(s, '=')) // print twice
-    // {
-    //     printf("minishell: unset: `%s': not valid in identifier\n", s);
-    //     return ;
-    // }
     while(env && *env && (*env)[i])
     {
         if(ft_strncmp((*env)[i], s, ft_strlen(s)))
