@@ -230,6 +230,9 @@ void f(void)
 {
 	system("leaks minishell");
 }
+
+
+
 int main(int argc, char **argv, char **env)
 {
 	char    *line = NULL;

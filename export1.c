@@ -22,7 +22,7 @@ int case_one(char *var, int *i, int size)
 {
     while(var && var[*i] && !size)
     {
-        if(var[*i]!='_')
+        if (var[*i] != '_')
             if (!ft_isalnum(var[*i]))
                 return (0);
         (*i)++;
@@ -32,7 +32,7 @@ int case_one(char *var, int *i, int size)
 
 int case_two(char *var, int i, int size)
 {
-    while(i < size)
+    while (i < size)
     {
         if(var[i] != '_')
         {
@@ -82,8 +82,9 @@ int check_error(char *var, int flag)
 int get_best_size(char *var)
 {
     int j = 0;
-    int size = get_equal(var);
+    int size;
     
+    size = get_equal(var);
     if (size == 0)
         j = ft_strlen(var);
     else
@@ -96,6 +97,8 @@ int get_best_size(char *var)
     return (j);
 }
 
+
+
 int exec_env(char **env)
 {
     int i;
@@ -107,7 +110,7 @@ int exec_env(char **env)
         j = 0;
         while(env[i][j])
         {
-            if(env[i][j] == '+' && env[i][j + 1] == '=')
+            if (env[i][j] == '+' && env[i][j + 1] == '=')
                 j++;
             write(1, &env[i][j], 1);
             j++;
@@ -115,8 +118,8 @@ int exec_env(char **env)
         write(1, "\n", 1);
         i++;
     }
-    // if(i == 0)
-        // new_environment();
+    // if (i == 0)
+    //     new_envi(&env, &export);
     return 0;
 }
 

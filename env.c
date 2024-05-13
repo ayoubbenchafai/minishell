@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/09 23:02:15 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/13 16:27:07 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,16 @@ char **get_env(char **env)
 {
     int i = 0;
     char **array;
-
     while(env[i])
         i++;
     array = malloc((sizeof(char *) * (i + 1)));
-    if(!array)
-        return NULL;
+    if (!array)
+        return (NULL);
     i = 0;
     while(env && env[i])
     {
         array[i] = malloc((sizeof(char) * (ft_strlen(env[i]) + 1)));
-        if(!array[i])
+        if (!array[i])
             return (NULL);
         ft_strlcpy(array[i], env[i], ft_strlen(env[i]) + 1);
         i++;
