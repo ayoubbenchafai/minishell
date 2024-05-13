@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/13 14:43:30 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:36:06 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void handle_space(t_node **node, char ***array, char **s, t_node **addresses)
     }
 }
 
-// void handle_pipe(t_node **node, t_command **cmd, char ***array, t_fd *fd, t_node **addresses)
 void handle_pipe(t_node **node, t_new_list **new, t_fd *fd, t_node **addresses)
 {
     t_command *response;
@@ -74,20 +73,6 @@ void handle_pipe(t_node **node, t_new_list **new, t_fd *fd, t_node **addresses)
         }
         *node = (*node)->next;
     }
-    // if (!*node)
-    //     return ;
-    // if (!ft_strncmp((*node)->type, "pipe", 4)) 
-    // {
-    //     if (*array && **array) 
-    //     {
-    //         response = ft_lstnew_cmd(*array, fd->in, fd->out, addresses);
-    //         ft_lstadd_back_cmd(cmd, response);
-    //         *array = NULL;
-    //         fd->out = 1;
-    //         fd->in = 0;
-    //     }
-    //     *node = (*node)->next;
-    // }
 }
 
 void display_cmd(t_command *node)
@@ -130,7 +115,7 @@ void hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses
             continue ;
         if (*node)
         {
-            expand(*node, env, addresses);
+            // expand(*node, env, addresses);
             new->s = ft_strjoin(new->s, (*node)->value, addresses);
             *node = (*node)->next;
         }    
@@ -190,9 +175,18 @@ t_command *set_newlist(t_node **node, t_env *env, t_node **addresses)
 //         ft_lstadd_back_cmd(&cmd, ft_lstnew_cmd(array, fd.in, fd.out, addresses));
 //     return (cmd);
 // }
+ void error_redirection(int flag)
+ {
+    if (flag == 0)
+        ft_putstr_fd("syntax error near unexpected token `newline'\n", 2); 
+    else if (flag == 1)
+        ft_putstr_fd("minishell: syntax error near unexpected token `>>'\n", 2);
+    else if (flag == 2)
+        ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n", 2);
+    exit_status(258);
+    return ;
+ }
 
-
-// void  handle_append_or_red_out(t_node **node, int *fd_out, int flag) 
 int  handle_append_or_red_out(t_node **node, int *fd_out, int flag) 
 {
     if (!*node)
@@ -206,31 +200,29 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
         while (*node && !ft_strncmp((*node)->type, "space", 5))
             *node = (*node)->next;
         if (!*node)
-        {
-            write(1, "syntax error near unexpected token `newline'\n", 45);
-            exit_status(258);
-            return (1);
-        }
+            return (error_redirection(0), 1);
         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5))) 
         {
             if (flag)
+            {
                 *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
+                if (*fd_out == -1)
+                    return (exit_status(1), 1);
+            }
             else
+            {
                 *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+                if(*fd_out == -1)
+                    return (exit_status(1), 1);
+            }
             *node = (*node)->next;
         } 
         else
-        {
-            ft_putstr_fd("minishell: syntax error near unexpected token `>>'\n", 2);
-            exit_status(258);
-            return (1);
-        }
-            // perror("");
+            return (error_redirection(1), 1);
     }
     return (0);
 }
 
-// void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_node **addresses)
 int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_node **addresses)
 {
     if (!*node)
@@ -244,11 +236,7 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_
         while (*node && !ft_strncmp((*node)->type, "space", 5))
             *node = (*node)->next;
         if (!*node)
-        {
-            write(1, "syntax error near unexpected token `newline'\n", 45);
-            exit_status(258);
-            return (1);
-        }
+            return (error_redirection(0), 1);
         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
         {
             if (flag)
@@ -256,24 +244,18 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_
                 //expand value
                 *fd_in = open((*node)->value, O_RDONLY, 0644);
                 if (*fd_in == -1)
-                {
-                    ft_putstr_fd("No such file or directory\n", 2);
-                    return (exit_status(1), 1);
-                }
+                    return (ft_putstr_fd("No such file or directory\n", 2), exit_status(1), 1);
             }
             else
             {
-                // exec_env(env->env);
                 *fd_in = ft_herdoc((*node)->value, env->env, addresses);
+                if (*fd_in == -1)
+                    return (exit_status(1), 1);
             }
-            *node = (*node)->next;
+            *node = (*node) -> next;
         }
         else
-        {
-            ft_putstr_fd("minishell: syntax error near unexpected token `<<'\n", 2);
-            exit_status(258);
-            return (1);
-        }
+            return (error_redirection(2), 1);
     }
     return (0);
 }
@@ -285,7 +267,7 @@ int builtin_key(t_command *cmd, t_node **addresses)
         || !ft_strcmp(cmd->cmd[0], "unset") || !ft_strcmp(cmd->cmd[0], "env") 
         || !ft_strcmp(cmd->cmd[0], "exit"))
         return (1);
-    if(cmd->cmd[0][0] == '$')
+    if (cmd->cmd[0][0] == '$')
         return (print_exit_status(cmd->cmd[0], 1, addresses), 1);
     return 0;
 }
@@ -356,28 +338,28 @@ void check_errors_child(char *cmd)
     exit(127);
 }
 
-int child_process(t_command *command, t_env *env, int *fd, t_node **addresses) 
+int child_process(t_command *cmd, t_env *env, int *fd, t_node **addresses) 
 {
     signal_default();
-	if (dup2(command->input, 0) == -1)
+	if (dup2(cmd->input, 0) == -1)
 		return (1);
-    if (command->input != 0)
-        if (close(command->input) == -1)
+    if (cmd->input != 0)
+        if (close(cmd->input) == -1)
 			return (1);
-    if (command->next && command->output == 1) 
+    if (cmd->next && cmd->output == 1) 
 	{
 		if(dup2(fd[1], 1) == -1 || close(fd[1]) == -1)
 			return (1);
     }
-    else if (command->output != 1) 
+    else if (cmd->output != 1) 
 	{
-		if (dup2(command->output, 1) == -1 || close(command->output) == -1)
+		if (dup2(cmd->output, 1) == -1 || close(cmd->output) == -1)
 			return (1);
     }
-    if (!is_builtin(command, env, addresses) && command->cmd[0][0] != '\0') 
+    if (!is_builtin(cmd, env, addresses) && cmd->cmd[0][0] != '\0') 
 	{
-        execve(command->cmd[0], command->cmd,env->env);
-        check_errors_child(command->cmd[0]);
+        execve(cmd->cmd[0], cmd->cmd,env->env);
+        check_errors_child(cmd->cmd[0]);
     }
     exit(0);
 }
@@ -447,9 +429,9 @@ void  ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses)
             break;
         }
         // expand(line, addresses);
-        tmp = expand_heredoc(line, env, addresses);
-        tmp = ft_strjoin(tmp, "\n", addresses);
-        // tmp = ft_strjoin(line, "\n", addresses);
+        // tmp = expand_heredoc(line, env, addresses);
+        // tmp = ft_strjoin(tmp, "\n", addresses);
+        tmp = ft_strjoin(line, "\n", addresses);
         write(heredoc->fd_write, tmp, ft_strlen(tmp));
         free(tmp);
         free(line);
