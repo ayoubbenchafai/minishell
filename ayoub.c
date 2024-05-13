@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/13 15:36:06 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:40:59 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,6 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_
         {
             if (flag)
             {
-                //expand value
                 *fd_in = open((*node)->value, O_RDONLY, 0644);
                 if (*fd_in == -1)
                     return (ft_putstr_fd("No such file or directory\n", 2), exit_status(1), 1);
