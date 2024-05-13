@@ -18,49 +18,9 @@ void swap(char **a, char **b)
     *b = c;
 }
 
-// int check_error(char *var)
-// {
-//     int i = 0;
-//     int j;
-//     int size;
-    
-//     if (var[i] == '_')
-//         i++;
-//     j = i;
-//     if(!ft_isalpha(var[i]))
-//         return (0);
-//     size = get_equal(var);
-//     while(var[i] && (size == 0))
-//     {
-//         if(var[i]!='_')
-//             if (!ft_isalnum(var[i]))
-//                 return (0);
-//         i++;
-//     }
-//     i += j;
-//     while(i < size)
-//     {
-//         if(var[i] != '_')
-//         {
-//             if(var[i] == '+' && var[i + 1])
-//             {
-//                 i++;
-//                 if(var[i] == '=')
-//                     break;
-//                 else 
-//                     return (0);
-//             }
-//         if (!ft_isalnum(var[i]))
-//             return (0);
-//         }
-//         i++;
-//     }
-//     return (1);
-// }
-
 int case_one(char *var, int *i, int size)
 {
-    while(var && var[*i] && (size == 0))
+    while(var && var[*i] && !size)
     {
         if(var[*i]!='_')
             if (!ft_isalnum(var[*i]))
@@ -92,7 +52,6 @@ int case_two(char *var, int i, int size)
     return (1);
 }
 
-// int check_error(char *var, int flag)
 int check_error(char *var, int flag)
 {
     int i = 0;
@@ -129,8 +88,8 @@ int get_best_size(char *var)
         j = ft_strlen(var);
     else
     {
-        if(var[size - 1] == '+' && var[size] == '=')
-            j = size - 1;
+        if (var[size - 1] == '+' && var[size] == '=')
+            j = size - 1;            // j = size;
         else
             j = size;
     }

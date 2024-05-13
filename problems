@@ -13,3 +13,12 @@ $$$$$$$$USER
 expand in here_doc  
 
 mni kandir spaces more command == > makatkhdemch       corrected
+
+error : << tmp | cat   ==>> ctr-c
+
+expand in ls > $VAR
+
+
+$rt ' ' ls && $sdfs ls
+
+expand  : $var 

@@ -41,7 +41,15 @@ typedef struct s_node{
 typedef struct s_fd{
 	int out;
     int in;
+    int flag;
 }		t_fd;
+typedef struct s_new_list
+{
+    char        *s;
+    char        **array;
+    t_command    *cmd;
+    t_fd        fd;
+}               t_new_list;
 
 typedef struct s_heredoc
 {
@@ -62,17 +70,16 @@ int     ft_strncmp(const char *s1, const char *s2, size_t n);
 void	ft_putstr_fd(char *str, int fd);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len);
-int	ft_isalpha(int c);
+int	    ft_isalpha(int c);
 //-----------------------------------------------------
 
+// t_command *set_newlist(t_node **node, t_env *env, t_node **addresses);
 t_command *set_newlist(t_node **node, t_env *env, t_node **addresses);
 void handle_space(t_node **node, char ***array, char **s, t_node **addresses);
-void handle_pipe(t_node **node, t_command **cmd, char ***array, t_fd *fd, t_node **addresses);
+// void handle_pipe(t_node **node, t_command **cmd, char ***array, t_fd *fd, t_node **addresses);
+void handle_pipe(t_node **node, t_new_list **new, t_fd *fd, t_node **addresses);
 int  handle_append_or_red_out(t_node **node, int *fd_out, int flag);
-// void handle_append_or_red_out(t_node **node, int *fd_out, int flag);
-// void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_node **addresses);
 int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_env *env, t_node **addresses);
-// void handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses);
 void execute_commands(t_command *cmd, t_env *env, t_node **addresses);
 void display_cmd(t_command *cmd);
 t_command *ft_lstnew_cmd(char **cmd, int input, int output, t_node **addresses);
@@ -80,7 +87,8 @@ void ft_lstadd_back_cmd(t_command **lst, t_command *new);
 t_command	*ft_lstlast_cmd(t_command *lst);
 char	*ft_join_free(char *s, const char *buf, t_node **addresses);
 char	**ft_pathname(char *p, char **cmdargs, char **env, t_node **addresses);
-int     ft_herdoc(char *s, t_env *env, t_node **addresses);
+int     ft_herdoc(char *s, char **env, t_node **addresses);
+// int     ft_herdoc(char *s, t_env *env, t_node **addresses);
 // int ft_herdoc(char *s, t_node **addresses);
 // int make_process(t_command *command, t_env *env, t_node **addresses);
 int make_process(t_command *command, t_env *env, int *i, t_node **addresses);
@@ -95,7 +103,7 @@ void    ctr_c(int sig);
 
 
 void    signal_here_doc(int sig);
-void    ft_read_input(char *s, t_heredoc *heredoc, t_env *env, t_node **addresses);
+void    ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses);
 void    get_terminal_attr(struct termios *original_termios);
 void    restore_terminal_attributes(struct termios *original_termios);
 
@@ -108,7 +116,7 @@ char    *ft_strtrim(char *s1, char *set, t_node **addresses);
 int     ft_atoi(const char *str);
 void    exec_exit(char **cmd);
 int     ft_isdigit(int c);
-
+void print_exit_status(char *cmd, int flag, t_node **addresses);
 //----
 // int check_error(char *var);
 int check_error(char *var, int flag);

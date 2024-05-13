@@ -243,7 +243,7 @@ int main(int argc, char **argv, char **env)
 	while(1)
 	{
 		run_signals(1);
-		line = readline("\033[1;34mminishell$ \033[0m");
+		line = readline("minishell$ ");
 		if(!line)
 			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(),0);
 		if(quotes_syntax(line))

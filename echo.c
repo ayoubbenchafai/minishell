@@ -6,32 +6,42 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 15:42:21 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/08 13:23:12 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/10 15:45:18 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	print_exit_status(char *cmd, int flag, t_node **addresses)
+{
+	int	i;
+
+	i = 0;
+	if (flag)
+		ft_putstr_fd("minishell: ", 1);
+	while (cmd && cmd[i])
+	{
+		if (cmd[i] == '$' && cmd[i + 1] == '?')
+		{
+			ft_putstr_fd(ft_itoa(exit_status(-1), addresses), 1);
+			i += 1;
+		}
+		else
+			ft_putchar_fd(cmd[i], 1);
+		i++;
+	}
+	if (flag)
+		ft_putstr_fd(": command not found\n", 1);
+}
+
 static void	print_words(char **words, int flag, t_node **addresses)
 {
 	int	i;
-	int	j;
 
 	i = 0;
 	while (words && words[i])
 	{
-		j = 0;
-		while (words[i][j])
-		{
-			if (words[i][j] == '$' && words[i][j + 1] == '?')
-			{
-				ft_putstr_fd(ft_itoa(exit_status(-1), addresses), 1);
-				j += 1;
-			}
-			else
-				ft_putchar_fd(words[i][j], 1);
-			j++;
-		}
+		print_exit_status(words[i], 0, addresses);
 		if (words[i + 1])
 			ft_putstr_fd(" ", 1);
 		i++;

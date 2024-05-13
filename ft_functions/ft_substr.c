@@ -24,7 +24,6 @@ char	*ft_substr(const char *str, unsigned int start, size_t len, t_node **addres
 		return (ft_strdup("", addresses));
 	if (ft_strlen(str + start) < len)
 		len = ft_strlen(str + start);
-	// ptr = (char *)malloc(len + 1);
 	ptr = ft_malloc(len + 1, addresses);
 	if (ptr == NULL)
 		return (0);
