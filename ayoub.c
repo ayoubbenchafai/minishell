@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/13 15:40:59 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/13 15:42:31 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses
     new->fd.flag = 0;
     new->fd.in = 0;
     new->fd.out = 1;
-    while(*node)
+    while (*node)
     {
         handle_space(node, &new->array, &new->s, addresses);
         // handle_pipe(node, &new->cmd, &new->array, &new->fd, addresses);
