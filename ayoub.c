@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 22:57:32 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 23:18:01 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,7 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
     }
     return (0);
 }
+
 int open_file1(t_node **node, int *fd_in, int flag, char **env, t_node **addresses)
 {
     t_node *tmp;
@@ -241,13 +242,18 @@ int open_file1(t_node **node, int *fd_in, int flag, char **env, t_node **address
             *node = (*node) -> next;
     return (0);
 }
+
 int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addresses)
 {
-    int flag = fd->flag;
-    int *fd_in = &fd->in;
-    if (!*node)
+    int	flag;
+    int	*fd_in;
+    flag = fd->flag;
+    fd_in = &fd->in;
+
+	if (!*node)
         return (1);
-    if (!ft_strncmp((*node)->type, "here_doc", 8) || !ft_strncmp((*node)->type, "rd_in", 5)) 
+    if (!ft_strncmp((*node)->type, "here_doc", 8)
+		|| !ft_strncmp((*node)->type, "rd_in", 5)) 
     {
         flag = 0;
         if (!ft_strncmp((*node)->type, "rd_in", 5))
@@ -257,32 +263,14 @@ int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addre
             *node = (*node)->next;
         if (!*node)
             return (error_redirection(0), 1);
-        if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
-        // {
-        //     if (flag)
-        //         *fd_in = open((*node)->value, O_RDONLY, 0644);
-        //     else
-        //         *fd_in = ft_herdoc((*node)->value, env, addresses);
-        //     if (*fd_in == -1)
-        //         ft_putstr_fd("No such file or directory\n", 2);
-        //     t_node *tmp = (*node)->next;
-        //     while (tmp && !ft_strcmp(tmp->type, "space"))
-        //         tmp = tmp->next;
-        //     if (tmp && !ft_strcmp(tmp->type, "pipe"))
-        //     {
-        //         *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
-        //         unlink("k");
-        //     }
-        //     *node = (*node) -> next;
-        // }
+        if (*node && (!ft_strncmp((*node)->type, "word", 4)
+			|| !ft_strncmp((*node)->type + 2, "quote", 5)))
             return (open_file1(node, fd_in, flag, env, addresses));
         else
             return (error_redirection(2), 1);
     }
     return (0);
 }
-
-
 
 // builtin_key is a function that checks if the command is a builtin command 
 int builtin_key(t_command *cmd, t_node **addresses)
@@ -305,7 +293,7 @@ int ft_wait(int size, int pid)
     while (size--)
     {
         g_pid = wait(&status);
-        if(g_pid == -1)
+        if (g_pid == -1)
             return (1);
         if (g_pid == pid)
             exit_status(WEXITSTATUS(status));
@@ -375,7 +363,7 @@ void check_errors_child(char *cmd)
     exit(127);
 }
 
-int child_process(t_command *cmd, t_env *env, int *fd, t_node **addresses) 
+int child_process(t_command *cmd, t_env *env, int *fd, t_node **addr) 
 {
     signal_default();
 	if (dup2(cmd->input, 0) == -1)
@@ -393,7 +381,7 @@ int child_process(t_command *cmd, t_env *env, int *fd, t_node **addresses)
 		if (dup2(cmd->output, 1) == -1 || close(cmd->output) == -1)
 			return (1);
     }
-    if (!is_builtin(cmd, env, addresses) && cmd->cmd[0][0] != '\0') 
+    if (!is_builtin(cmd, env, addr) && cmd->cmd[0][0] != '\0') 
 	{
         execve(cmd->cmd[0], cmd->cmd,env->env);
         check_errors_child(cmd->cmd[0]);

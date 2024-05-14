@@ -39,7 +39,7 @@ int case_two(char *var, int i, int size)
             if(var[i] == '+' && var[i + 1])
             {
                 i++;
-                if(var[i] == '=')
+                if (var[i] == '=')
                     break;
                 else 
                     return (0);
@@ -97,8 +97,6 @@ int get_best_size(char *var)
     return (j);
 }
 
-
-
 int exec_env(char **env)
 {
     int i;
@@ -123,7 +121,7 @@ int exec_env(char **env)
     return 0;
 }
 
-char *expand_heredoc(char *var, char **env, t_node **addresses)
+char *expand_heredoc(char *var, char **env, t_node **add)
 {
     int i = 0;
     char *response = NULL;
@@ -137,14 +135,14 @@ char *expand_heredoc(char *var, char **env, t_node **addresses)
                 break ;
             i++;
         }
-        response = ft_strjoin(response, ft_substr(var, x, i - x , addresses), addresses);
+        response = ft_strjoin(response, ft_substr(var, x, i - x , add), add);
         if (var[i] != '\0')
             i++;
         x = i;
         while(var[i] != '\0' && ft_isalnum(var[i]))
             i++;
-        var = ft_strjoin(ft_substr(var, x, i - x, addresses), "=", addresses);
-        response = ft_strjoin(response, get_environment(env, var), addresses);
+        var = ft_strjoin(ft_substr(var, x, i - x, add), "=", add);
+        response = ft_strjoin(response, get_environment(env, var), add);
         x = i;
     }
     return (response);
