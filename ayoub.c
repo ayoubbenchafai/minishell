@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 22:31:08 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 22:57:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,52 +219,28 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
     }
     return (0);
 }
-
-int open_file2(t_node **node, t_fd *fd, char **env, t_node **addr)
+int open_file1(t_node **node, int *fd_in, int flag, char **env, t_node **addresses)
 {
-    int flag = fd->flag;
-    int *fd_in = &fd->in;
+    t_node *tmp;
+    
     if (flag)
         *fd_in = open((*node)->value, O_RDONLY, 0644);
     else
-        *fd_in = ft_herdoc((*node)->value, env, addr);
+        *fd_in = ft_herdoc((*node)->value, env, addresses);
     if (*fd_in == -1)
-            ft_putstr_fd("No such file or directory\n", 2);
-    // t_node *tmp = (*node)->next;
-    // while (tmp && !ft_strcmp(tmp->type, "space"))
-    // tmp = tmp->next;
-    // if (tmp && !ft_strcmp(tmp->type, "pipe"))
-    // {
-    //     *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
-    //     unlink("k");
-    // }
+        ft_putstr_fd("No such file or directory\n", 2);
+    tmp = (*node)->next;
+    while (tmp && !ft_strcmp(tmp->type, "space"))
+        tmp = tmp->next;
+    if (tmp && !ft_strcmp(tmp->type, "pipe"))
+    {
+        *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+        if(*fd_in == -1 || unlink("k") == -1)
+            return (1);
+    }
             *node = (*node) -> next;
     return (0);
 }
-
-// int open_file1(t_node **node, int *fd_in, int flag, char **env, t_node **addresses)
-// // int open_file1(t_node **node, t_fd fd, char **env, t_node **addresses)
-// {
-
-//     if (fd.flag)
-//         fd.in = open((*node)->value, O_RDONLY, 0644);
-//     else
-//         fd.in = ft_herdoc((*node)->value,env,  addresses);
-//     if (fd.in == -1)
-//                 ft_putstr_fd("No such file or directory\n", 2);
-//     t_node *tmp = (*node)->next;
-//             while (tmp && !ft_strcmp(tmp->type, "space"))
-//                 tmp = tmp->next;
-//             if (tmp && !ft_strcmp(tmp->type, "pipe"))
-//             {
-//                 fd.in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
-//                 unlink("k");
-//             }   
-//         // return (exit_status(1), 1);
-//     *node = (*node) -> next;
-//     return (0);
-// }
-
 int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addresses)
 {
     int flag = fd->flag;
@@ -282,24 +258,24 @@ int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addre
         if (!*node)
             return (error_redirection(0), 1);
         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
-        {
-            if (flag)
-                *fd_in = open((*node)->value, O_RDONLY, 0644);
-            else
-                *fd_in = ft_herdoc((*node)->value, env, addresses);
-            if (*fd_in == -1)
-                ft_putstr_fd("No such file or directory\n", 2);
-            t_node *tmp = (*node)->next;
-            while (tmp && !ft_strcmp(tmp->type, "space"))
-                tmp = tmp->next;
-            if (tmp && !ft_strcmp(tmp->type, "pipe"))
-            {
-                *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
-                unlink("k");
-            }
-            *node = (*node) -> next;
-        }
-            // return (open_file1(node, fd_in, flag, env, addresses));
+        // {
+        //     if (flag)
+        //         *fd_in = open((*node)->value, O_RDONLY, 0644);
+        //     else
+        //         *fd_in = ft_herdoc((*node)->value, env, addresses);
+        //     if (*fd_in == -1)
+        //         ft_putstr_fd("No such file or directory\n", 2);
+        //     t_node *tmp = (*node)->next;
+        //     while (tmp && !ft_strcmp(tmp->type, "space"))
+        //         tmp = tmp->next;
+        //     if (tmp && !ft_strcmp(tmp->type, "pipe"))
+        //     {
+        //         *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+        //         unlink("k");
+        //     }
+        //     *node = (*node) -> next;
+        // }
+            return (open_file1(node, fd_in, flag, env, addresses));
         else
             return (error_redirection(2), 1);
     }
