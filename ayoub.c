@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 17:59:25 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 22:31:08 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,19 @@ t_command *set_newlist(t_node **node, t_env *env, t_node **addresses)
     return ;
  }
 
+
+int open_file(t_node **node, int *fd_out, int flag)
+{
+    if (flag)
+        *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
+    else
+        *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    if (*fd_out == -1)
+            return (exit_status(1), 1);
+    *node = (*node)->next;
+    return (0);
+}
+
 int  handle_append_or_red_out(t_node **node, int *fd_out, int flag) 
 {
     if (!*node)
@@ -200,26 +213,57 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
         if (!*node)
             return (error_redirection(0), 1);
         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5))) 
-        {
-            if (flag)
-            {
-                *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
-                if (*fd_out == -1)
-                    return (exit_status(1), 1);
-            }
-            else
-            {
-                *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-                if(*fd_out == -1)
-                    return (exit_status(1), 1);
-            }
-            *node = (*node)->next;
-        } 
+            return (open_file(node, fd_out, flag));
         else
             return (error_redirection(1), 1);
     }
     return (0);
 }
+
+int open_file2(t_node **node, t_fd *fd, char **env, t_node **addr)
+{
+    int flag = fd->flag;
+    int *fd_in = &fd->in;
+    if (flag)
+        *fd_in = open((*node)->value, O_RDONLY, 0644);
+    else
+        *fd_in = ft_herdoc((*node)->value, env, addr);
+    if (*fd_in == -1)
+            ft_putstr_fd("No such file or directory\n", 2);
+    // t_node *tmp = (*node)->next;
+    // while (tmp && !ft_strcmp(tmp->type, "space"))
+    // tmp = tmp->next;
+    // if (tmp && !ft_strcmp(tmp->type, "pipe"))
+    // {
+    //     *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    //     unlink("k");
+    // }
+            *node = (*node) -> next;
+    return (0);
+}
+
+// int open_file1(t_node **node, int *fd_in, int flag, char **env, t_node **addresses)
+// // int open_file1(t_node **node, t_fd fd, char **env, t_node **addresses)
+// {
+
+//     if (fd.flag)
+//         fd.in = open((*node)->value, O_RDONLY, 0644);
+//     else
+//         fd.in = ft_herdoc((*node)->value,env,  addresses);
+//     if (fd.in == -1)
+//                 ft_putstr_fd("No such file or directory\n", 2);
+//     t_node *tmp = (*node)->next;
+//             while (tmp && !ft_strcmp(tmp->type, "space"))
+//                 tmp = tmp->next;
+//             if (tmp && !ft_strcmp(tmp->type, "pipe"))
+//             {
+//                 fd.in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+//                 unlink("k");
+//             }   
+//         // return (exit_status(1), 1);
+//     *node = (*node) -> next;
+//     return (0);
+// }
 
 int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addresses)
 {
@@ -255,11 +299,15 @@ int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addre
             }
             *node = (*node) -> next;
         }
+            // return (open_file1(node, fd_in, flag, env, addresses));
         else
             return (error_redirection(2), 1);
     }
     return (0);
 }
+
+
+
 // builtin_key is a function that checks if the command is a builtin command 
 int builtin_key(t_command *cmd, t_node **addresses)
 {
@@ -309,9 +357,6 @@ void execute_commands(t_command *cmd, t_env *env, t_node **addresses)
     int		pid;
     int 	size;
 
-    // printf("-------------commands------------\n");
-    // display_cmd(cmd);
-    // printf("-------------fin commands-------------\n");
 	i = 0;
 	pid = 0;
 	size = ft_lstsize_cmd(cmd);
@@ -326,8 +371,8 @@ void execute_commands(t_command *cmd, t_env *env, t_node **addresses)
         cmd = cmd->next;
         i++;
     }
-	ft_wait(size, pid);
-    // while(wait(NULL) > 0);
+	if (ft_wait(size, pid))
+        exit_status(1);
 }
 
 void check_errors_child(char *cmd)

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 19:31:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/03 18:45:12 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 22:46:15 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 
 static void	print_error(char *str)
 {
-	ft_putendl_fd("exit", 2);
-	printf("minishell: exit: %s: numeric argument required\n", str);
-	exit(-1);
+	ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);	
+	exit(255);
 }
 
 int	ft_atoi(const char *str)
 {
-	int			i;
-	int			sign;
-	long long	result;
-	long long	prev;
+	int		i;
+	int		sign;
+	long	result;
+	long	prev;
 
 	i = 0;
 	sign = 1;

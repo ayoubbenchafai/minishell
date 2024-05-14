@@ -22,3 +22,6 @@ expand in ls > $VAR
 $rt ' ' ls && $sdfs ls
 
 expand  : $var 
+
+
+ls -la | wc > > ayoubh problem
