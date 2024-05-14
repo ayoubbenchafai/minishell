@@ -248,7 +248,7 @@ int main(int argc, char **argv, char **env)
 		run_signals(1);
 		line = readline("minishell$ ");
 		if(!line)
-			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(),0);
+			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
 		if(quotes_syntax(line))
 		{
 			free(line);

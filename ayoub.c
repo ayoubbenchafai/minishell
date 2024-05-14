@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 15:27:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 17:01:28 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,7 +345,7 @@ void check_errors_child(char *cmd)
         ft_putstr_fd(": is a directory\n", 2);
         exit(126);
     }
-    else if(cmd[0] != '$')
+    else if (cmd[0] != '$')
     {
         ft_putstr_fd("minishell: ", 2);
         ft_putstr_fd(cmd, 2);
