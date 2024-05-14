@@ -79,7 +79,7 @@ void handle_space(t_node **node, char ***array, char **s, t_node **addresses);
 // void handle_pipe(t_node **node, t_command **cmd, char ***array, t_fd *fd, t_node **addresses);
 void handle_pipe(t_node **node, t_new_list **new, t_fd *fd, t_node **addresses);
 int  handle_append_or_red_out(t_node **node, int *fd_out, int flag);
-int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses);
+int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addresses);
 void execute_commands(t_command *cmd, t_env *env, t_node **addresses);
 void display_cmd(t_command *cmd);
 t_command *ft_lstnew_cmd(char **cmd, int input, int output, t_node **addresses);
@@ -87,7 +87,7 @@ void ft_lstadd_back_cmd(t_command **lst, t_command *new);
 t_command	*ft_lstlast_cmd(t_command *lst);
 char	*ft_join_free(char *s, const char *buf, t_node **addresses);
 char	**ft_pathname(char *p, char **cmdargs, char **env, t_node **addresses);
-int     ft_herdoc(char *s, t_node **addresses);
+int     ft_herdoc(char *s, char **env, t_node **addresses);
 // int     ft_herdoc(char *s, t_env *env, t_node **addresses);
 // int ft_herdoc(char *s, t_node **addresses);
 // int make_process(t_command *command, t_env *env, t_node **addresses);
@@ -103,7 +103,7 @@ void    ctr_c(int sig);
 
 
 void    signal_here_doc(int sig);
-void    ft_read_input(char *s, t_heredoc *heredoc,  t_node **addresses);
+void    ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses);
 void    get_terminal_attr(struct termios *original_termios);
 void    restore_terminal_attributes(struct termios *original_termios);
 
@@ -111,7 +111,7 @@ int	    ft_lstsize_cmd(t_command *cmd);
 void    ft_putchar_fd(char c, int fd);
 void    ft_putendl_fd(char *s, int fd);
 char    *ft_itoa(int n, t_node **addresses);
-// char    *expand_heredoc(char *var, char **env, t_node **addresses);
+char    *expand_heredoc(char *var, char **env, t_node **addresses);
 char    *ft_strtrim(char *s1, char *set, t_node **addresses);
 int     ft_atoi(const char *str);
 void    exec_exit(char **cmd);

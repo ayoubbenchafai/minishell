@@ -32,7 +32,7 @@ int exec_cd(char *path, t_env *env, t_node **addresses)
 {
 	int response;
 	char *tmp;
-    char **full_path = NULL;
+    char **full_path;
     char *cwd;
 
     tmp = path;

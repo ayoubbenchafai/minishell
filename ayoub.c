@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 14:40:42 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 15:27:14 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,10 @@ void hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses
     while (*node)
     {
         handle_space(node, &new->array, &new->s, addresses);
-        // handle_pipe(node, &new->cmd, &new->array, &new->fd, addresses);
         handle_pipe(node, &new, &new->fd, addresses);
         if (handle_append_or_red_out(node, &new->fd.out, new->fd.flag))
             break;
-        // if (handle_here_doc_or_rd_in(node, &new->fd.in, new->fd.flag, env, addresses))
-        if (handle_here_doc_or_rd_in(node, &new->fd.in, new->fd.flag, addresses))
+        if (handle_here_doc_or_rd_in(node, &new->fd, env->env,addresses))
             break;
         if (*node && (!ft_strncmp((*node)->type, "pipe", 4) || !ft_strncmp((*node)->type, "space", 5)))
             continue ;
@@ -118,7 +116,7 @@ void hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses
             expand(*node, env, addresses, NULL);
             new->s = ft_strjoin(new->s, (*node)->value, addresses);
             *node = (*node)->next;
-        }    
+        }
     }
 }
 t_command *set_newlist(t_node **node, t_env *env, t_node **addresses)
@@ -223,55 +221,10 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
     return (0);
 }
 
-// int open_file(t_node **node, int *fd_out, int flag)
-// {
-//     if (flag)
-//     {
-//         *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
-//         if (*fd_out == -1)
-//             return (exit_status(1), 1);
-//     }
-//     else
-//     {
-//         *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-//         if(*fd_out == -1)
-//             return (exit_status(1), 1);
-//     }
-//     *node = (*node)->next;
-//     return (0);
-// }
-
-// int	handle_append_or_red_out(t_node **node, int *fd_out, int flag)
-// {
-// 	if (!*node)
-// 		return (1);
-// 	if (!ft_strcmp((*node)->type, "append")
-// 		|| !ft_strcmp((*node)->type, "rd_out"))
-// 	{
-// 		flag = 0;
-// 		if (!ft_strcmp((*node)->type, "append"))
-// 			flag = 1;
-// 		*node = (*node)->next;
-// 		while (*node && !ft_strcmp((*node)->type, "space"))
-// 			*node = (*node)->next;
-// 		if (!*node)
-// 			return (error_redirection(0), 1);
-// 		if (*node && (!ft_strcmp((*node)->type, "word")
-// 				|| !ft_strcmp((*node)->type + 2, "quote")))
-// 		{
-// 			if (open_file(node, fd_out, flag))
-// 				return (1);
-// 		}
-// 		else
-// 			return (error_redirection(1), 1);
-// 	}
-// 	return (0);
-// }
-
-
-
-int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses)
+int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addresses)
 {
+    int flag = fd->flag;
+    int *fd_in = &fd->in;
     if (!*node)
         return (1);
     if (!ft_strncmp((*node)->type, "here_doc", 8) || !ft_strncmp((*node)->type, "rd_in", 5)) 
@@ -290,11 +243,19 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addre
             {
                 *fd_in = open((*node)->value, O_RDONLY, 0644);
                 if (*fd_in == -1)
-                    return (ft_putstr_fd("No such file or directory\n", 2), exit_status(1), 1);
+                    ft_putstr_fd("No such file or directory\n", 2);
+                t_node *tmp = (*node)->next;
+                while (tmp && !ft_strcmp(tmp->type, "space"))
+                    tmp = tmp->next;
+                if (tmp && !ft_strcmp(tmp->type, "pipe"))
+                {
+                    *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+                    unlink("k");
+                }
             }
             else
             {
-                *fd_in = ft_herdoc((*node)->value, addresses);
+                *fd_in = ft_herdoc((*node)->value, env, addresses);
                 if (*fd_in == -1)
                     return (exit_status(1), 1);
             }
@@ -306,50 +267,6 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addre
     return (0);
 }
 // builtin_key is a function that checks if the command is a builtin command 
-
-// int open_file1(t_node **node, int *fd_in, int flag, t_node **addresses)
-// {
-//     if (flag)
-//     {
-//         *fd_in = open((*node)->value, O_RDONLY, 0644);
-//         if (*fd_in == -1)
-//             return (ft_putstr_fd("No such file or directory\n", 2), exit_status(1), 1);
-//     }
-//     else
-//     {
-//         *fd_in = ft_herdoc((*node)->value, addresses);
-//         if (*fd_in == -1)
-//             return (exit_status(1), 1);
-//     }
-//     *node = (*node) -> next;
-//     return (0);
-// }
-
-// int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses)
-// {
-//     if (!*node)
-//         return (1);
-//     if (!ft_strncmp((*node)->type, "here_doc", 8) || !ft_strncmp((*node)->type, "rd_in", 5)) 
-//     {
-//         flag = 0;
-//         if (!ft_strncmp((*node)->type, "rd_in", 5))
-//             flag = 1;
-//         *node = (*node)->next;
-//         while (*node && !ft_strncmp((*node)->type, "space", 5))
-//             *node = (*node)->next;
-//         if (!*node)
-//             return (error_redirection(0), 1);
-//         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
-//         {
-//             if(open_file1(node, fd_in, flag, addresses))
-//                 return (1);
-//         }
-//         else
-//             return (error_redirection(2), 1);
-//     }
-//     return (0);
-// }
-
 int builtin_key(t_command *cmd, t_node **addresses)
 {
     if (!ft_strcmp(cmd->cmd[0], "cd") || !ft_strcmp(cmd->cmd[0], "echo") 
@@ -397,6 +314,10 @@ void execute_commands(t_command *cmd, t_env *env, t_node **addresses)
     int		i;
     int		pid;
     int 	size;
+
+    // printf("-------------commands------------\n");
+    // display_cmd(cmd);
+    // printf("-------------fin commands-------------\n");
 	i = 0;
 	pid = 0;
 	size = ft_lstsize_cmd(cmd);
@@ -411,20 +332,31 @@ void execute_commands(t_command *cmd, t_env *env, t_node **addresses)
         cmd = cmd->next;
         i++;
     }
-	ft_wait(size, pid);
+	// ft_wait(size, pid);
+    while(wait(NULL) > 0);
 }
 
 void check_errors_child(char *cmd)
 {
 	if(cmd[0] == '.' && cmd[1] == '/')
-            printf("minishell: %s: No such file or directory\n", cmd);
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd, 2);
+        ft_putstr_fd(": No such file or directory\n", 2);
+    }
     else if(cmd[0] == '/')
     {
-        printf("minishell: %s: is a directory\n", cmd);
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd, 2);
+        ft_putstr_fd(": is a directory\n", 2);
         exit(126);
     }
     else if(cmd[0] != '$')
-        printf("minishell: %s: command not found\n", cmd);
+    {
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd, 2);
+        ft_putstr_fd(": command not found\n", 2);
+    }
     exit(127);
 }
 
@@ -473,7 +405,8 @@ int make_process(t_command *command, t_env *env, int *i, t_node **addresses)
 {
     int fd[2];
     int pid;
-    
+
+    pid = 1;
     run_signals(0);
     if(!command->cmd)
         return (1);
@@ -482,7 +415,8 @@ int make_process(t_command *command, t_env *env, int *i, t_node **addresses)
 		if (pipe(fd) == -1)
 			return (1);	
 	}
-	pid = fork();
+    if (command->input != -1)
+	    pid = fork();
     if (pid == -1)
         return (1);
     if (pid == 0)
@@ -502,10 +436,10 @@ void signal_here_doc(int sig)
         exit(1);
 }
 
-void  ft_read_input(char *s, t_heredoc *heredoc, t_node **addresses)
+void  ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses)
 {
     char *line;
-    char *tmp;
+    char *tmp = NULL;
     
     signal(SIGINT, signal_here_doc);
     while(1)
@@ -519,9 +453,9 @@ void  ft_read_input(char *s, t_heredoc *heredoc, t_node **addresses)
             break;
         }
         // expand(line, addresses);
-        // tmp = expand_heredoc(line, env, addresses);
-        // tmp = ft_strjoin(tmp, "\n", addresses);
-        tmp = ft_strjoin(line, "\n", addresses);
+        tmp = expand_heredoc(line, env, addresses);
+        // tmp = ft_strjoin(tmp, line, addresses);
+        tmp = ft_strjoin(tmp, "\n", addresses);
         write(heredoc->fd_write, tmp, ft_strlen(tmp));
         free(tmp);
         free(line);
@@ -529,7 +463,7 @@ void  ft_read_input(char *s, t_heredoc *heredoc, t_node **addresses)
     close(heredoc->fd_write);
     close(heredoc->fd_read);
 }
-int ft_herdoc(char *s, t_node **addresses)
+int ft_herdoc(char *s, char **env, t_node **addresses)
 {
     int         pid;
     int			status;
@@ -544,7 +478,7 @@ int ft_herdoc(char *s, t_node **addresses)
         return (-1);
     if(pid == 0)
     {
-        ft_read_input(s, &heredoc, addresses);
+        ft_read_input(s, &heredoc, env, addresses);
         exit(0);
     }
     if (wait(&status) == -1)

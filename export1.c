@@ -125,23 +125,27 @@ int exec_env(char **env)
 
 char *expand_heredoc(char *var, char **env, t_node **addresses)
 {
-    int i;
-    char *trim;
-    char *s;
+    int i = 0;
+    char *response = NULL;
+    int x = 0;
 
-    i = 0;
-    if (!check_char(var, '$'))
-        return (var);
-    trim = ft_strtrim(var, "$", addresses);
-    
-    while (env && env[i])
+    while(var && var[i])
     {
-        if (!ft_strncmp(env[i], trim, get_equal(env[i])))
+        while(var[i] != '\0')
         {
-            s = env[i] + get_equal(env[i]) + 1;
-            return (ft_strdup(s, addresses));
+            if (var[i] == '$' && ft_isalnum(var[i + 1]))
+                break ;
+            i++;
         }
-        i++;
+        response = ft_strjoin(response, ft_substr(var, x, i - x , addresses), addresses);
+        if (var[i] != '\0')
+            i++;
+        x = i;
+        while(var[i] != '\0' && ft_isalnum(var[i]))
+            i++;
+        var = ft_strjoin(ft_substr(var, x, i - x, addresses), "=", addresses);
+        response = ft_strjoin(response, get_environment(env, var), addresses);
+        x = i;
     }
-    return (NULL);
+    return (response);
 }
