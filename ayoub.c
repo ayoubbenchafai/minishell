@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/14 17:01:28 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 17:59:25 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ int ft_wait(int size, int pid)
     {
         g_pid = wait(&status);
         if(g_pid == -1)
-            return (write(1, "Error in wait\n", 14), 1);
+            return (1);
         if (g_pid == pid)
             exit_status(WEXITSTATUS(status));
         if (WIFSIGNALED(status))
@@ -326,8 +326,8 @@ void execute_commands(t_command *cmd, t_env *env, t_node **addresses)
         cmd = cmd->next;
         i++;
     }
-	// ft_wait(size, pid);
-    while(wait(NULL) > 0);
+	ft_wait(size, pid);
+    // while(wait(NULL) > 0);
 }
 
 void check_errors_child(char *cmd)
@@ -416,7 +416,7 @@ int make_process(t_command *command, t_env *env, int *i, t_node **addresses)
     if (pid == 0)
 	{
 		if (child_process(command, env, fd, addresses))
-			return (1);
+			exit(1);
 	}
     else 
         parent_process(command, i, pid, fd);
@@ -439,16 +439,14 @@ void  ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses)
     while(1)
     {
         line = readline("> ");
-        if(!line)
+        if (!line)
             break ;
         if(!ft_strcmp(line, s))
         {
             free(line);
             break;
         }
-        // expand(line, addresses);
         tmp = expand_heredoc(line, env, addresses);
-        // tmp = ft_strjoin(tmp, line, addresses);
         tmp = ft_strjoin(tmp, "\n", addresses);
         write(heredoc->fd_write, tmp, ft_strlen(tmp));
         free(tmp);
