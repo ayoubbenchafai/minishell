@@ -194,9 +194,6 @@ int quotes_syntax(char *line)
 }
 int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 {
-	t_node *add;
-	
-	add = NULL;
 	if (!commands->cmd)
 		return 0;
 	if(!ft_strcmp(commands->cmd[0], "echo"))
@@ -214,6 +211,7 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 		if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
     	{
         	printf("minishell: unset: `%s': not a valid identifier\n", commands->cmd[1]);
+			// ft_putendl_fd("minishell: unset: `': not a valid identifier", 2);
 			exit_status(1);
         	return (1);
    		}
@@ -243,7 +241,7 @@ int main(int argc, char **argv, char **env)
 	envir.env = get_env(env);
 	envir.export = get_env(env);
 	get_terminal_attr(&original_termios);
-	while(1)
+	while (1)
 	{
 		run_signals(1);
 		line = readline("minishell$ ");
@@ -255,7 +253,7 @@ int main(int argc, char **argv, char **env)
 			line = NULL;
 			continue;
 		}
-		if(line[0] != '\0' && ((line[0] < 9 || line[0] > 13) && line[0] != 32))
+		if (line[0] != '\0' && ((line[0] < 9 || line[0] > 13) && line[0] != 32))
 			add_history(line);
 		parse_line(line, &tokens, &addresses, 0);
 		execute_commands(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
