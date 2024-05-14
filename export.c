@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/14 15:28:43 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 16:21:33 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,11 @@ void	export_print(char **export_env)
 			if ((*export_env)[i] == '+' && (*export_env)[i + 1] == '=')
 				i++;
 			ft_putchar_fd((*export_env)[i], 1);
-			// if ((*export_env)[i] == '=' && (*export_env)[i - 1] != '=')
-			if(i == get_equal(*export_env) && get_equal(*export_env))
+			// if (((*export_env)[i] == '=' && (*export_env)[i - 1] != '=') || i == ft_strlen(*export_env) - 1)
+			if (i == get_equal(*export_env) && get_equal(*export_env))
 				ft_putchar_fd('"', 1);
 			i++;
 		}
-		// if (check_char(*export_env, '+') && !get_equal(*export_env))
-			// ft_putstr_fd("=\"", 1);
 		if (get_equal(*export_env))
 			ft_putchar_fd('"', 1);
 		ft_putstr_fd("\n", 1);
@@ -71,7 +69,7 @@ void	export_join(int flag, char *var, char **env, t_node **addresses)
 	*env = ft_strdup(s, addresses);
 }
 
-int	compare_size(char *var, char *env, int size)
+int	check_size(char *var, char *env, int size)
 {
 	int	c;
 
@@ -100,23 +98,13 @@ void	env_export_all_cases(char *var, char ***env, int size, t_node **addr)
 	len = get_equal(var);
 	while (env && *env && (*env)[++i])
 	{
-		if (!ft_strncmp((*env)[i], var, size) && !len)
-		{
-			// printf("env : %s, var : %s\n", (*env)[i], var);
-			// printf("env : (%d, - 1 %d) var : %zd\n", get_equal((*env)[i]), get_equal((*env)[i]) - 1, ft_strlen(var));
-			int c = get_equal((*env)[i]);
-			if ((c - 1 == ft_strlen(var) && (*env)[i][c - 1] == '+')
-			|| c  == ft_strlen(var))
-				return ;
-			if (!ft_strcmp((*env)[i], var))
-				return ;
-		}
+		if (!ft_strncmp((*env)[i], var, size) && !len && cmp_size((*env)[i], var))
+			return ;
 		else if (!ft_strncmp((*env)[i], var, size) && len)
-		// else if (!ft_strncmp((*env)[i], var, size) && check_char(var, '='))
 		{
 			if (!check_char((*env)[i], '='))
 				flag = 1;
-			if (compare_size(var, (*env)[i], len))
+			if (check_size(var, (*env)[i], len))
 			{
 				if (var[len - 1] == '+' && var[len] == '=')
 					export_join(flag, var, &(*env)[i], addr);

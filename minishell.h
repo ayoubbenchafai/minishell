@@ -117,6 +117,7 @@ int     ft_atoi(const char *str);
 void    exec_exit(char **cmd);
 int     ft_isdigit(int c);
 void    print_exit_status(char *cmd, int flag, t_node **addresses);
+int	    cmp_size(char *env, char *var);
 //----
 // int check_error(char *var);
 int check_error(char *var, int flag);

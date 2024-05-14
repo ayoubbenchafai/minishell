@@ -240,24 +240,18 @@ int handle_here_doc_or_rd_in(t_node **node, t_fd *fd, char **env, t_node **addre
         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
         {
             if (flag)
-            {
                 *fd_in = open((*node)->value, O_RDONLY, 0644);
-                if (*fd_in == -1)
-                    ft_putstr_fd("No such file or directory\n", 2);
-                t_node *tmp = (*node)->next;
-                while (tmp && !ft_strcmp(tmp->type, "space"))
-                    tmp = tmp->next;
-                if (tmp && !ft_strcmp(tmp->type, "pipe"))
-                {
-                    *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
-                    unlink("k");
-                }
-            }
             else
-            {
                 *fd_in = ft_herdoc((*node)->value, env, addresses);
-                if (*fd_in == -1)
-                    return (exit_status(1), 1);
+            if (*fd_in == -1)
+                ft_putstr_fd("No such file or directory\n", 2);
+            t_node *tmp = (*node)->next;
+            while (tmp && !ft_strcmp(tmp->type, "space"))
+                tmp = tmp->next;
+            if (tmp && !ft_strcmp(tmp->type, "pipe"))
+            {
+                *fd_in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
+                unlink("k");
             }
             *node = (*node) -> next;
         }
