@@ -74,9 +74,8 @@ int check_char(char *s,char c)
 // function that expands the variables and modify the char **var remplace $EXEMPLE by its value
 // if the variable is not found in the env it s place in the string will be left empy
 
-void expand(t_node *node, t_env *env, t_node **addresses)
+void    expand(t_node *node, t_env *env, t_node **addresses, char *response)
 {
-    char *response = NULL;
     char *var;
     int i;
     int x;
@@ -89,11 +88,13 @@ void expand(t_node *node, t_env *env, t_node **addresses)
     {
         while(((char *)node->value)[i] != '\0')
         {
-            if (((char *)node->value)[i] == '$' && ft_isalnum(((char *)node->value)[i + 1]))
+            if (((char *)node->value)[i] == '$' && ft_isalnum(((char *)node->value)[i + 1]))         
                 break ;
             i++;
         }
-        response = ft_strjoin(response, ft_substr(node->value, x, i++, addresses), addresses);
+        response = ft_strjoin(response, ft_substr(node->value, x, i - x , addresses), addresses);
+        if (((char *)node->value)[i] != '\0')
+            i++;
         x = i;
         while(((char *)node->value)[i] != '\0' && ft_isalnum(((char *)node->value)[i]))
             i++;
@@ -102,9 +103,5 @@ void expand(t_node *node, t_env *env, t_node **addresses)
         x = i;
     }
     node->value = response;
-    // puts("--------------------------------");
-    // printf("value = %s\n", (char *)node->value);
-    // puts("--------------------------------");
     return ;
 }
-

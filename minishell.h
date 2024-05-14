@@ -139,7 +139,7 @@ char    *get_environment(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path, t_env *env, t_node **addresses);
 int is_builtin(t_command *commands, t_env *env, t_node **addresses);
-void expand(t_node *node, t_env *env, t_node **addresses);
+void    expand(t_node *node, t_env *env, t_node **addresses, char *response);
 int exec_env(char **env);
 // int exec_env(char **env, char **export);
 int get_equal(char *s);

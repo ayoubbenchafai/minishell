@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/13 17:50:02 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/14 14:40:42 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses
             continue ;
         if (*node)
         {
-            // expand(*node, env, addresses);
+            expand(*node, env, addresses, NULL);
             new->s = ft_strjoin(new->s, (*node)->value, addresses);
             *node = (*node)->next;
         }    
@@ -223,6 +223,53 @@ int  handle_append_or_red_out(t_node **node, int *fd_out, int flag)
     return (0);
 }
 
+// int open_file(t_node **node, int *fd_out, int flag)
+// {
+//     if (flag)
+//     {
+//         *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
+//         if (*fd_out == -1)
+//             return (exit_status(1), 1);
+//     }
+//     else
+//     {
+//         *fd_out = open((*node)->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+//         if(*fd_out == -1)
+//             return (exit_status(1), 1);
+//     }
+//     *node = (*node)->next;
+//     return (0);
+// }
+
+// int	handle_append_or_red_out(t_node **node, int *fd_out, int flag)
+// {
+// 	if (!*node)
+// 		return (1);
+// 	if (!ft_strcmp((*node)->type, "append")
+// 		|| !ft_strcmp((*node)->type, "rd_out"))
+// 	{
+// 		flag = 0;
+// 		if (!ft_strcmp((*node)->type, "append"))
+// 			flag = 1;
+// 		*node = (*node)->next;
+// 		while (*node && !ft_strcmp((*node)->type, "space"))
+// 			*node = (*node)->next;
+// 		if (!*node)
+// 			return (error_redirection(0), 1);
+// 		if (*node && (!ft_strcmp((*node)->type, "word")
+// 				|| !ft_strcmp((*node)->type + 2, "quote")))
+// 		{
+// 			if (open_file(node, fd_out, flag))
+// 				return (1);
+// 		}
+// 		else
+// 			return (error_redirection(1), 1);
+// 	}
+// 	return (0);
+// }
+
+
+
 int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses)
 {
     if (!*node)
@@ -259,6 +306,50 @@ int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addre
     return (0);
 }
 // builtin_key is a function that checks if the command is a builtin command 
+
+// int open_file1(t_node **node, int *fd_in, int flag, t_node **addresses)
+// {
+//     if (flag)
+//     {
+//         *fd_in = open((*node)->value, O_RDONLY, 0644);
+//         if (*fd_in == -1)
+//             return (ft_putstr_fd("No such file or directory\n", 2), exit_status(1), 1);
+//     }
+//     else
+//     {
+//         *fd_in = ft_herdoc((*node)->value, addresses);
+//         if (*fd_in == -1)
+//             return (exit_status(1), 1);
+//     }
+//     *node = (*node) -> next;
+//     return (0);
+// }
+
+// int handle_here_doc_or_rd_in(t_node **node, int *fd_in, int flag, t_node **addresses)
+// {
+//     if (!*node)
+//         return (1);
+//     if (!ft_strncmp((*node)->type, "here_doc", 8) || !ft_strncmp((*node)->type, "rd_in", 5)) 
+//     {
+//         flag = 0;
+//         if (!ft_strncmp((*node)->type, "rd_in", 5))
+//             flag = 1;
+//         *node = (*node)->next;
+//         while (*node && !ft_strncmp((*node)->type, "space", 5))
+//             *node = (*node)->next;
+//         if (!*node)
+//             return (error_redirection(0), 1);
+//         if (*node && (!ft_strncmp((*node)->type, "word", 4) || !ft_strncmp((*node)->type + 2, "quote", 5)))
+//         {
+//             if(open_file1(node, fd_in, flag, addresses))
+//                 return (1);
+//         }
+//         else
+//             return (error_redirection(2), 1);
+//     }
+//     return (0);
+// }
+
 int builtin_key(t_command *cmd, t_node **addresses)
 {
     if (!ft_strcmp(cmd->cmd[0], "cd") || !ft_strcmp(cmd->cmd[0], "echo") 

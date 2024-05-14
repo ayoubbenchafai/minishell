@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -fsanitize=address
+CFLAGS = -g #-fsanitize=address
 SRC = minishell.c ft_functions/ft_malloc.c node.c pwd.c cd.c env.c ayoub.c signals.c ft_functions/ft_strjoin.c ft_functions/ft_strncmp.c \
     ft_functions/ft_split.c ft_functions/ft_strlen.c ft_functions/ft_strdup.c ft_functions/ft_memcpy.c ft_functions/ft_memmove.c \
 	ft_functions/ft_putstr_fd.c ft_functions/ft_strlcpy.c ft_functions/ft_strnstr.c ft_functions/ft_isalpha.c ft_functions/ft_isalnum.c \

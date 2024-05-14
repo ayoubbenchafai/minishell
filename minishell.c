@@ -203,12 +203,12 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 		return(exec_echo(commands->cmd, env->env, addresses), 1);
 	else if(!ft_strcmp(commands->cmd[0], "pwd"))
 		return (exec_pwd(), 1);
-	// else if(!ft_strcmp(commands->cmd[0], "cd"))
-	// 	return (exec_cd(commands->cmd[1], env, addresses), 1);      
+	else if(!ft_strcmp(commands->cmd[0], "cd"))
+		return (exec_cd(commands->cmd[1], env, addresses), 1);      
 	else if(!ft_strcmp(commands->cmd[0], "env"))
 		return (exec_env(env->env), 1);
 	else if(!ft_strcmp(commands->cmd[0], "export"))
-		return (exec_export(commands->cmd, &env->env, &env->export, addresses), 1);
+		return (exec_export(&commands->cmd[1], &env->env, &env->export, addresses), 1);
 	else if(!ft_strcmp(commands->cmd[0], "unset"))
 	{
 		if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))

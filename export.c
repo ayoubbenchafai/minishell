@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/13 13:23:51 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/13 23:15:13 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	sort_env(char **env)
 		i++;
 	}
 }
-
 void	export_print(char **export_env)
 {
 	int	i;
@@ -45,13 +44,10 @@ void	export_print(char **export_env)
 			if ((*export_env)[i] == '+' && (*export_env)[i + 1] == '=')
 				i++;
 			ft_putchar_fd((*export_env)[i], 1);
-			if ((*export_env)[i] == '=' && (*export_env)[i - 1] != '=')
-			// if ((*export_env)[i] == '=' && (*export_env)[i - 1] != '=' && (*export_env)[i + 1] != '=') if +
+			if (i == get_equal(*export_env) && get_equal(*export_env))
 				ft_putchar_fd('"', 1);
 			i++;
 		}
-		// if (check_char(*export_env, '+') && !get_equal(*export_env))
-			// ft_putstr_fd("=\"", 1);
 		if (get_equal(*export_env))
 			ft_putchar_fd('"', 1);
 		ft_putstr_fd("\n", 1);
@@ -134,8 +130,8 @@ void	exec_export(char **vars, char ***env, char ***ex_env, t_node **addr)
 	int	i;
 	int	size;
 
-	i = 1;
-	if (!vars || !*vars || !vars[1])
+	i = 0;
+	if (!vars || !vars[0])
 	{
 		export_print(*ex_env);
 		return ;
