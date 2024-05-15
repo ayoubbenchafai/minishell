@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*  ft_strlen.c                                        :+:      :+:    :+:   */
+/*   uuuuu.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 15:47:11 by miguiji           #+#    #+#             */
-/*   Updated: 2023/11/04 19:47:50 by miguiji          ###   ########.fr       */
+/*   Created: 2024/05/15 16:22:16 by aben-cha          #+#    #+#             */
+/*   Updated: 2024/05/15 16:23:48 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
 
-size_t	ft_strlen(const char *s)
+
+static void	print_error(char *str)
 {
-	size_t	i;
-
-	i = 0;
-	while (s && s[i])
-		i++;
-	return (i);
+	ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	exit(255);
 }
+
+
+

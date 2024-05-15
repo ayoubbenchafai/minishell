@@ -21,14 +21,12 @@ int	ft_strncmp(const char *str1, const char *str2, size_t n)
 	s1 = (unsigned char *)str1;
 	s2 = (unsigned char *)str2;
 	i = 0;
-	if (!n)
+	if (!n || (!s1 && !s2))
 		return (0);
-	if(!s1 && s2)
+	if (!s1 && s2)
 		return (-s2[0]);
-	if(!s2 && s1)
+	if (!s2 && s1)
 		return (s1[0]);
-	if (!s1 && !s2)
-		return (0);
 	while (i < n && s1[i] && s2[i])
 	{
 		if (s1[i] - s2[i] != 0)
@@ -41,9 +39,3 @@ int	ft_strncmp(const char *str1, const char *str2, size_t n)
 		return (-s2[i]);
 	return (0);
 }
-/*int main ()
-{
-	printf("%d", ft_strncmp("", "1", 1));
-	return (0);
-}
-*/

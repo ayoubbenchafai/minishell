@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/14 23:23:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:02:51 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void	export_print(char **export_env)
 			if ((*export_env)[i] == '+' && (*export_env)[i + 1] == '=')
 				i++;
 			ft_putchar_fd((*export_env)[i], 1);
-			// if (((*export_env)[i] == '=' && (*export_env)[i - 1] != '=') || i == ft_strlen(*export_env) - 1)
 			if (i == get_equal(*export_env) && get_equal(*export_env))
 				ft_putchar_fd('"', 1);
 			i++;
@@ -87,6 +86,13 @@ int	check_size(char *var, char *env, int size)
 	return (0);
 }
 
+int	check_if_var_exist(char *var, char *env, int size)
+{
+	if (!ft_strncmp(env, var, size) && cmp_size(env, var))
+		return (1);
+	return (0);
+}
+
 void	env_export_all_cases(char *var, char ***env, int size, t_node **addr)
 {
 	int	i;
@@ -98,7 +104,7 @@ void	env_export_all_cases(char *var, char ***env, int size, t_node **addr)
 	len = get_equal(var);
 	while (env && *env && (*env)[++i])
 	{
-		if (!ft_strncmp((*env)[i], var, size) && !len && cmp_size((*env)[i], var))
+		if (check_if_var_exist(var, (*env)[i], size) && !len)
 			return ;
 		else if (!ft_strncmp((*env)[i], var, size) && len)
 		{
@@ -133,9 +139,8 @@ void	exec_export(char **vars, char ***env, char ***ex_env, t_node **addr)
 		size = get_best_size(vars[i]);
 		if (!check_error(vars[i], 1))
 		{
-			printf("export: `%s':not a valid identifier\n", vars[i++]);
+			print_error(vars[i++], 0);
 			continue ;
-			exit_status(1);
 		}
 		if (!get_equal(vars[i]))
 		{

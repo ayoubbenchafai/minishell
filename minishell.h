@@ -12,7 +12,9 @@
 #include <termios.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
+#include <stdbool.h>
+#define TRUE 1
+#define FALSE 0
 typedef struct s_env
 {
     char **env;
@@ -115,6 +117,7 @@ char    *expand_heredoc(char *var, char **env, t_node **addresses);
 char    *ft_strtrim(char *s1, char *set, t_node **addresses);
 int     ft_atoi(const char *str);
 void    exec_exit(char **cmd);
+void	print_error(char *str, int flag);
 int     ft_isdigit(int c);
 void    print_exit_status(char *cmd, int flag, t_node **addresses);
 int	    cmp_size(char *env, char *var);
@@ -136,7 +139,8 @@ int ft_strcmp(const char *s1, const char *s2);
 char    *ft_substr(const char *str, unsigned int start, size_t len, t_node **addresses);
 //-----------------------------------------------------
 void exec_echo(char **cmd, char **env, t_node **addresses);
-char    *get_environment(char **envp, char *var);
+char    *get_environment(char **envp, char *var, t_node **addresses);
+char *request_env(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path, t_env *env, t_node **addresses);
 int is_builtin(t_command *commands, t_env *env, t_node **addresses);
@@ -148,6 +152,7 @@ void *ft_malloc(size_t size, t_node **addresses);
 t_node  *ft_alloc(void *value, char *type);
 void	add_back(t_node **lst, t_node *new);
 void	free_addresses(t_node *addresses);
+bool    hande_tokens(t_node **node, t_env *env, t_new_list *new, t_node **addresses);
 t_node  *ft_lstnew1(void *value, char *type, t_node **addresses);
 t_node  *ft_lstlast1(t_node *lst);
 void	ft_lstadd_back1(t_node **lst, t_node *new);

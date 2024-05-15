@@ -12,7 +12,7 @@
 
 #include "../minishell.h"
 
-char	*ft_substr(const char *str, unsigned int start, size_t len, t_node **addresses)
+char	*ft_substr(const char *str, unsigned int start, size_t len, t_node **ad)
 {
 	size_t	i;
 	char	*ptr;
@@ -21,10 +21,10 @@ char	*ft_substr(const char *str, unsigned int start, size_t len, t_node **addres
 	if (!str)
 		return (NULL);
 	if (start >= ft_strlen(str))
-		return (ft_strdup("", addresses));
+		return (ft_strdup("", ad));
 	if (ft_strlen(str + start) < len)
 		len = ft_strlen(str + start);
-	ptr = ft_malloc(len + 1, addresses);
+	ptr = ft_malloc(len + 1, ad);
 	if (ptr == NULL)
 		return (0);
 	while (i < len && (str + start)[i])

@@ -228,6 +228,18 @@ void f(void)
 {
 	system("leaks minishell");
 }
+void free_arr(char **arr)
+{
+	int i;
+
+	i = 0;
+	while(arr && arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
 
 int main(int argc, char **argv, char **env)
 {
@@ -238,7 +250,7 @@ int main(int argc, char **argv, char **env)
     t_node  *addresses;
 	t_env   envir;
 	struct termios original_termios;
-	
+	// atexit(f);
 	line = NULL;
 	tokens = NULL;
 	addresses = NULL;
@@ -250,7 +262,7 @@ int main(int argc, char **argv, char **env)
 		run_signals(1);
 		line = readline("minishell$ ");
 		if(!line)
-			return (free(line),	free_addresses(addresses), rl_clear_history(), ctr_d(), 0);
+			return (free(line),	free_arr(envir.env), free_arr(envir.export), rl_clear_history(), ctr_d(), 0);
 		if(quotes_syntax(line))
 		{
 			free(line);
@@ -264,9 +276,9 @@ int main(int argc, char **argv, char **env)
 		tokens = NULL;
 		free(line);
 		line = NULL;
-		addresses = NULL;
 		restore_terminal_attributes(&original_termios);
-		// free_addresses(addresses);
+		free_addresses(addresses);
+		addresses = NULL;
     }
 	// ft_minishell(tokens, envir, addresses, &original_termios);
 	return 0;

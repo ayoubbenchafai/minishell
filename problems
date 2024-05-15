@@ -25,3 +25,6 @@ expand  : $var
 
 
 ls -la | wc > > ayoubh problem
+cat | cat | ls  problem
+
+get_environment+0x67    : heap-use-after-free

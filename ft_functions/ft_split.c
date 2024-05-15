@@ -38,7 +38,7 @@ static	void	letters_count(char *original, char c, int *end, int *start)
 		(*end)++;
 }
 
-static	int	alloc_move(char *original, char **d_arr, t_args *args, t_node **addresses)
+static int	alloc_move(char *original, char **d_arr, t_args *args, t_node **add)
 {
 	int	start;
 	int	end;
@@ -48,7 +48,7 @@ static	int	alloc_move(char *original, char **d_arr, t_args *args, t_node **addre
 	while (args->i < word_count(original, args->c))
 	{
 		letters_count(original, args->c, &end, &start);
-		d_arr[args->i] = ft_malloc(end - start + 1, addresses);
+		d_arr[args->i] = ft_malloc(end - start + 1, add);
 		if (d_arr[args->i] == NULL)
 			return (0);
 		ft_memmove(d_arr[args->i], &original[start], end - start);
@@ -58,22 +58,22 @@ static	int	alloc_move(char *original, char **d_arr, t_args *args, t_node **addre
 	return (1);
 }
 
-char	**ft_split(char *original, char c, t_node **addresses)
+char	**ft_split(char *original, char c, t_node **addr)
 {
 	char		**d_arr;
 	int			i;
-	t_args	args;
+	t_args		args;
 
 	if (!original)
 		return (NULL);
 	i = 0;
-	d_arr = ft_malloc((word_count(original, c) + 1) * sizeof(char *), addresses);
+	d_arr = ft_malloc((word_count(original, c) + 1) * sizeof(char *), addr);
 	if (d_arr == NULL)
 		return (d_arr);
 	d_arr[word_count(original, c)] = NULL;
 	args.c = c;
 	args.i = 0;
-	if(!alloc_move(original, d_arr, &args, addresses))
+	if (!alloc_move(original, d_arr, &args, addr))
 		return (NULL);
 	return (d_arr);
 }

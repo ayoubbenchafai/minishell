@@ -6,11 +6,31 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 17:51:23 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/14 23:46:14 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:27:50 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	print_error(char *str, int flag)
+{
+	if (!flag)
+	{
+		ft_putstr_fd("export: `", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd("':not a valid identifier\n", 2);
+		exit_status(1);
+	}
+	else
+	{
+		ft_putstr_fd("exit\n", 2);
+		ft_putstr_fd("minishell: exit: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
+		exit_status(255);
+		exit(255);
+	}
+}
 
 static void	check_error_exit(char *str)
 {
@@ -22,14 +42,7 @@ static void	check_error_exit(char *str)
 	while (str && str[i])
 	{
 		if (!ft_isdigit(str[i]))
-		{
-			ft_putstr_fd("exit\n", 2);
-			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(str, 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			exit_status(255);
-			exit(255);
-		}
+			print_error(str, 1);
 		i++;
 	}
 }
