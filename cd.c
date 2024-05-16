@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/15 15:53:11 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/16 14:19:38 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int exec_cd(char *path, t_env *env, t_node **addresses)
         response = cd_helper(path, env, &tmp, addresses);
 	if (response == -1)
 		return (ft_putstr_fd("cd: ", 2), ft_putstr_fd(path, 2),
-            ft_putstr_fd(": No such file or directory\n", 2), 0);
+            ft_putstr_fd(": No such file or directory\n", 2), exit_status(1), 0);
 	else
 	{
 		full_path = ft_array(NULL, ft_strjoin("OLDPWD=", get_environment(env->env, "PWD", addresses), addresses), addresses);

@@ -59,6 +59,7 @@ typedef struct s_heredoc
     int fd_read;
 }   t_heredoc;
 
+
 //-----------------------------------------------------
 int				ft_cd(char **args, t_env *env);
 
@@ -89,7 +90,7 @@ void ft_lstadd_back_cmd(t_command **lst, t_command *new);
 t_command	*ft_lstlast_cmd(t_command *lst);
 char	*ft_join_free(char *s, const char *buf, t_node **addresses);
 char	**ft_pathname(char *p, char **cmdargs, char **env, t_node **addresses);
-int     ft_herdoc(char *s, char **env, t_node **addresses);
+int     ft_herdoc(t_node *node, char **env, t_node **addresses);
 // int     ft_herdoc(char *s, t_env *env, t_node **addresses);
 // int ft_herdoc(char *s, t_node **addresses);
 // int make_process(t_command *command, t_env *env, t_node **addresses);
@@ -103,9 +104,10 @@ void    ctr_d();
 void    ctr_c(int sig);
 //-----------function li zedt-------------
 
+int open_file1(t_node **node, t_fd *fd, char **env, t_node **addresses);
 
 void    signal_here_doc(int sig);
-void    ft_read_input(char *s, t_heredoc *heredoc, char **env, t_node **addresses);
+void    ft_read_input(t_node *node, t_heredoc *heredoc, char **env, t_node **addresses);
 void    get_terminal_attr(struct termios *original_termios);
 void    restore_terminal_attributes(struct termios *original_termios);
 

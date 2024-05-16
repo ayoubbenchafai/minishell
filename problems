@@ -1,30 +1,30 @@
-> "ls"
-
->> signals
-
-cat * 2
-
-ls > $VAR
-
-$$$$$$$$USER 
-
->>>>>>>>                 corrected
-
-expand in here_doc  
-
-mni kandir spaces more command == > makatkhdemch       corrected
-
-error : << tmp | cat   ==>> ctr-c
-
-expand in ls > $VAR
-
-
-$rt ' ' ls && $sdfs ls
-
-expand  : $var 
-
-
-ls -la | wc > > ayoubh problem
 cat | cat | ls  problem
 
-get_environment+0x67    : heap-use-after-free
+
+
+./ls: No such file or directory --> 126 and permission denied
+. ilename argument required
+.: usage: . filename [arguments]
+bash-3.2$ echo $?
+
+
+ls | cd jdkkdj --> 1
+
+'' ""ls
+expand $''   expand $'l'
+
+# minishell$ << "sa"  cat && 'sa'
+# > $USER
+# > $HOME
+# > $PWD
+# > sa
+# miguiji
+# /Users/miguiji
+# /Users/miguiji/Desktop/mini
+
+
+# minishell$ << 1"2"'3' cat
+# > 1
+# minishell: 23: command not found
+# minishell$ 
+

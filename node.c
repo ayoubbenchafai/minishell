@@ -1,38 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   f.c                                                :+:      :+:    :+:   */
+/*   node.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <miguiji@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:05 by miguiji           #+#    #+#             */
-/*   Updated: 2024/04/03 07:58:32 by miguiji          ###   ########.fr       */
+/*   Updated: 2024/05/16 14:26:20 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char *set_type(char *s)
-{
-    char *tmp;
-    
-    tmp = NULL;
-    if(!ft_strncmp(s, "<<", 2))
-        tmp =  "herdoc";
-    else if(!ft_strncmp(s, ">>", 2))
-        tmp = "output_redirection_append";
-    else if(s[0] == '>')
-        tmp = "output_redirection";
-    else if(s[0] == '<')
-        tmp = "input_redirection";
-    else if(s[0] == '|' && s[1] == '\0')
-        tmp = "pipe";
-    else if(s[0] == '$' && s[1])
-        tmp =  "expand";
-    else
-        tmp = "word";
-    return (tmp);
-}
 
 t_node	*ft_lstnew1(void *value, char *type, t_node **addresses)
 {
@@ -42,10 +20,10 @@ t_node	*ft_lstnew1(void *value, char *type, t_node **addresses)
 	if (!ptr)
 		return (NULL);
 	ptr->type = ft_malloc(sizeof(char) * (ft_strlen(type) + 1), addresses);
-	if(!ptr->type)
+	if (!ptr->type)
 		return (NULL);
 	ptr->value = ft_malloc(sizeof(char) * (ft_strlen(value) + 1), addresses);
-	if(!ptr->value)
+	if (!ptr->value)
 		return (NULL);
 	ft_strlcpy(ptr->type, type, ft_strlen(type) + 1);
 	ft_strlcpy(ptr->value, value, ft_strlen(value) + 1);

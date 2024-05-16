@@ -273,12 +273,13 @@ int main(int argc, char **argv, char **env)
 			add_history(line);
 		parse_line(line, &tokens, &addresses, 0);
 		execute_commands(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
+		free_array_fd(get_fds(-1));
 		tokens = NULL;
 		free(line);
 		line = NULL;
 		restore_terminal_attributes(&original_termios);
-		free_addresses(addresses);
-		addresses = NULL;
+		// free_addresses(addresses);
+		// addresses = NULL;
     }
 	// ft_minishell(tokens, envir, addresses, &original_termios);
 	return 0;
