@@ -59,7 +59,10 @@ typedef struct s_heredoc
     int fd_read;
 }   t_heredoc;
 
-
+char	*ft_ft_strdup(const char *s);
+char	*ft_ft_strjoin(const char *s1, const char *s2);
+char	**ft_ft_array(char **array, char *s);
+void free_arr(char **arr);
 //-----------------------------------------------------
 int				ft_cd(char **args, t_env *env);
 
@@ -134,8 +137,9 @@ int     case_two(char *var, int i, int size);
 //-----------------------
 int pipe_parse_error(t_node *node);
 char **get_env(char **env);
-void exec_export(char **vars, char ***env, char ***ex_env, t_node **addresses);
-void exec_unset(char *s, char ***env, t_node **addresses);
+void exec_export(char **vars, char ***env, char ***ex_env);
+void exec_unset(char *s, char ***env);
+// void exec_unset(char *s, char ***env, t_node **addresses);
 int ft_isalnum(int c);
 int ft_strcmp(const char *s1, const char *s2);
 char    *ft_substr(const char *str, unsigned int start, size_t len, t_node **addresses);

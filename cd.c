@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/16 14:19:38 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:04:26 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ int exec_cd(char *path, t_env *env, t_node **addresses)
 	else
 	{
 		full_path = ft_array(NULL, ft_strjoin("OLDPWD=", get_environment(env->env, "PWD", addresses), addresses), addresses);
-		exec_export(full_path, &env->env, &env->export, addresses);
+		exec_export(full_path, &env->env, &env->export);
 		cwd = getcwd(NULL, 0);
 		full_path = ft_array(NULL, ft_strjoin("PWD=", cwd, addresses), addresses);
-		exec_export(full_path, &env->env, &env->export ,addresses);
+		exec_export(full_path, &env->env, &env->export);
 		free(cwd);
 	}
 	return (1);

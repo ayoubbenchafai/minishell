@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/15 18:02:51 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:22:27 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,15 +57,15 @@ void	export_print(char **export_env)
 	exit_status(0);
 }
 
-void	export_join(int flag, char *var, char **env, t_node **addresses)
+void	export_join(int flag, char *var, char **env)
 {
 	char	*s;
 
 	if (!flag)
-		s = ft_strjoin(*env, var + get_equal(var) + 1, addresses);
+		s = ft_ft_strjoin(*env, var + get_equal(var) + 1);
 	else
-		s = ft_strjoin(*env, var + get_equal(var), addresses);
-	*env = ft_strdup(s, addresses);
+		s = ft_ft_strjoin(*env, var + get_equal(var));
+	*env = ft_ft_strdup(s);
 }
 
 int	check_size(char *var, char *env, int size)
@@ -93,7 +93,7 @@ int	check_if_var_exist(char *var, char *env, int size)
 	return (0);
 }
 
-void	env_export_all_cases(char *var, char ***env, int size, t_node **addr)
+void	env_export_all_cases(char *var, char ***env, int size)
 {
 	int	i;
 	int	len;
@@ -113,17 +113,17 @@ void	env_export_all_cases(char *var, char ***env, int size, t_node **addr)
 			if (check_size(var, (*env)[i], len))
 			{
 				if (var[len - 1] == '+' && var[len] == '=')
-					export_join(flag, var, &(*env)[i], addr);
+					export_join(flag, var, &(*env)[i]);
 				else
-					(*env)[i] = ft_strdup(var, addr);
+					(*env)[i] = ft_ft_strdup(var);
 				return ;
 			}
 		}
 	}
-	*env = ft_array(*env, var, addr);
+	*env = ft_ft_array(*env, var);
 }
 
-void	exec_export(char **vars, char ***env, char ***ex_env, t_node **addr)
+void	exec_export(char **vars, char ***env, char ***ex_env)
 {
 	int	i;
 	int	size;
@@ -144,10 +144,10 @@ void	exec_export(char **vars, char ***env, char ***ex_env, t_node **addr)
 		}
 		if (!get_equal(vars[i]))
 		{
-			env_export_all_cases(vars[i++], ex_env, size, addr);
+			env_export_all_cases(vars[i++], ex_env, size);
 			continue ;
 		}
-		env_export_all_cases(vars[i], ex_env, size, addr);
-		env_export_all_cases(vars[i++], env, size, addr);
+		env_export_all_cases(vars[i], ex_env, size);
+		env_export_all_cases(vars[i++], env, size);
 	}
 }

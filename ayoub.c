@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/16 16:43:55 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:48:39 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,7 +281,7 @@ void	execute_commands(t_command *cmd, t_env *env, t_node **addresses)
 		cmd = cmd->next;
 		i++;
 	}
-	if (!i)
+	if(!i)
 		return ;
 	if (ft_wait(size, pid))
 		exit_status(1);
@@ -572,6 +572,34 @@ void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
 	}
 }
 
+char	**ft_ft_array(char **array, char *s)
+{
+	char	**new;
+	int		i;
+	int		j;
+
+	i = 0;
+	j = -1;
+	if (!array)
+	{
+		new = malloc(sizeof(char *) * 2);
+		if (!new)
+			return (NULL);
+		new[0] = s;
+		new[1] = NULL;
+		return (new);
+	}
+	while (array[i])
+		i++;
+	new = malloc(sizeof(char *) * (i + 2));
+	if (!new)
+		return (NULL);
+	while (array[++j])
+		new[j] = array[j];
+	new[j] = s;
+	new[j + 1] = NULL;
+	return (new);
+}
 char	**ft_array(char **array, char *s, t_node **addresses)
 {
 	char	**new;

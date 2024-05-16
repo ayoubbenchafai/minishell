@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/13 15:56:55 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/16 23:08:46 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	get_len_env(char **env, char *var, int size)
 	return (len);
 }
 
-void	exec_unset(char *var, char ***env, t_node **addr)
+void	exec_unset(char *var, char ***env)
 {
 	int		size;
 	int		i;
@@ -51,7 +51,7 @@ void	exec_unset(char *var, char ***env, t_node **addr)
 		return ;
 	size = ft_strlen(var);
 	len = get_len_env(*env, var, size);
-	unset = ft_malloc(sizeof(char *) * (len + 1), addr);
+	unset = malloc(sizeof(char *) * (len + 1));
 	if (!unset)
 		return ;
 	i = 0;
@@ -59,7 +59,7 @@ void	exec_unset(char *var, char ***env, t_node **addr)
 	while (env && *env && (*env)[i])
 	{
 		if (!(!ft_strncmp((*env)[i], var, size) && cmp_size((*env)[i], var)))
-			unset[j++] = ft_strdup((*env)[i], addr);
+			unset[j++] = ft_ft_strdup((*env)[i]);
 		i++;
 	}
 	unset[j] = NULL;

@@ -205,7 +205,7 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 	else if(!ft_strcmp(commands->cmd[0], "env"))
 		return (exec_env(env->env), 1);
 	else if(!ft_strcmp(commands->cmd[0], "export"))
-		return (exec_export(&commands->cmd[1], &env->env, &env->export, addresses), 1);
+		return (exec_export(&commands->cmd[1], &env->env, &env->export), 1);
 	else if(!ft_strcmp(commands->cmd[0], "unset"))
 	{
 		if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
@@ -215,8 +215,8 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 			exit_status(1);
         	return (1);
    		}
-		exec_unset(commands->cmd[1], &env->env, addresses);
-		exec_unset(commands->cmd[1], &env->export, addresses);
+		exec_unset(commands->cmd[1], &env->env);
+		exec_unset(commands->cmd[1], &env->export);
 		return (1);
 	}
 	else if(!ft_strcmp(commands->cmd[0], "exit"))

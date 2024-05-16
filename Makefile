@@ -5,7 +5,7 @@ SRC = minishell.c ft_functions/ft_malloc.c node.c pwd.c cd.c env.c ayoub.c signa
     ft_functions/ft_split.c ft_functions/ft_strlen.c ft_functions/ft_strdup.c ft_functions/ft_memcpy.c ft_functions/ft_memmove.c \
 	ft_functions/ft_putstr_fd.c ft_functions/ft_strlcpy.c ft_functions/ft_strnstr.c ft_functions/ft_isalpha.c ft_functions/ft_isalnum.c \
 	export.c ft_functions/ft_substr.c ft_functions/ft_putchar_fd.c ft_functions/ft_putendl_fd.c ft_functions/ft_itoa.c \
-	ft_functions/ft_atoi.c exit.c echo.c unset.c export1.c
+	ft_functions/ft_atoi.c exit.c echo.c unset.c export1.c lib/ft_ft_strdup.c lib/ft_ft_strjoin.c
 OBJ = $(SRC:.c=.o)
 LINKREADLINELIB = $(shell brew --prefix readline)/lib
 LINKREADLINELIB1 = $(shell brew --prefix readline)/include
