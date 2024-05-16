@@ -273,7 +273,6 @@ int main(int argc, char **argv, char **env)
 			add_history(line);
 		parse_line(line, &tokens, &addresses, 0);
 		execute_commands(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
-		free_array_fd(get_fds(-1));
 		tokens = NULL;
 		free(line);
 		line = NULL;
