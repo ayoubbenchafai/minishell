@@ -192,12 +192,10 @@ int quotes_syntax(char *line)
 	}
 	return 0;
 }
-
-
 int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 {
 	if (!commands->cmd)
-		return 0;
+		return (0);
 	if(!ft_strcmp(commands->cmd[0], "echo"))
 		return(exec_echo(commands->cmd, env->env, addresses), 1);
 	else if(!ft_strcmp(commands->cmd[0], "pwd"))
@@ -209,30 +207,15 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 	else if(!ft_strcmp(commands->cmd[0], "export"))
 		return (exec_export(&commands->cmd[1], &env->env, &env->export), 1);
 	else if(!ft_strcmp(commands->cmd[0], "unset"))
-	{
-		// if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
-    	// {
-        // 	ft_putstr_fd("minishell: unset: `", 2);
-		// 	ft_putstr_fd(commands->cmd[1], 2);
-		// 	ft_putstr_fd("': not a valid identifier\n", 2);
-		// 	exit_status(1);
-        // 	return (1);
-   		// }
-		// exec_unset(commands->cmd[1], &env->env);
-		// exec_unset(commands->cmd[1], &env->export);
-		exec_unset(&commands->cmd[1], env);
-		return (1);
-	}
+		return (exec_unset(&commands->cmd[1], env), 1);
 	else if(!ft_strcmp(commands->cmd[0], "exit"))
 		return (exec_exit(commands->cmd), 1);
-	return 0;
+	return (0);
 }
-
-
 
 void f(void)
 {
-	system("leaks minishell");
+	sleep(5);
 }
 void free_arr(char **arr)
 {
@@ -256,19 +239,20 @@ int main(int argc, char **argv, char **env)
     t_node  *addresses;
 	t_env   envir;
 	struct termios original_termios;
-	atexit(f);
+	// atexit(f);
 	line = NULL;
 	tokens = NULL;
 	addresses = NULL;
 	envir.env = get_env(env);
 	envir.export = get_env(env);
 	get_terminal_attr(&original_termios);
+	int backup = dup(0);
 	while (1)
 	{
 		run_signals(1);
 		line = readline("minishell$ ");
 		if(!line)
-			return (free(line),	free_arr(envir.env), free_arr(envir.export), rl_clear_history(), ctr_d(), 0);
+				return (free(line),	free_arr(envir.env), free_arr(envir.export), rl_clear_history(), close(backup), ctr_d(), 0);
 		if(quotes_syntax(line))
 		{
 			free(line);
@@ -278,7 +262,8 @@ int main(int argc, char **argv, char **env)
 		if (line[0] != '\0' && ((line[0] < 9 || line[0] > 13) && line[0] != 32))
 			add_history(line);
 		parse_line(line, &tokens, &addresses, 0);
-		execute_commands(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
+		loop_process(set_newlist(&tokens, &envir, &addresses), &envir, &addresses);
+		dup2(backup, 0);
 		tokens = NULL;
 		free(line);
 		line = NULL;

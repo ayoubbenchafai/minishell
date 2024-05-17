@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/17 23:06:02 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 00:12:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ void	ft_unset(char *var, char ***env)
 	len = get_len_env(*env, var, size);
 	unset = malloc(sizeof(char *) * (len + 1));
 	if (!unset)
-	{
-		free_arr(*env);
 		return ;
-	}
 	i = 0;
 	j = 0;
 	while (env && *env && (*env)[i])
@@ -66,7 +63,6 @@ void	ft_unset(char *var, char ***env)
 			if (!unset[j - 1])
 			{
 				free_arr(unset);
-				free_arr(*env);
 				return ;
 			}
 		i++;

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/17 22:38:59 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 00:32:04 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,10 @@ void	export_join(int flag, char *var, char **env)
 		s = ft_ft_strjoin(*env, var + get_equal(var) + 1);
 	else
 		s = ft_ft_strjoin(*env, var + get_equal(var));
-	*env = ft_ft_strdup(s);
-	if (!*env)
-		free(s);
+	if (!s)
+		return ;
+	free(*env);
+	*env = s;
 }
 
 int	check_size(char *var, char *env, int size)
@@ -117,7 +118,10 @@ void	env_export_all_cases(char *var, char ***env, int size)
 				if (var[len - 1] == '+' && var[len] == '=')
 					export_join(flag, var, &(*env)[i]);
 				else
-					(*env)[i] = ft_ft_strdup(var);
+				{
+					free((*env)[i]);
+					(*env)[i] = ft_ft_strdup(var);	
+				}
 				return ;
 			}
 		}
