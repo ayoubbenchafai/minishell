@@ -138,7 +138,7 @@ int     case_two(char *var, int i, int size);
 int pipe_parse_error(t_node *node);
 char **get_env(char **env);
 void exec_export(char **vars, char ***env, char ***ex_env);
-void exec_unset(char *s, char ***env);
+void exec_unset(char **vars, t_env *env);
 // void exec_unset(char *s, char ***env, t_node **addresses);
 int ft_isalnum(int c);
 int ft_strcmp(const char *s1, const char *s2);

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/16 19:22:27 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/17 22:38:59 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void	export_join(int flag, char *var, char **env)
 	else
 		s = ft_ft_strjoin(*env, var + get_equal(var));
 	*env = ft_ft_strdup(s);
+	if (!*env)
+		free(s);
 }
 
 int	check_size(char *var, char *env, int size)

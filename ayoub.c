@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/16 22:48:39 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/17 20:29:34 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -593,13 +593,14 @@ char	**ft_ft_array(char **array, char *s)
 		i++;
 	new = malloc(sizeof(char *) * (i + 2));
 	if (!new)
-		return (NULL);
+		return (free_arr(array), NULL);
 	while (array[++j])
 		new[j] = array[j];
 	new[j] = s;
 	new[j + 1] = NULL;
-	return (new);
+	return (free(array), array = NULL, new);
 }
+
 char	**ft_array(char **array, char *s, t_node **addresses)
 {
 	char	**new;

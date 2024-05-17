@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/16 23:08:46 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/17 23:06:02 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	get_len_env(char **env, char *var, int size)
 	return (len);
 }
 
-void	exec_unset(char *var, char ***env)
+void	ft_unset(char *var, char ***env)
 {
 	int		size;
 	int		i;
@@ -53,16 +53,48 @@ void	exec_unset(char *var, char ***env)
 	len = get_len_env(*env, var, size);
 	unset = malloc(sizeof(char *) * (len + 1));
 	if (!unset)
+	{
+		free_arr(*env);
 		return ;
+	}
 	i = 0;
 	j = 0;
 	while (env && *env && (*env)[i])
 	{
 		if (!(!ft_strncmp((*env)[i], var, size) && cmp_size((*env)[i], var)))
 			unset[j++] = ft_ft_strdup((*env)[i]);
+			if (!unset[j - 1])
+			{
+				free_arr(unset);
+				free_arr(*env);
+				return ;
+			}
 		i++;
 	}
+	free_arr(*env);
 	unset[j] = NULL;
 	*env = unset;
 	exit_status(0);
+}
+
+void exec_unset(char **vars, t_env *env)
+{
+	int i;
+
+	i = 0;
+	while (vars && vars[i])
+	{
+		if (!check_error(vars[i], 0) || vars[i][get_equal(vars[i])] == '=')
+		{
+			ft_putstr_fd("minishell: unset: `", 2);
+			ft_putstr_fd(vars[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			exit_status(1);
+			i++;
+			continue;
+		}
+		ft_unset(vars[i], &env->env);
+		ft_unset(vars[i], &env->export);
+		i++;
+	}
 }

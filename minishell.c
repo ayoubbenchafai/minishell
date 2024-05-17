@@ -192,6 +192,8 @@ int quotes_syntax(char *line)
 	}
 	return 0;
 }
+
+
 int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 {
 	if (!commands->cmd)
@@ -208,21 +210,25 @@ int is_builtin(t_command *commands, t_env *env, t_node **addresses)
 		return (exec_export(&commands->cmd[1], &env->env, &env->export), 1);
 	else if(!ft_strcmp(commands->cmd[0], "unset"))
 	{
-		if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
-    	{
-        	printf("minishell: unset: `%s': not a valid identifier\n", commands->cmd[1]);
-			// ft_putendl_fd("minishell: unset: `': not a valid identifier", 2);
-			exit_status(1);
-        	return (1);
-   		}
-		exec_unset(commands->cmd[1], &env->env);
-		exec_unset(commands->cmd[1], &env->export);
+		// if (commands->cmd[1] && (!check_error(commands->cmd[1], 0) || commands->cmd[1][get_equal(commands->cmd[1])] == '='))
+    	// {
+        // 	ft_putstr_fd("minishell: unset: `", 2);
+		// 	ft_putstr_fd(commands->cmd[1], 2);
+		// 	ft_putstr_fd("': not a valid identifier\n", 2);
+		// 	exit_status(1);
+        // 	return (1);
+   		// }
+		// exec_unset(commands->cmd[1], &env->env);
+		// exec_unset(commands->cmd[1], &env->export);
+		exec_unset(&commands->cmd[1], env);
 		return (1);
 	}
 	else if(!ft_strcmp(commands->cmd[0], "exit"))
 		return (exec_exit(commands->cmd), 1);
 	return 0;
 }
+
+
 
 void f(void)
 {
@@ -250,7 +256,7 @@ int main(int argc, char **argv, char **env)
     t_node  *addresses;
 	t_env   envir;
 	struct termios original_termios;
-	// atexit(f);
+	atexit(f);
 	line = NULL;
 	tokens = NULL;
 	addresses = NULL;
