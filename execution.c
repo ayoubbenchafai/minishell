@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:08:06 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 20:11:43 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 22:50:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,18 @@ int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
 	int	pid;
 
 	if (pipe(fd) == -1)
-		return (write(2, "pipe failed\n", 12), 0);
+		return (0);
 	pid = fork();
 	if (pid == -1)
-		return (ft_putstr_fd("fork failed\n", 2), 0);
+		return (0);
 	if (pid == 0)
 	{
 		signal_default();
 		close(fd[0]);
 		if (flag == 1 && dup2(fd_out, 1) == -1)
-			return (ft_putstr_fd("dup2 failed\n", 2), 0);
+			return (0);
 		if (flag != 1 && dup2(fd[1], 1) == -1)
-			return (ft_putstr_fd("dup2 failed\n", 2), 0);
+			return (0);
 		close(fd[1]);
 		if (!is_builtin(cmd, env, NULL))
 		{

@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:28:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 18:56:54 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 22:56:21 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	error_redirection(int flag)
 
 void	check_errors_child(char *cmd)
 {
-	if(cmd[0] == '.' && !cmd[1])
+	if (cmd[0] == '.' && !cmd[1])
 	{
 		ft_putstr_fd("minishell: .: filename argument required\n", 2);
 		exit(2);
