@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 00:32:04 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 15:48:06 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,27 @@ void	export_print(char **export_env)
 	exit_status(0);
 }
 
-void	export_join(int flag, char *var, char **env)
+void	export_join(int flag, char *var, char **env, int len)
 {
 	char	*s;
 
-	if (!flag)
-		s = ft_ft_strjoin(*env, var + get_equal(var) + 1);
+	s = NULL;
+	if (var[len - 1] == '+' && var[len] == '=')
+	{
+		if (!flag)
+			s = ft_ft_strjoin(*env, var + get_equal(var) + 1);
+		else
+			s = ft_ft_strjoin(*env, var + get_equal(var));
+		if (!s)
+			return ;
+		free(*env);
+		*env = s;
+	}
 	else
-		s = ft_ft_strjoin(*env, var + get_equal(var));
-	if (!s)
-		return ;
-	free(*env);
-	*env = s;
+	{
+		free(*env);
+		*env = ft_ft_strdup(var);
+	}
 }
 
 int	check_size(char *var, char *env, int size)
@@ -115,13 +124,7 @@ void	env_export_all_cases(char *var, char ***env, int size)
 				flag = 1;
 			if (check_size(var, (*env)[i], len))
 			{
-				if (var[len - 1] == '+' && var[len] == '=')
-					export_join(flag, var, &(*env)[i]);
-				else
-				{
-					free((*env)[i]);
-					(*env)[i] = ft_ft_strdup(var);	
-				}
+				export_join(flag, var, &(*env)[i], len);
 				return ;
 			}
 		}

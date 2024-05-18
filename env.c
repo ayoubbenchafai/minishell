@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:09 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 00:29:46 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 15:19:33 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,6 @@ int check_char(char *s,char c)
     }
     return (0);
 }
-
-// function that expands the variables and modify the char **var remplace $EXEMPLE by its value
-// if the variable is not found in the env it s place in the string will be left empy
 
 void    expand(t_node *node, t_env *env, t_node **addresses, char *response)
 {
