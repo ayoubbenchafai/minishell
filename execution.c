@@ -6,19 +6,18 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:08:06 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 20:06:37 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 20:11:43 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-void parent_process(int *fd)
+void	parent_process(int *fd)
 {
-    close(fd[1]);
-    if (dup2(fd[0], 0) == -1)
-        ft_putstr_fd("dup2 failed\n", 2);
-    close(fd[0]);
+	close(fd[1]);
+	if (dup2(fd[0], 0) == -1)
+		ft_putstr_fd("dup2 failed\n", 2);
+	close(fd[0]);
 }
 
 int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
@@ -49,8 +48,6 @@ int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
 	}
 	return (parent_process(fd), pid);
 }
-
-
 
 int	loop_process(t_command *command, t_env *env, t_node **addresses)
 {
