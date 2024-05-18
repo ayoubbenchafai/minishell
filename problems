@@ -28,3 +28,7 @@ expand $''   expand $'l'
 # minishell: 23: command not found
 # minishell$ 
 
+
+< hello  cat
+No such file or directory
+dup2 failed

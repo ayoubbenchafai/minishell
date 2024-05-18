@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 19:09:06 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 19:52:44 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,52 +64,3 @@ void	restore_terminal_attributes(struct termios *original_termios)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
 }
-
-// void display_cmd(t_command *node)
-// {
-//     int i;
-//     while(node)
-//     {   
-//         printf("input : %d\n", node->input);
-//         printf("output : %d\n", node->output);
-//         printf("cmd : [");
-//         i = 0;
-//         while(node && node->cmd && node->cmd[i])
-//         {
-//             printf("%s,", node->cmd[i]);
-//             i++;
-//         }
-//         printf("]\n");
-//         printf("\n");
-//         node = node->next;
-//     }
-// }
-
-// char	*test_execution(char **paths, char **command, char **matching_path)
-// {
-// 	int		i;
-// 	char	*temp;
-
-// 	temp = NULL;
-// 	i = 0;
-// 	while (paths && paths[i] && command[0] && command[0][0] != '\0')
-// 	{
-// 		if (command[0][0] != '/')
-// 		{
-// 			temp = ft_strjoin(paths[i], "/", NULL);
-// 			if (temp == NULL)
-// 				return (NULL);
-// 			*matching_path = ft_strjoin(temp, *command, NULL);
-// 			if (*matching_path == NULL)
-// 				return (free(temp), NULL);
-// 		}
-// 		else
-// 			*matching_path = ft_strdup(*command, NULL);
-// 		free(temp);
-// 		if (!access(*matching_path, X_OK) || !*matching_path)
-// 			return (*matching_path);
-// 		free(*matching_path);
-// 		i++;
-// 	}
-// 	return (NULL);
-// }
