@@ -6,11 +6,56 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:05 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 15:17:56 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:27:42 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_command	*ft_lstnew_cmd(char **cmd, int input, int output, t_node **addr)
+{
+	t_command	*ptr;
+
+	ptr = ft_malloc(sizeof(t_command), addr);
+	if (!ptr)
+		return (NULL);
+	ptr->cmd = cmd;
+	ptr->input = input;
+	ptr->output = output;
+	ptr -> next = NULL;
+	return (ptr);
+}
+
+t_command	*ft_lstlast_cmd(t_command *lst)
+{
+	t_command	*ptr;
+
+	if (!lst)
+		return (NULL);
+	ptr = lst;
+	while (ptr->next != NULL)
+		ptr = ptr->next;
+	return (ptr);
+}
+
+void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
+{
+	t_command	*ptr;
+
+	if (!lst || !new)
+		return ;
+	ptr = *lst;
+	if (!ptr)
+	{
+		*lst = new;
+		return ;
+	}
+	else
+	{
+		ptr = ft_lstlast_cmd(*lst);
+		ptr -> next = new;
+	}
+}
 
 t_node	*ft_lstnew1(void *value, char *type, t_node **addresses)
 {

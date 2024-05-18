@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 15:48:06 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 18:08:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,31 +78,6 @@ void	export_join(int flag, char *var, char **env, int len)
 		free(*env);
 		*env = ft_ft_strdup(var);
 	}
-}
-
-int	check_size(char *var, char *env, int size)
-{
-	int	c;
-
-	c = get_equal(env);
-	if (c && env[c - 1] == '+')
-		c--;
-	if (size && var[size - 1] == '+' && var[size] == '=' && !get_equal(env))
-		return (get_equal(var) - 1 == ft_strlen(env));
-	else if (size && var[size - 1] == '+' && var[size] == '=' && get_equal(env))
-		return (get_equal(var) - 1 == c);
-	else if (get_equal(var) && !get_equal(env))
-		return (get_equal(var) == ft_strlen(env));
-	else if (get_equal(var) && get_equal(env))
-		return (get_equal(var) == c);
-	return (0);
-}
-
-int	check_if_var_exist(char *var, char *env, int size)
-{
-	if (!ft_strncmp(env, var, size) && cmp_size(env, var))
-		return (1);
-	return (0);
 }
 
 void	env_export_all_cases(char *var, char ***env, int size)

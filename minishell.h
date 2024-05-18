@@ -76,7 +76,12 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 char	*ft_strnstr(const char *haystack, const char *needle, size_t len);
 int	    ft_isalpha(int c);
 //-----------------------------------------------------
-
+//errors.c
+// void    check_errors(char *s, int flag);
+void    check_errors_child(char *cmd);
+void	error_redirection(int flag);
+// int     check_error(char *var, int flag);
+// ========================================
 // t_command *set_newlist(t_node **node, t_env *env, t_node **addresses);
 char	*test_execution(char **paths, char **command, char **matching_path);
 t_command *set_newlist(t_node **node, t_env *env, t_node **addresses);
@@ -103,8 +108,15 @@ void    run_signals(int flag);
 void    signal_default();
 void    ctr_d();
 void    ctr_c(int sig);
-//-----------function li zedt-------------
 
+//parse2.c
+int	open_file(t_node **node, int *fd_out, int flag);
+int	open_file1(t_node **node, t_fd *fd, char **env, t_node **addresses);
+//---------------
+
+//-----------function li zedt-------------
+int	check_size(char *var, char *env, int size);
+int	check_if_var_exist(char *var, char *env, int size);
 int open_file1(t_node **node, t_fd *fd, char **env, t_node **addresses);
 
 void    signal_here_doc(int sig);
@@ -150,6 +162,8 @@ char	*get_environment(char **envp, char *var, t_node **addresses);
 char *request_env(char **envp, char *var);
 int exec_pwd();
 int exec_cd(char *path, t_env *env, t_node **addresses);
+int	builtin_key(t_command *cmd, t_node **addresses);
+int	ft_wait(int size, int pid);
 int is_builtin(t_command *commands, t_env *env, t_node **addresses);
 void    expand(t_node *node, t_env *env, t_node **addresses, char *response);
 int exec_env(char **env);
