@@ -268,8 +268,8 @@ int main(int argc, char **argv, char **env)
 		free(line);
 		line = NULL;
 		restore_terminal_attributes(&original_termios);
-		// free_addresses(addresses);
-		// addresses = NULL;
+		free_addresses(addresses);
+		addresses = NULL;
     }
 	// ft_minishell(tokens, envir, addresses, &original_termios);
 	return 0;

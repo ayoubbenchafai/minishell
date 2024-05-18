@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 00:33:07 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 15:09:39 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,27 +348,28 @@ int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
 	if (pipe(fd) == -1)
 		return (write(2, "pipe failed\n", 12), 0);
 	pid = fork();
+    if (pid == -1)
+		return (ft_putstr_fd("fork failed\n", 2), 0);
 	if (pid == 0)
 	{
         signal_default();
-		// close(fd[0]);
+		close(fd[0]);
 		if (flag == 1 && dup2(fd_out, 1) == -1)
 			return (ft_putstr_fd("dup2 failed\n", 2),0);
 		if (flag != 1 && dup2(fd[1], 1) == -1)
 			return (ft_putstr_fd("dup2 failed\n", 2),0);
-		// close(fd[1]);
+		close(fd[1]);
 		if (!is_builtin(cmd, env, NULL))
         {
             execve(cmd->cmd[0], cmd->cmd, env->env);
 			check_errors_child(cmd->cmd[0]);
         }
+        exit(0);
 	}
-	else if (pid == -1)
-		ft_putstr_fd("fork failed\n", 2);
 	if (dup2(fd[0], 0) == -1)
-		ft_putstr_fd("dup2 failed\n", 2);
+		return (ft_putstr_fd("dup2 failed\n", 2), 0);
 	(close(fd[1]), close(fd[0]));
-    return (0);
+    return (pid);
 }
 char	*test_execution(char **paths, char **command, char **matching_path)
 {
@@ -407,6 +408,7 @@ int loop_process(t_command *command, t_env *env, t_node **addresses)
     run_signals(0);
     if (!command)
         return (0);
+    int size = ft_lstsize_cmd(command);
     path = get_environment(env->env, "PATH", addresses);
     if (dup2(command->input, 0) == -1)
 		return (write(2, "dup2 failed\n", 12), 0);
@@ -414,7 +416,7 @@ int loop_process(t_command *command, t_env *env, t_node **addresses)
     {
         if (!builtin_key(command, addresses))
             command->cmd = ft_pathname(path, command->cmd, env->env, addresses);
-		make_process(command, env,command->output ,0);
+		make_process(command, env,command->output , 0);
         command = command->next;
         i++;
     }
@@ -422,9 +424,9 @@ int loop_process(t_command *command, t_env *env, t_node **addresses)
         return 1;
     if (!builtin_key(command, addresses))
         command->cmd = ft_pathname(path, command->cmd, env->env, addresses);
-    make_process(command, env,command->output, 1);
-    while (wait(NULL) > 0);
-    //ft_wait(i, pid);
+    int pid = make_process(command, env,command->output, 1);
+    if (ft_wait(size, pid))
+       exit_status(1);
     return (0);
 }
 

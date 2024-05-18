@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/17 23:29:08 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 14:49:45 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int cd_helper(char *path, t_env *env, char **tmp, t_node **addresses)
 	if (!all)
 		return (free(*tmp), free(cwd), -1);
     *tmp = all;
-	return(chdir(all));
+	return (chdir(all));
 }
 
 int exec_cd(char *path, t_env *env, t_node **addresses)
@@ -41,7 +41,7 @@ int exec_cd(char *path, t_env *env, t_node **addresses)
 		ft_putstr_fd("cd without any absolute or relative path \n", 2);
 		return (0);
 	}
-	if(path[0] == '/')
+	if (path[0] == '/')
 		response = chdir(path);
 	else
         response = cd_helper(path, env, &tmp, addresses);
