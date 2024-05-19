@@ -1,6 +1,6 @@
 NAME = minishell
-CC = cc -Wall -Wextra -Werror
-CFLAGS = -g #-fsanitize=address
+CC = cc 
+CFLAGS = -Wall -Wextra -Werror
 SRC = minishell.c ft_functions/ft_malloc.c node.c pwd.c cd.c env.c  signals.c ft_functions/ft_strjoin.c ft_functions/ft_strncmp.c \
     ft_functions/ft_split.c ft_functions/ft_strlen.c ft_functions/ft_strdup.c ft_functions/ft_memcpy.c ft_functions/ft_memmove.c \
 	ft_functions/ft_putstr_fd.c ft_functions/ft_strlcpy.c ft_functions/ft_strnstr.c ft_functions/ft_isalpha.c ft_functions/ft_isalnum.c \
@@ -14,7 +14,7 @@ LINKREADLINELIB1 = $(shell brew --prefix readline)/include
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ)  -L $(LINKREADLINELIB) -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -L $(LINKREADLINELIB) -lreadline -o $(NAME)
 
 %.o: %.c minishell.h
 	$(CC) $(CFLAGS)  -c $< -I $(LINKREADLINELIB1) -o $@
