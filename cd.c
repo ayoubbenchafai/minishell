@@ -6,13 +6,13 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 14:49:45 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 15:04:17 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int cd_helper(char *path, t_env *env, char **tmp, t_node **addresses)
+static int cd_helper(char *path, t_env *env, char **tmp, t_node **addresses)
 {
     char *all;
     char *cwd;

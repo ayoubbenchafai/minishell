@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:08:06 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 22:50:56 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 15:36:02 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	parent_process(int *fd)
 {
 	close(fd[1]);
 	if (dup2(fd[0], 0) == -1)
-		ft_putstr_fd("dup2 failed\n", 2);
+		return ;
 	close(fd[0]);
 }
 
@@ -64,7 +64,7 @@ int	loop_process(t_command *command, t_env *env, t_node **addresses)
 	size = ft_lstsize_cmd(command);
 	path = get_environment(env->env, "PATH", addresses);
 	if (dup2(command->input, 0) == -1)
-		return (write(2, "dup2 failed\n", 12), 0);
+		return (0);
 	while (command->next)
 	{
 		if (!builtin_key(command, addresses))

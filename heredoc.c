@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:22:45 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 20:00:22 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 15:33:37 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,8 @@ int	ft_herdoc(t_node *node, char **env, t_node **addresses)
 		(ft_read_input(node, &hd, env, addresses), exit(0));
 	if (wait(&status) == -1)
 		return (-1);
-	if (WIFEXITED(status))
-	{
-		if (WEXITSTATUS(status) == 1)
-			exit_status(1);
-	}
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
+		return (exit_status(1), close(hd.fd_write), -1);
 	close(hd.fd_write);
 	return (hd.fd_read);
 }

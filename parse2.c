@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:00:50 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 19:04:13 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 15:52:14 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,16 @@ int	open_file1(t_node **node, t_fd *fd, char **env, t_node **addresses)
 	t_node	*tmp;
 
 	if (fd->flag)
+	{
 		fd->in = open((*node)->value, O_RDONLY, 0644);
+		if (fd->in == -1)
+			ft_putstr_fd("No such file or directory\n", 2);
+		exit_status(1);
+	}
 	else
 		fd->in = ft_herdoc(*node, env, addresses);
 	if (fd->in == -1)
-		ft_putstr_fd("No such file or directory\n", 2);
+		exit_status(1);
 	tmp = (*node)->next;
 	while (tmp && !ft_strcmp(tmp->type, "space"))
 		tmp = tmp->next;
@@ -41,7 +46,7 @@ int	open_file1(t_node **node, t_fd *fd, char **env, t_node **addresses)
 	{
 		fd->in = open("k", O_CREAT | O_RDWR | O_TRUNC, 0644);
 		if (fd->in == -1 || unlink("k") == -1)
-			return (1);
+			return (exit_status(1), 1);
 	}
 	*node = (*node)->next;
 	return (0);
