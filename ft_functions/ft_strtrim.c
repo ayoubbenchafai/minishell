@@ -29,6 +29,8 @@ char	*ft_strtrim(char *str, char *set, t_node **addresses)
 	int	start;
 
 	i = 0;
+	if (!str || !*str)
+		return (str);
 	while (check(str[i], set))
 		i++;
 	if (str[i])

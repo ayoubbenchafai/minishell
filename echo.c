@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 15:42:21 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/10 15:45:18 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 19:18:54 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	print_words(char **words, int flag, t_node **addresses)
 	exit_status(0);
 }
 
-void	exec_echo(char **cmd, char **env, t_node **addresses)
+void	exec_echo(char **cmd, t_node **addresses)
 {
 	int	i;
 	int	j;

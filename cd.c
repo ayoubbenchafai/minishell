@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <miguiji@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 18:13:12 by miguiji          ###   ########.fr       */
+/*   Updated: 2024/05/19 19:18:31 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	cd_helper(char *path, t_env *env, char **tmp, t_node **addresses)
+static int	cd_helper(char *path, char **tmp, t_node **addresses)
 {
 	char	*all;
 	char	*cwd;
@@ -54,7 +54,7 @@ int	exec_cd(char *path, t_env *env, t_node **add)
 	if (path[0] == '/')
 		response = chdir(path);
 	else
-		response = cd_helper(path, env, &tmp, add);
+		response = cd_helper(path, &tmp, add);
 	if (response == -1)
 		return (cd_error(path), 0);
 	else

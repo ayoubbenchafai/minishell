@@ -12,9 +12,9 @@
 
 #include "../minishell.h"
 
-char	*ft_substr(const char *str, unsigned int start, size_t len, t_node **ad)
+char	*ft_substr(const char *str, int start, int len, t_node **ad)
 {
-	size_t	i;
+	int	i;
 	char	*ptr;
 
 	i = 0;
