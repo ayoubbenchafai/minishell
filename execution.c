@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:08:06 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 20:22:05 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 21:42:18 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
 	return (parent_process(fd), pid);
 }
 
-int	loop_process(t_command *command, t_env *env, t_node **addresses, int i)
+void	loop_process(t_command *command, t_env *env, t_node **addresses, int i)
 {
 	char	*path;
 	int		size;
@@ -57,11 +57,11 @@ int	loop_process(t_command *command, t_env *env, t_node **addresses, int i)
 
 	run_signals(0);
 	if (!command)
-		return (0);
+		return ;
 	size = ft_lstsize_cmd(command);
 	path = get_environment(env->env, "PATH", addresses);
 	if (dup2(command->input, 0) == -1)
-		return (0);
+		return ;
 	while (command->next)
 	{
 		if (!builtin_key(command, addresses))
@@ -70,13 +70,12 @@ int	loop_process(t_command *command, t_env *env, t_node **addresses, int i)
 		command = command->next;
 	}
 	if (i == 0 && is_builtin(command, env, addresses))
-		return (1);
+		return ;
 	if (!builtin_key(command, addresses))
 		command->cmd = ft_pathname(path, command->cmd, addresses);
 	pid = make_process(command, env, command->output, 1);
 	if (ft_wait(size, pid))
 		exit_status(1);
-	return (0);
 }
 
 char	**ft_pathname(char *p, char **cmdargs, t_node **addresses)

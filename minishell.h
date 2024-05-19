@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 14:43:48 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 20:17:34 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 21:40:09 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ char		*ft_join_free(char *s, const char *buf, t_node **addresses);
 char		**ft_pathname(char *p, char **cmdargs, t_node **addresses);
 int			ft_herdoc(t_node *node, char **env, t_node **addresses);
 int			make_process(t_command *cmd, t_env *env, int fd_out, int flag);
-int			loop_process(t_command *command, t_env *env, t_node **addresses);
+void		loop_process(t_command *command, t_env *env, t_node **addresses,
+				int i);
 char		**ft_array(char **array, char *s, t_node **addresses);
 int			exit_status(int exit_status);
 void		run_signals(int flag);

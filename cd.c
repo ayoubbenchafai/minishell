@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:31:15 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/19 19:18:31 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 21:41:04 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	cd_helper(char *path, char **tmp, t_node **addresses)
 	return (chdir(all));
 }
 
-void	cd_error(char *path)
+static void	cd_error(char *path)
 {
 	if (!path)
 	{
