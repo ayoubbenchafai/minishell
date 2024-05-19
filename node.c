@@ -3,58 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   node.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miguiji <miguiji@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:24:05 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 18:27:42 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 16:05:04 by miguiji          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_command	*ft_lstnew_cmd(char **cmd, int input, int output, t_node **addr)
+char *set_type(char *s)
 {
-	t_command	*ptr;
-
-	ptr = ft_malloc(sizeof(t_command), addr);
-	if (!ptr)
-		return (NULL);
-	ptr->cmd = cmd;
-	ptr->input = input;
-	ptr->output = output;
-	ptr -> next = NULL;
-	return (ptr);
-}
-
-t_command	*ft_lstlast_cmd(t_command *lst)
-{
-	t_command	*ptr;
-
-	if (!lst)
-		return (NULL);
-	ptr = lst;
-	while (ptr->next != NULL)
-		ptr = ptr->next;
-	return (ptr);
-}
-
-void	ft_lstadd_back_cmd(t_command **lst, t_command *new)
-{
-	t_command	*ptr;
-
-	if (!lst || !new)
-		return ;
-	ptr = *lst;
-	if (!ptr)
-	{
-		*lst = new;
-		return ;
-	}
-	else
-	{
-		ptr = ft_lstlast_cmd(*lst);
-		ptr -> next = new;
-	}
+    char *tmp;
+    
+    tmp = NULL;
+    if (!ft_strncmp(s, "<<", 2))
+        tmp =  "herdoc";
+    else if (!ft_strncmp(s, ">>", 2))
+        tmp = "output_redirection_append";
+    else if (s[0] == '>')
+        tmp = "output_redirection";
+    else if (s[0] == '<')
+        tmp = "input_redirection";
+    else if (s[0] == '|' && s[1] == '\0')
+        tmp = "pipe";
+    else if (s[0] == '$' && s[1])
+        tmp =  "expand";
+    else
+        tmp = "word";
+    return (tmp);
 }
 
 t_node	*ft_lstnew1(void *value, char *type, t_node **addresses)

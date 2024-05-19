@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
+/*   By: miguiji <miguiji@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 21:36:56 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/18 20:37:36 by miguiji          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,22 +39,32 @@ int	get_len_env(char **env, char *var, int size)
 	return (len);
 }
 
-void	get_new_env(char **unset, char ***env, char *var, int size)
+void	ft_unset(char *var, char ***env)
 {
-	int	i;
-	int	j;
+	int		size;
+	int		i;
+	int		len;
+	char	**unset;
+	int		j;
 
+	if (!var || !env || !*env)
+		return ;
+	size = ft_strlen(var);
+	len = get_len_env(*env, var, size);
+	unset = malloc(sizeof(char *) * (len + 1));
+	if (!unset)
+		return ;
 	i = 0;
 	j = 0;
 	while (env && *env && (*env)[i])
 	{
 		if (!(!ft_strncmp((*env)[i], var, size) && cmp_size((*env)[i], var)))
 			unset[j++] = ft_ft_strdup((*env)[i]);
-		if (!unset[j - 1])
-		{
-			free_arr(unset);
-			return ;
-		}
+			if (!unset[j - 1])
+			{
+				free_arr(unset);
+				return ;
+			}
 		i++;
 	}
 	free_arr(*env);
@@ -63,25 +73,9 @@ void	get_new_env(char **unset, char ***env, char *var, int size)
 	exit_status(0);
 }
 
-void	ft_unset(char *var, char ***env)
+void exec_unset(char **vars, t_env *env)
 {
-	int		size;
-	int		len;
-	char	**unset;
-
-	if (!var)
-		return ;
-	size = ft_strlen(var);
-	len = get_len_env(*env, var, size);
-	unset = malloc(sizeof(char *) * (len + 1));
-	if (!unset)
-		return ;
-	get_new_env(unset, env, var, size);
-}
-
-void	exec_unset(char **vars, t_env *env)
-{
-	int	i;
+	int i;
 
 	i = 0;
 	while (vars && vars[i])
@@ -93,7 +87,7 @@ void	exec_unset(char **vars, t_env *env)
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			exit_status(1);
 			i++;
-			continue ;
+			continue;
 		}
 		ft_unset(vars[i], &env->env);
 		ft_unset(vars[i], &env->export);

@@ -1,12 +1,11 @@
 NAME = minishell
 CC = cc
 CFLAGS = -g #-fsanitize=address
-SRC = minishell.c ft_functions/ft_malloc.c node.c pwd.c cd.c env.c  signals.c ft_functions/ft_strjoin.c ft_functions/ft_strncmp.c \
+SRC = minishell.c ft_functions/ft_malloc.c node.c pwd.c cd.c env.c ayoub.c signals.c ft_functions/ft_strjoin.c ft_functions/ft_strncmp.c \
     ft_functions/ft_split.c ft_functions/ft_strlen.c ft_functions/ft_strdup.c ft_functions/ft_memcpy.c ft_functions/ft_memmove.c \
 	ft_functions/ft_putstr_fd.c ft_functions/ft_strlcpy.c ft_functions/ft_strnstr.c ft_functions/ft_isalpha.c ft_functions/ft_isalnum.c \
-	export.c ft_functions/ft_substr.c ft_functions/ft_putchar_fd.c ft_functions/ft_putendl_fd.c ft_functions/ft_itoa.c \
-	ft_functions/ft_atoi.c exit.c echo.c unset.c ft_functions/ft_ft_strdup.c ft_functions/ft_ft_strjoin.c \
-	expand.c utils1.c utils2.c utils3.c utils4.c heredoc.c errors.c parse1.c parse2.c execution.c
+	export.c ft_functions/ft_substr.c ft_functions/ft_putchar_fd.c ft_functions/ft_putendl_fd.c ft_functions/ft_itoa.c parsing_helpers.c\
+	ft_functions/ft_atoi.c exit.c echo.c unset.c export1.c ft_functions/ft_ft_strdup.c ft_functions/ft_ft_strjoin.c core_parsing.c ft_functions/ft_strtrim.c
 OBJ = $(SRC:.c=.o)
 LINKREADLINELIB = $(shell brew --prefix readline)/lib
 LINKREADLINELIB1 = $(shell brew --prefix readline)/include
