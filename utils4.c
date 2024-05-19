@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 02:23:56 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/18 20:09:36 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:17:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,15 @@ void	get_terminal_attr(struct termios *original_termios)
 void	restore_terminal_attributes(struct termios *original_termios)
 {
 	tcsetattr(STDIN_FILENO, TCSANOW, original_termios);
+}
+
+int	process_value(char *value, int i)
+{
+	while (value[i] != '\0')
+	{
+		if (valid_id(&value[i], '$'))
+			break ;
+		i++;
+	}
+	return (i);
 }

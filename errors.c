@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:28:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:57:25 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:06:18 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	error_redirection(int flag)
 	exit_status(258);
 	return ;
 }
-static void errors(char *cmd, char *error, int i)
+
+static void	errors(char *cmd, char *error, int i)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
@@ -32,13 +33,16 @@ static void errors(char *cmd, char *error, int i)
 	ft_putstr_fd("\n", 2);
 	exit(i);
 }
+
 void	check_errors_child(char *cmd)
 {
 	if (cmd[0] == '.' && !cmd[1])
 		errors(cmd, "filename argument required", 2);
-	else if (cmd[0] == '.' && cmd[1] == '/' && cmd[2] && cmd[2] != '/' && cmd[2] != '.')
+	else if (cmd[0] == '.' && cmd[1] == '/' && cmd[2]
+		&& cmd[2] != '/' && cmd[2] != '.')
 		errors(cmd, "No such file or directory", 127);
-	else if ((cmd[0] == '/' && !ft_isalnum(cmd[1]))|| (cmd[0] == '.' && cmd[1] == '/'))
+	else if ((cmd[0] == '/' && !ft_isalnum(cmd[1]))
+		|| (cmd[0] == '.' && cmd[1] == '/'))
 		errors(cmd, "is a directory", 126);
 	else if (check_char(cmd, '/'))
 		errors(cmd, "No such file or directory", 127);

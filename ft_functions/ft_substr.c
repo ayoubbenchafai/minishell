@@ -14,7 +14,7 @@
 
 char	*ft_substr(const char *str, int start, int len, t_node **ad)
 {
-	int	i;
+	int		i;
 	char	*ptr;
 
 	i = 0;

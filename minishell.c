@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 16:09:21 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/19 19:19:33 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:20:22 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ int	main(int argc, char **argv, char **envp)
 		if (line[0] != '\0' && ((line[0] < 9 || line[0] > 13) && line[0] != 32))
 			add_history(line);
 		parse_line(line, &tokens, &add, 0);
-		loop_process(set_newlist(&tokens, &env, &add), &env, &add);
+		loop_process(set_newlist(&tokens, &env, &add), &env, &add, 0);
 		restore_terminal_attributes(&original_termios);
 		(free(line), free_addresses(add));
 		init(&add, NULL, &tokens, NULL);

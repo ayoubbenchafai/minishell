@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:08:06 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:27:10 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:22:05 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,12 @@ int	make_process(t_command *cmd, t_env *env, int fd_out, int flag)
 	return (parent_process(fd), pid);
 }
 
-int	loop_process(t_command *command, t_env *env, t_node **addresses)
+int	loop_process(t_command *command, t_env *env, t_node **addresses, int i)
 {
-	int		i;
 	char	*path;
 	int		size;
 	int		pid;
 
-	i = 0;
 	run_signals(0);
 	if (!command)
 		return (0);
@@ -68,9 +66,8 @@ int	loop_process(t_command *command, t_env *env, t_node **addresses)
 	{
 		if (!builtin_key(command, addresses))
 			command->cmd = ft_pathname(path, command->cmd, addresses);
-		make_process(command, env, command->output, 0);
+		(make_process(command, env, command->output, 0), i++);
 		command = command->next;
-		i++;
 	}
 	if (i == 0 && is_builtin(command, env, addresses))
 		return (1);

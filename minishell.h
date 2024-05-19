@@ -6,7 +6,7 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 14:43:48 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:26:47 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/19 20:17:34 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ t_command	*ft_lstnew_cmd(char **cmd, int input, int output,
 void		ft_lstadd_back_cmd(t_command **lst, t_command *new);
 t_command	*ft_lstlast_cmd(t_command *lst);
 char		*ft_join_free(char *s, const char *buf, t_node **addresses);
-char	**ft_pathname(char *p, char **cmdargs, t_node **addresses);
+char		**ft_pathname(char *p, char **cmdargs, t_node **addresses);
 int			ft_herdoc(t_node *node, char **env, t_node **addresses);
 int			make_process(t_command *cmd, t_env *env, int fd_out, int flag);
 int			loop_process(t_command *command, t_env *env, t_node **addresses);
@@ -150,7 +150,7 @@ int			ft_isalnum(int c);
 int			ft_strcmp(const char *s1, const char *s2);
 char		*ft_substr(const char *str, int start, int len,
 				t_node **addresses);
-char	*ft_strtrim(char *str, char *set, t_node **addresses);
+char		*ft_strtrim(char *str, char *set, t_node **addresses);
 void		exec_echo(char **cmd, t_node **addresses);
 char		*get_environment(char **envp, char *var, t_node **addresses);
 char		*request_env(char **envp, char *var);
@@ -166,7 +166,6 @@ void		*ft_malloc(size_t size, t_node **addresses);
 t_node		*ft_alloc(void *value, char *type);
 void		add_back(t_node **lst, t_node *new);
 void		free_addresses(t_node *addresses);
-
 bool		hande_tokens(t_node **node, t_env *env, t_new_list *new,
 				t_node **addresses);
 t_node		*ft_lstnew1(void *value, char *type, t_node **addresses);
@@ -176,20 +175,20 @@ void		ft_expand(char *line, t_node **commands, int *offset,
 				t_node **addresses);
 void		parse_line(char *line, t_node **commands, t_node **addreses, int i);
 int			check_char(char *s, char c);
-
-//----------
-
-
-int	is_builtin(t_command *commands, t_env *env, t_node **addresses);
-void	backup_dup(void);
-void	init(t_node **addresses, t_env *envir, t_node **tokens, char **env);
-int	check_pipes(char *line);
-int	special_char(char c);
-int	quotes_syntax(char *line);
-int	check_quote(char *line, char c,	int *offset);
-void	ft_expand(char *line, t_node **commands, int *offset, t_node **add);
-void	ft_word(char *line, t_node **commands, int *offset, t_node **addresses);
-void	ft_quotes(char *line, t_node **commands, int *offset, t_node **add);
-void	parse_line(char *line, t_node **commands, t_node **addresses, int i);
+int			process_value(char *value, int i);
+int			is_builtin(t_command *commands, t_env *env, t_node **addresses);
+void		backup_dup(void);
+void		init(t_node **addresses, t_env *envir, t_node **tokens, char **env);
+int			check_pipes(char *line);
+bool		valid_id(char *str, char c);
+int			special_char(char c);
+int			quotes_syntax(char *line);
+int			check_quote(char *line, char c,	int *offset);
+void		ft_expand(char *line, t_node **commands, int *offset, t_node **add);
+void		ft_word(char *line, t_node **commands, int *offset,
+				t_node **addresses);
+void		ft_quotes(char *line, t_node **commands, int *offset, t_node **add);
+void		parse_line(char *line, t_node **commands,
+				t_node **addresses, int i);
 
 #endif
