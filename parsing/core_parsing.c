@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   core_parsing.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: miguiji <miguiji@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 16:28:23 by miguiji           #+#    #+#             */
-/*   Updated: 2024/05/19 17:18:49 by miguiji          ###   ########.fr       */
+/*   Updated: 2024/05/20 16:12:44 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	ft_expand(char *line, t_node **commands, int *offset, t_node **add)
 {

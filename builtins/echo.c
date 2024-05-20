@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 15:42:21 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:18:54 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:13:32 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	print_exit_status(char *cmd, int flag, t_node **addresses)
 {

@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 19:05:16 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 19:06:09 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:12:19 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	ft_lstsize_cmd(t_command *cmd)
 {

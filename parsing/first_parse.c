@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse1.c                                           :+:      :+:    :+:   */
+/*   first_parse.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:58:19 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:25:44 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:23:59 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	handle_space(t_node **node, char ***array, char **s, t_node **addresses)
 {

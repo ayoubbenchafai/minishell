@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 15:18:13 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 15:19:17 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:13:53 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	exec_pwd(void)
 {

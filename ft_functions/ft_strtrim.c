@@ -37,7 +37,7 @@ char	*ft_strtrim(char *str, char *set, t_node **addresses)
 		start = i;
 	while (str[i])
 		i++;
-	while (check(str[i - 1], set))
+	while (i > 0 && check(str[i - 1], set))
 		i--;
 	return (ft_substr(str, start, i - start, addresses));
 }

@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:07:13 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 18:21:10 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:22:52 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	check_size(char *var, char *env, int size)
 {
@@ -61,7 +61,13 @@ int	ft_strcmp(const char *s1, const char *s2)
 	int	i;
 
 	i = 0;
-	while (s1 && s2 && s1[i] && s2[i] && s1[i] == s2[i])
+	if (!s1 && !s2)
+		return (0);
+	else if (!s1)
+		return (-*s2);
+	else if (!s2)
+		return (*s1);
+	while (s1[i] && s2[i] && s1[i] == s2[i])
 		i++;
 	return (s1[i] - s2[i]);
 }

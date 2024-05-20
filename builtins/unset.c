@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:16:02 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 19:22:34 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:13:56 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 int	cmp_size(char *env, char *var)
 {

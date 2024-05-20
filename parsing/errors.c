@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:28:32 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 20:06:18 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:12:47 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	error_redirection(int flag)
 {

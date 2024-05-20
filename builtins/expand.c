@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 17:59:24 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/19 20:11:23 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:13:45 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 char	*expand_heredoc(char *var, char **env, t_node **add)
 {

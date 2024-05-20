@@ -6,11 +6,11 @@
 /*   By: aben-cha <aben-cha@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 23:12:58 by aben-cha          #+#    #+#             */
-/*   Updated: 2024/05/18 18:08:32 by aben-cha         ###   ########.fr       */
+/*   Updated: 2024/05/20 16:13:49 by aben-cha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 void	sort_env(char **env)
 {
